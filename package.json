@@ -1,0 +1,33 @@
+{
+  "name": "Math-System",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Terross/Math-System.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack serve"
+  },
+  "dependencies": {
+    "css-loader": "^6.2.0",
+    "cytoscape": "^3.19.1",
+    "cytoscape-context-menus": "^4.1.0",
+    "cytoscape-edgehandles": "^4.0.1",
+    "vue": "^2.6.14",
+    "vue-resource": "^1.5.3",
+    "vue-router": "^3.5.2",
+    "vuetify": "^2.5.8",
+    "vuex": "^3.6.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.15.0",
+    "@stomp/stompjs": "^6.1.1",
+    "babel-loader": "^8.2.2",
+    "vue-loader": "^15.9.8",
+    "vue-template-compiler": "^2.6.14",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.0.0"
+  }
+}

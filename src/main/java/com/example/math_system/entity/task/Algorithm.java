@@ -2,19 +2,20 @@ package com.example.math_system.entity.task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Table(name = "algorithm")
 @Entity
 public class Algorithm {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue
     private Long id;
 
     private String name;
     private String description;
 
     @ManyToMany(mappedBy = "algorithms")
-    private ArrayList<Task> tasks;
+    private Set<Task> tasks;
 
     public Long getId() {
         return id;
@@ -40,11 +41,7 @@ public class Algorithm {
         this.description = description;
     }
 
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(ArrayList<Task> tasks) {
+    public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
     }
 }

@@ -2,6 +2,7 @@ package com.example.math_system.entity.task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
 @Table(name = "task")
@@ -15,11 +16,11 @@ public class Task {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "Algorithm",
+            name = "task_algorithm",
             joinColumns = { @JoinColumn(name = "task_id") },
             inverseJoinColumns = { @JoinColumn(name = "algorithm_id") }
     )
-    private ArrayList<Algorithm> algorithms;
+    private Set<Algorithm> algorithms;
 
     public Long getId() {
         return id;
@@ -45,11 +46,5 @@ public class Task {
         this.category = category;
     }
 
-    public ArrayList<Algorithm> getAlgorithms() {
-        return algorithms;
-    }
 
-    public void setAlgorithms(ArrayList<Algorithm> algorithms) {
-        this.algorithms = algorithms;
-    }
 }

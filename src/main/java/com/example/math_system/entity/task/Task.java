@@ -1,8 +1,12 @@
 package com.example.math_system.entity.task;
 
+import com.example.math_system.entity.graph.Graph;
+import com.example.math_system.plugin.Plugin;
+import com.example.math_system.plugin.PluginLoader;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Set;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 @Entity
 @Table(name = "task")
@@ -14,13 +18,25 @@ public class Task {
     private String name;
     private String category;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "task_algorithm",
-            joinColumns = { @JoinColumn(name = "task_id") },
-            inverseJoinColumns = { @JoinColumn(name = "algorithm_id") }
-    )
-    private Set<Algorithm> algorithms;
+    @OneToMany(mappedBy = "task")
+    private List<AlgAnswer> algAnswerList;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "graph_id")
+    private Graph graph;
+
+    public boolean verify(Graph graph) throws FileNotFoundException {
+        boolean result = true;
+        PluginLoader pluginLoader = new PluginLoader();
+        for (AlgAnswer alganswer:
+             algAnswerList) {
+            Plugin plugin = pluginLoader.loadPlugin(alganswer.getAlgorithm().getName());
+            if (Math.abs(plugin.execute(graph) - alganswer.getAnswer()) > 0.001 ) {
+                result = false;
+            }
+        }
+        return result;
+    }
 
     public Long getId() {
         return id;
@@ -46,5 +62,19 @@ public class Task {
         this.category = category;
     }
 
+    public List<AlgAnswer> getAlgAnswerList() {
+        return algAnswerList;
+    }
 
+    public void setAlgAnswerList(List<AlgAnswer> algAnswerList) {
+        this.algAnswerList = algAnswerList;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        this.graph = graph;
+    }
 }

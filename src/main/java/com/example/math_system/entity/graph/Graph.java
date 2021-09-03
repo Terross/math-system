@@ -1,5 +1,7 @@
 package com.example.math_system.entity.graph;
 
+import com.example.math_system.entity.task.Task;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class Graph {
 
     @OneToMany(mappedBy = "graph", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vertex> vertexes;
+
+    @OneToOne(mappedBy = "graph")
+    private Task task;
 
     public void addVertex(Vertex vertex) {
         vertexCount++;
@@ -70,5 +75,13 @@ public class Graph {
     public void setVertexes(List<Vertex> vertexes) {
         this.vertexCount = vertexes.size();
         this.vertexes = vertexes;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

@@ -2,6 +2,7 @@ package com.example.math_system.entity.task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "algorithm")
@@ -14,8 +15,8 @@ public class Algorithm {
     private String name;
     private String description;
 
-    @ManyToMany(mappedBy = "algorithms")
-    private Set<Task> tasks;
+    @OneToMany(mappedBy = "algorithm")
+    private List<AlgAnswer> algAnswerList;
 
     public Long getId() {
         return id;
@@ -41,7 +42,11 @@ public class Algorithm {
         this.description = description;
     }
 
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
+    public List<AlgAnswer> getAlgAnswerList() {
+        return algAnswerList;
+    }
+
+    public void setAlgAnswerList(List<AlgAnswer> algAnswerList) {
+        this.algAnswerList = algAnswerList;
     }
 }

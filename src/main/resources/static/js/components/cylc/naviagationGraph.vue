@@ -1,11 +1,10 @@
 <template>
   <v-container id="edit-panel">
     <v-row justify="start" align="start" no-gutters>
-      <v-col >
         <v-btn
             color="white"
             text
-            class="ma-4 white--text"
+            class="my-4 white--text"
             @click="moveClick"
             :disabled="moveDisable"
             id="graphModeMove"
@@ -13,28 +12,26 @@
           Move
           <v-icon right dark>open_with</v-icon>
         </v-btn>
-      </v-col>
 
-      <v-col
-          >
+
+
         <v-btn
             color="white"
             text
-            class="ma-4 white--text"
+            class="my-4 white--text"
             :disabled="editDisable"
             @click="editClick"
             id="graphModeEdit"
         >
           Edit
           <v-icon right dark>edit</v-icon>
-        </v-btn>
-      </v-col>
 
-      <v-col >
+        </v-btn>
+
         <v-btn
             color="white"
             text
-            class="ma-4 white--text"
+            class="my-4 white--text"
             :disabled="colorDisable"
             @click="colorClick"
             id="graphModeColor"
@@ -42,9 +39,8 @@
           Color
           <v-icon right dark>palette</v-icon>
         </v-btn>
-      </v-col>
 
-      <v-col >
+
         <v-text-field
             dark
             style="margin-left: 20px"
@@ -53,8 +49,6 @@
             required
             id="elementLabel"
         ></v-text-field>
-
-      </v-col>
     </v-row>
 
   </v-container>
@@ -94,6 +88,6 @@ export default {
 <style scoped>
 #edit-panel {
   background-color: #5c6bc0;
-  padding-bottom: -30px;
+  /*padding-bottom: -30px;*/
 }
 </style>

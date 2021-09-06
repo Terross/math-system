@@ -23,21 +23,21 @@ export default {
       mode : 'move'
     }
   },
-  computed: mapGetters(['graphData']),
+  //computed: mapGetters(['graphData']),
   mounted: function () {
-    console.log(this.graphData)
     document.getElementById("elementLabel")
         .addEventListener('change', (event) => {
       this.labelData = event.target.value;
     })
-    cy = cytoscape({
+
+    var cy = cytoscape({
       container: document.getElementById('cy'),
       layout: {
         name: 'breadthfirst'
       },
-      elements: this.graphData
+      elements: null
     })
-    console.log(cy.nodes().length)
+
     var eh = cy.edgehandles();
     this.setGraphStyle(cy)
     this.setCytocape(cy, eh)
@@ -77,8 +77,26 @@ export default {
           break
       }
     },
+
     setMutable(cy ,eh, v) {
+
       eh.enableDrawMode()
+
+      cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
+        let { position } = event;
+        v.$parent.$parent.graphVertexies.find(e => e.name === sourceNode.data().name).outgoingEdges.push({
+          "fromV" : sourceNode.data().name,
+          "toV" : targetNode.data().name,
+          "weight" : addedEdge.data().weight
+        })
+        v.$parent.$parent.graphVertexies.find(e => e.name === targetNode.data().name).incomingEdges.push({
+          "fromV" : sourceNode.data().name,
+          "toV" : targetNode.data().name,
+          "weight" : addedEdge.data().weight
+        })
+        v.$parent.$parent.graphEdges.push(1)
+      });
+
       cy.on('tap', function (event) {
         let {position} = event
         if (event.target === cy) {
@@ -87,15 +105,22 @@ export default {
             color: "153,153,153",
             id: cy.nodes().length
           }
-          v.addVertexAction(vertex)
           cy.add({
             group: 'nodes',
             data: {id: cy.nodes().length, name: cy.nodes().length},
             position: {x: position.x, y: position.y}
           })
+
+
+          v.$parent.$parent.graphVertexies.push({
+            "name" : cy.nodes().length - 1,
+            "outgoingEdges" : [],
+            "incomingEdges" :[]
+          })
         }
       })
     },
+
     setMutableContextMenu(cy, v) {
       let removed = false
       var contextMenu = cy.contextMenus({

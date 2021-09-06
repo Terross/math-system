@@ -1,6 +1,7 @@
 package com.example.math_system.entity.graph;
 
 import com.example.math_system.entity.task.Task;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Graph {
     private List<Vertex> vertexes;
 
     @OneToOne(mappedBy = "graph")
+    @JsonIgnore
     private Task task;
 
     public void addVertex(Vertex vertex) {
@@ -26,18 +28,11 @@ public class Graph {
         vertexes.add(vertex);
     }
 
-    public void addEdge(Edge edge) {
+    public void addEdge(Edge edge, Vertex from, Vertex to) {
         edgeCount++;
-        //Медленно работает потом переделать
-        vertexes.forEach(System.out::println);
-        Vertex from = vertexes.stream().filter(e -> e.getId() == edge.getFrom()).findFirst()
-                .orElseThrow(IndexOutOfBoundsException::new);
-        Vertex to = vertexes.stream().filter(e -> e.getId() == edge.getTo()).findFirst()
-                .orElseThrow(IndexOutOfBoundsException::new);
 
         edge.setToVertex(to);
         edge.setFromVertex(from);
-
 
         from.addOutgoingEdge(edge);
         to.addIncomingEdge(edge);
@@ -83,5 +78,16 @@ public class Graph {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    @Override
+    public String toString() {
+        return "Graph{" +
+                "id=" + id +
+                ", vertexCount=" + vertexCount +
+                ", edgeCount=" + edgeCount +
+                ", vertexes=" + vertexes +
+                //", task=" + task +
+                '}';
     }
 }

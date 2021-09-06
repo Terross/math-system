@@ -18,7 +18,7 @@ public class Task {
     private String name;
     private String category;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<AlgAnswer> algAnswerList;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -76,5 +76,16 @@ public class Task {
 
     public void setGraph(Graph graph) {
         this.graph = graph;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", algAnswerList=" + algAnswerList +
+                ", graph=" + graph +
+                '}';
     }
 }

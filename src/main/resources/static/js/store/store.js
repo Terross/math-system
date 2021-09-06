@@ -6,34 +6,39 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        graph: frontendData.graph
+        //graph: frontendData.graph,
+        plugins: frontendData.algorithms,
+        tasks: frontendData.tasks
     },
     getters: {
-        graphData: (state) => {
-            let elements = [];
-            let adj = state.graph.adjacencyList;
-            console.log(adj)
-            for (let i = 0; i < adj.length; i++) {
-                elements.push(
-                    {
-                        group: 'nodes',
-                        data: { id: adj[i].id, name: adj[i].id}
-                    }
-                )
-                let edge = adj[i].adjacencyList;
-                for (let j = 0; j < edge.length; j++) {
-                    elements.push(
-                        {
-                            group: 'edges',
-                            data: { id: edge[j].weight, source: edge[j].v, target: edge[j].w, name:edge[j].weight}
-                        }
-                    )
-                }
-            }
-            return elements;
-        }
+        // graphData: (state) => {
+        //     let elements = [];
+        //     let adj = state.graph.adjacencyList;
+        //     console.log(adj)
+        //     for (let i = 0; i < adj.length; i++) {
+        //         elements.push(
+        //             {
+        //                 group: 'nodes',
+        //                 data: { id: adj[i].id, name: adj[i].id}
+        //             }
+        //         )
+        //         let edge = adj[i].adjacencyList;
+        //         for (let j = 0; j < edge.length; j++) {
+        //             elements.push(
+        //                 {
+        //                     group: 'edges',
+        //                     data: { id: edge[j].weight, source: edge[j].v, target: edge[j].w, name:edge[j].weight}
+        //                 }
+        //             )
+        //         }
+        //     }
+        //     return elements;
+        // }
     },
     mutations: {
+        addTaskMutation(stat, task) {
+
+        },
         addVertexMutation(state, vertex) {
             console.log(state.adjacencyList)
             console.log(vertex)

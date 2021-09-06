@@ -3,6 +3,8 @@ package com.example.math_system.controller;
 import com.example.math_system.entity.task.Algorithm;
 import com.example.math_system.exceptions.PluginAlreadyExistsException;
 import com.example.math_system.exceptions.PluginNotFoundException;
+import com.example.math_system.plugin.Plugin;
+import com.example.math_system.plugin.PluginLoader;
 import com.example.math_system.repo.AlgorithmRepo;
 import com.example.math_system.repo.GraphRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
@@ -40,7 +43,7 @@ public class PluginController {
         if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
             throw new PluginAlreadyExistsException();
         }
-
+        System.out.println();
         Algorithm algorithm = null;
         try {
             File newJarFile = new File(defaultDirForPlugin + name + ".jar" );
@@ -101,5 +104,12 @@ public class PluginController {
         } else {
             System.out.println("Failed");
         }
+    }
+
+    @GetMapping("test2Plugin")
+    public void test() throws FileNotFoundException {
+        PluginLoader pluginLoader = new PluginLoader();
+        Plugin vertexEdgeCount = pluginLoader.loadPlugin("EdgeVertexCount");
+        System.out.println(vertexEdgeCount.execute(graphRepo.findAll().stream().findFirst().orElseThrow(PluginAlreadyExistsException::new)));
     }
 }

@@ -1,5 +1,7 @@
 package com.example.math_system.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class AlgAnswer {
     private Algorithm algorithm;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "task_id")
     private Task task;
 
@@ -49,5 +52,14 @@ public class AlgAnswer {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    @Override
+    public String toString() {
+        return "AlgAnswer{" +
+                "id=" + id +
+                ", algorithm=" + algorithm +
+                ", answer=" + answer +
+                '}';
     }
 }

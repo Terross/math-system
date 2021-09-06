@@ -13,7 +13,6 @@ public class Vertex {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
-    @Column(unique = true)
     private String name;
 
     private String color;
@@ -93,7 +92,7 @@ public class Vertex {
                 ", color='" + color + '\'' +
                 ", outgoingEdges=" + outgoingEdges +
                 ", incomingEdges=" + incomingEdges +
-                ", graph=" + graph +
+                //", graph=" + graph.getId() +
                 '}';
     }
 }

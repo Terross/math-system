@@ -27,6 +27,12 @@ public class GraphController {
         this.edgeRepo = edgeRepo;
     }
 
+    @GetMapping("api/getGraph/{id}")
+    public Graph getGraph(@PathVariable Long id) {
+        System.out.println(graphRepo.getById(id));
+        return graphRepo.getById(id);
+    }
+
     @GetMapping("api/showGraph")
     public Graph getGraph() throws NotBoundException {
         return graphRepo.findAll().stream().findFirst().orElseThrow(NotBoundException::new);
@@ -50,8 +56,10 @@ public class GraphController {
     @PostMapping("api/newEdge")
     public Graph addNewEdge(@RequestBody Edge edge) {
         Graph graph = graphRepo.findAll().get(0);
-        graph.addEdge(edge);
-        graphRepo.save(graph);
+//        Vertex from = vertexRepo.findVertexByName(edge.getFrom());
+//        Vertex to = vertexRepo.findVertexByName(edge.getTo());
+//        graph.addEdge(edge, from, to);
+//        graphRepo.save(graph);
         return graph;
     }
 
@@ -80,21 +88,21 @@ public class GraphController {
                            @RequestBody Edge edge) {
         Edge edgeFromDB = edgeRepo.getById(edgeId);
 
-        Long newFrom = edge.getFrom();
-        Long newTo = edge.getTo();
-        Double newWeight = edge.getWeight();
-
-        if (newFrom != null) {
-            edgeFromDB.setFrom(newFrom);
-        }
-
-        if (newTo != null) {
-            edgeFromDB.setTo(newTo);
-        }
-
-        if (newWeight != null ) {
-            edgeFromDB.setWeight(newWeight);
-        }
+//        String newFrom = edge.getFrom();
+//        String newTo = edge.getTo();
+//        Double newWeight = edge.getWeight();
+//
+//        if (newFrom != null) {
+//            edgeFromDB.setFrom(newFrom);
+//        }
+//
+//        if (newTo != null) {
+//            edgeFromDB.setTo(newTo);
+//        }
+//
+//        if (newWeight != null ) {
+//            edgeFromDB.setWeight(newWeight);
+//        }
 
         edgeRepo.save(edgeFromDB);
 

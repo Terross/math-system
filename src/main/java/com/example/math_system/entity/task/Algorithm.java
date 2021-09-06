@@ -1,5 +1,7 @@
 package com.example.math_system.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,9 @@ public class Algorithm {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "algorithm")
-    private List<AlgAnswer> algAnswerList;
+    @JsonIgnore
+    @OneToMany(mappedBy = "algorithm", cascade = CascadeType.ALL)
+    private List<AlgAnswer> algAnswerList = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -48,5 +51,20 @@ public class Algorithm {
 
     public void setAlgAnswerList(List<AlgAnswer> algAnswerList) {
         this.algAnswerList = algAnswerList;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("[");
+        for (int i = 0; i < algAnswerList.size(); i++) {
+            stringBuilder.append(algAnswerList.get(i).getId());
+        }
+        stringBuilder.append("]");
+        return "Algorithm{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", algAnswerList=" + stringBuilder +
+                '}';
     }
 }

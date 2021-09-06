@@ -1,12 +1,12 @@
 <template>
   <v-container class="grey lighten-5" fluid style="height: 100%;">
     <v-row style="height: 100%;">
-      <v-col cols="12"
-             sm="8"
-             style="height: 100%;"
-      >
-        <graph-editor></graph-editor>
-      </v-col>
+<!--      <v-col cols="12"-->
+<!--             sm="8"-->
+<!--             style="height: 100%;"-->
+<!--      >-->
+<!--        <graph-editor></graph-editor>-->
+<!--      </v-col>-->
       <v-col>
         <task-description
             style="margin-top: 10px"

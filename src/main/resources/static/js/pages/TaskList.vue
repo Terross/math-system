@@ -27,6 +27,18 @@
         >
           Решить задачу
         </v-btn>
+        <v-btn
+            color="amber lighten-1"
+            @click="updateTask(task.id)"
+            dark>
+          Изменить задачу
+        </v-btn>
+        <v-btn
+            color="red lighten-1"
+            @click="removeTask(task.id)"
+            dark>
+          Удалить задачу
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-col>
@@ -36,26 +48,33 @@
 <script>
 import graphEditor from "../components/cylc/graphEditor.vue";
 import TaskDescription from "../components/cylc/taskDescription.vue";
+import {mapActions} from "vuex";
 export default {
   name: "taskList",
   components: {
     TaskDescription,
     graphEditor
   },
-  data() {
-    return {
-      tasks : this.$store.state.tasks
+  // data() {
+  //   return {
+  //     tasks: null
+  //   }
+  // },
+  computed : {
+    tasks() {
+      return this.$store.state.tasks
     }
   },
   methods : {
+    ...mapActions(['removeTaskAction']),
     solveTask(i) {
       this.$router.push({ path: `/task/${i}` })
     },
-    updateTask() {
-
+    updateTask(i) {
+      this.$router.push({path : `/changeTask/${i}`})
     },
-    removeTask() {
-
+    removeTask(id) {
+      this.removeTaskAction(this.tasks.filter(item => item.id === id)[0])
     }
   }
 

@@ -1,6 +1,6 @@
 <template>
   <v-container id="edit-panel">
-    <v-row justify="start" align="start" no-gutters>
+    <v-row justify="start"  no-gutters>
         <v-btn
             color="white"
             text
@@ -88,6 +88,5 @@ export default {
 <style scoped>
 #edit-panel {
   background-color: #5c6bc0;
-  /*padding-bottom: -30px;*/
 }
 </style>

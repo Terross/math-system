@@ -1,7 +1,9 @@
 import Vue from "vue";
 
-const addTask = Vue.resource('/task/addNewTask')
+const tasks = Vue.resource('/task{/id}')
 
 export default {
-    add: task => addTask.save(({}, task)),
+    add: task => tasks.save(({}, task)),
+    update: task => tasks.update(({id: task.id}, task)),
+    remove: id => tasks.remove({id : id})
 }

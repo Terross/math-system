@@ -1,8 +1,8 @@
 <template>
     <v-container fluid>
       <v-row>
-        <v-col v-if="graphEditorVisible">
-          <graph-editor></graph-editor>
+        <v-col v-if="graphEditorVisible" md="7" >
+          <graph-editor :graph-exist="false"></graph-editor>
         </v-col>
         <v-col>
           <plugin-list :graph-vertexies="graphVertexies"

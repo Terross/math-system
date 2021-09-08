@@ -1,7 +1,5 @@
 <template>
-  <v-container style="height: 100%">
     <div id="cy" class="cy"></div>
-  </v-container>
 </template>
 
 <script>
@@ -20,10 +18,17 @@ export default {
   data() {
     return {
       labelData: '',
-      mode : 'move'
+      mode : 'move',
+      graphData: this.$route.path.includes('/task/')
+          ? this.$store.getters.findGraphDataByTaskId(this.$store.getters.findTaskById(this.$route.params.id))
+          : null
     }
   },
-  //computed: mapGetters(['graphData']),
+
+  props: {
+    graphExist : Boolean
+  },
+
   mounted: function () {
     document.getElementById("elementLabel")
         .addEventListener('change', (event) => {
@@ -35,7 +40,7 @@ export default {
       layout: {
         name: 'breadthfirst'
       },
-      elements: null
+      elements: this.graphData
     })
 
     var eh = cy.edgehandles();
@@ -84,17 +89,17 @@ export default {
 
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
         let { position } = event;
-        v.$parent.$parent.graphVertexies.find(e => e.name === sourceNode.data().name).outgoingEdges.push({
+        v.$parent.$parent.$parent.graphVertexies.find(e => e.name === sourceNode.data().name).outgoingEdges.push({
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
           "weight" : addedEdge.data().weight
         })
-        v.$parent.$parent.graphVertexies.find(e => e.name === targetNode.data().name).incomingEdges.push({
+        v.$parent.$parent.$parent.graphVertexies.find(e => e.name === targetNode.data().name).incomingEdges.push({
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
           "weight" : addedEdge.data().weight
         })
-        v.$parent.$parent.graphEdges.push(1)
+        v.$parent.$parent.$parent.graphEdges.push(1)
       });
 
       cy.on('tap', function (event) {
@@ -110,9 +115,7 @@ export default {
             data: {id: cy.nodes().length, name: cy.nodes().length},
             position: {x: position.x, y: position.y}
           })
-
-
-          v.$parent.$parent.graphVertexies.push({
+          v.$parent.$parent.$parent.graphVertexies.push({
             "name" : cy.nodes().length - 1,
             "outgoingEdges" : [],
             "incomingEdges" :[]
@@ -421,11 +424,6 @@ export default {
 <style>
 
 #cy {
-  position: relative;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
   width: 100%;
   height: 100%;
   background-color: #e8eaf6 ;

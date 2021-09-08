@@ -38,49 +38,50 @@ public class TaskController {
         return tasks;
     }
 
-    @GetMapping("verifyTask/{id}")
+    @PostMapping("verifyTask/{id}")
     public boolean verifyTask(@PathVariable Long id,
                               @RequestBody Graph graph) throws FileNotFoundException {
         Task task = taskRepo.getById(id);
-        return task.verify(graph);
+        boolean result = task.verify(graph);
+        return result;
     }
 
-    @PostMapping("addNewTask")
+    @PostMapping
     public Task addNewTask(@RequestBody Task task) throws ChangeSetPersister.NotFoundException {
         System.out.println(task);
         List<AlgAnswer> algAnswerList = task.getAlgAnswerList();
         Graph graph = task.getGraph();
-        List<Vertex> vertexes = graph.getVertexes();
-        System.out.println(graph.getVertexes());
-        for (Vertex vertex:
-             graph.getVertexes()) {
-            for (Edge edge:
-                 vertex.getIncomingEdges()) {
-                edge.setToVertex(vertex);
-                edge.setFromVertex(vertexes.stream().filter(v -> v.getName().equals(edge.getFromV())).findFirst()
-                        .orElseThrow(ChangeSetPersister.NotFoundException::new));
+        if (graph != null) {
+            List<Vertex> vertexes = graph.getVertexes();
+            System.out.println(graph.getVertexes());
+            for (Vertex vertex:
+                    graph.getVertexes()) {
+                for (Edge edge:
+                        vertex.getIncomingEdges()) {
+                    edge.setToVertex(vertex);
+                    edge.setFromVertex(vertexes.stream().filter(v -> v.getName().equals(edge.getFromV())).findFirst()
+                            .orElseThrow(ChangeSetPersister.NotFoundException::new));
+                }
+                vertex.setGraph(graph);
             }
-            for (Edge edge:
-                    vertex.getOutgoingEdges()) {
-                edge.setFromVertex(vertex);
-                edge.setToVertex(vertexes.stream().filter(v -> v.getName().equals(edge.getToV())).findFirst()
-                        .orElseThrow(ChangeSetPersister.NotFoundException::new));
-            }
-            vertex.setGraph(graph);
+            System.out.println(graph);
         }
-        System.out.println(graph);
+
         for (int i = 0; i < algAnswerList.size(); i++) {
             AlgAnswer algAnswer = algAnswerList.get(i);
             algAnswer.getAlgorithm().getAlgAnswerList().add(algAnswer);
             algAnswer.setTask(task);
         }
         taskRepo.save(task);
-
+        System.out.println(task);
         return task;
     }
-    @PostMapping("newEdge")
-    public void test(@RequestBody Edge edge) {
-        System.out.println(edge);
+
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+        Task task = taskRepo.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        taskRepo.delete(task);
     }
+
 
 }

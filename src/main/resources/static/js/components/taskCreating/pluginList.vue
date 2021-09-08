@@ -88,6 +88,7 @@
 
 import graphEditor from "../cylc/graphEditor.vue";
 import store from "../../store/store.js";
+import {mapActions} from "vuex";
 export default {
   name: "pluginList",
   components: {graphEditor},
@@ -112,9 +113,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addTaskAction']),
     saveTask() {
       if (this.$refs.form.validate()) {
         const algAnswerList = []
+
         for (let i = 0; i < this.plugins.length; i++) {
           if (this.selected[i]) {
             algAnswerList.push({
@@ -123,7 +126,9 @@ export default {
             })
           }
         }
+
         let graph = null;
+
         if (this.graph) {
           graph = {
             "vertexCount" : this.graphVertexies.length,
@@ -138,10 +143,11 @@ export default {
           "algAnswerList" : algAnswerList,
           "graph" : graph
         }
-        console.log(data)
-        this.$http.post("task/addNewTask", data).then(response => {
-          console.log(response)
-        })
+
+        this.addTaskAction(data)
+        // this.$http.post("task/addNewTask", data).then(response => {
+        //   console.log(response)
+        // })
       }
 
     }

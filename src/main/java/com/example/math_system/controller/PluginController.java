@@ -24,6 +24,36 @@ public class PluginController {
     private final GraphRepo graphRepo;
     private final String defaultDirForPlugin = "/home/dmitry/IdeaProjects/Math_system/plugins/";
 
+    private static class PluginBody {
+        private String description;
+        private String name;
+        private MultipartFile file;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public MultipartFile getFile() {
+            return file;
+        }
+
+        public void setFile(MultipartFile file) {
+            this.file = file;
+        }
+    }
+
     @Autowired
     public PluginController(AlgorithmRepo algorithmRepo, GraphRepo graphRepo) {
         this.algorithmRepo = algorithmRepo;
@@ -36,15 +66,18 @@ public class PluginController {
         return algorithms;
     }
 
-    @PostMapping("newPlugin")
+
+
+    @PostMapping
     public Algorithm addNewAlgorithm(@RequestParam("description") String description,
                                      @RequestParam("name") String name,
                                      @RequestParam("file") MultipartFile file) {
         if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
             throw new PluginAlreadyExistsException();
         }
-        System.out.println();
+
         Algorithm algorithm = null;
+
         try {
             File newJarFile = new File(defaultDirForPlugin + name + ".jar" );
             if (newJarFile.createNewFile()) {
@@ -62,7 +95,7 @@ public class PluginController {
         return algorithm;
     }
 
-    @DeleteMapping("deletePlugin/{id}")
+    @DeleteMapping("/{id}")
     public void deleteAlgorithm(@PathVariable Long id) {
         Algorithm algorithm = algorithmRepo.findById(id)
                 .orElseThrow(PluginNotFoundException::new);
@@ -70,7 +103,7 @@ public class PluginController {
         algorithmRepo.delete(algorithm);
     }
 
-    @PutMapping("updatePlugin/{id}")
+    @PutMapping("/{id}")
     public Algorithm updateAlgorithm(@PathVariable Long id,
                                      @RequestParam("description") String description,
                                      @RequestParam("name") String name,
@@ -95,6 +128,7 @@ public class PluginController {
         }
 
         return algorithm;
+
     }
 
     private void deleteFileFromDisk(String fileName) {

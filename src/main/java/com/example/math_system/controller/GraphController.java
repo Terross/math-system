@@ -7,6 +7,7 @@ import com.example.math_system.repo.EdgeRepo;
 import com.example.math_system.repo.GraphRepo;
 import com.example.math_system.repo.VertexRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
@@ -28,9 +29,10 @@ public class GraphController {
     }
 
     @GetMapping("api/getGraph/{id}")
-    public Graph getGraph(@PathVariable Long id) {
-        System.out.println(graphRepo.getById(id));
-        return graphRepo.getById(id);
+    public Graph getGraph(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+        Graph graph = graphRepo.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        System.out.println(graph);
+        return graph;
     }
 
     @GetMapping("api/showGraph")

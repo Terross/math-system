@@ -1,5 +1,5 @@
 <template>
-    <div id="cy" class="cy"></div>
+    <v-card id="cy" class="cy"></v-card>
 </template>
 
 <script>
@@ -19,6 +19,7 @@ export default {
     return {
       labelData: '',
       mode : 'move',
+      id : 0,
       graphData: this.$route.path.includes('/task/')
           ? this.$store.getters.findGraphDataByTaskId(this.$store.getters.findTaskById(this.$route.params.id))
           : null
@@ -61,205 +62,129 @@ export default {
           this.mode = "color"
           this.setCytocape(cy, eh)
         })
+    document.getElementById("graphModeRemove")
+        .addEventListener('click', () => {
+          this.mode = "remove"
+          this.setCytocape(cy, eh)
+        })
   },
+
   methods: {
-    ...mapActions(['addVertexAction']),
     setCytocape(cy, eh) {
       switch(this.mode) {
         case "move":
           eh.disableDrawMode()
-          cy.contextMenus({})
+          cy.removeListener('ehcomplete');
           cy.removeListener('tap');
+          this.setColorContextMenu(cy, this)
           break
         case "edit":
-          this.setMutableContextMenu(cy, this)
+          cy.removeListener('ehcomplete');
+          cy.removeListener('tap');
+          this.setColorContextMenu(cy, this)
           this.setMutable(cy, eh, this)
           break
         case "color":
-          eh.disableDrawMode()
-          this.setColorContextMenu(cy)
+          cy.removeListener('ehcomplete');
           cy.removeListener('tap');
+          eh.disableDrawMode()
+          this.setColorContextMenu(cy, this)
+          break
+        case "remove":
+          cy.removeListener('ehcomplete');
+          cy.removeListener('tap');
+          eh.disableDrawMode()
+          this.setColorContextMenu(cy, this)
+          this.setRemovable(cy, this)
           break
       }
     },
+    setRemovable(cy, v) {
+      cy.on('tap', function (event) {
+        let {target} = event
+        if (target !== cy) {
+          cy.remove(target)
 
+          if (target.group().toString() === 'edges') {
+            v.$parent.$parent.edgeCount -= 1
+
+            const outList = v.$parent.$parent.graphVertexies
+                .filter(item => item.name.toString() === target.data().source)[0]
+                .outgoingEdges;
+            const removeFromOutIndex = outList.findIndex(item => item.fromV.toString() === target.data().source)
+
+            v.$parent.$parent.graphVertexies
+                .filter(item => item.name.toString() === target.data().source)[0]
+                .outgoingEdges = [
+                    ...outList.slice(0, removeFromOutIndex),
+                    ...outList.slice(removeFromOutIndex + 1)
+                ]
+
+            const inList = v.$parent.$parent.graphVertexies
+                .filter(item => item.name.toString() === target.data().target)[0]
+                .incomingEdges;
+            const removeFromInIndex = inList.findIndex(item => item.toV.toString() === target.data().target)
+            v.$parent.$parent.graphVertexies
+                .filter(item => item.name.toString() === target.data().target)[0]
+                .incomingEdges = [
+              ...inList.slice(0, removeFromInIndex),
+              ...inList.slice(removeFromInIndex + 1)
+            ]
+
+          } else {
+            if (target.group().toString() === 'nodes') {
+              const removeIndex = v.$parent.$parent.graphVertexies.findIndex(item => item.name === target.data().name)
+              v.$parent.$parent.graphVertexies = [
+                ...v.$parent.$parent.graphVertexies.slice(0, removeIndex),
+                ...v.$parent.$parent.graphVertexies.slice(removeIndex + 1)
+              ]
+
+            }
+          }
+        }
+      })
+    },
     setMutable(cy ,eh, v) {
-
       eh.enableDrawMode()
-
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
-        let { position } = event;
-        v.$parent.$parent.$parent.graphVertexies.find(e => e.name === sourceNode.data().name).outgoingEdges.push({
+        const edgeWeight = addedEdge.data().weight
+        v.$parent.$parent.graphVertexies.find(e => e.name === sourceNode.data().name).outgoingEdges.push({
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
-          "weight" : addedEdge.data().weight
+          "weight" : edgeWeight == null ? 0 : edgeWeight
         })
-        v.$parent.$parent.$parent.graphVertexies.find(e => e.name === targetNode.data().name).incomingEdges.push({
+        v.$parent.$parent.graphVertexies.find(e => e.name === targetNode.data().name).incomingEdges.push({
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
-          "weight" : addedEdge.data().weight
+          "weight" : edgeWeight == null ? 0 : edgeWeight
         })
-        v.$parent.$parent.$parent.graphEdges.push(1)
+        v.$parent.$parent.edgeCount += 1
       });
 
       cy.on('tap', function (event) {
         let {position} = event
         if (event.target === cy) {
-          const vertex = {
-            adjacencyList: null,
-            color: "153,153,153",
-            id: cy.nodes().length
-          }
+
           cy.add({
             group: 'nodes',
-            data: {id: cy.nodes().length, name: cy.nodes().length},
+            data: {
+              id: v.id,
+              name: v.id},
             position: {x: position.x, y: position.y}
           })
-          v.$parent.$parent.$parent.graphVertexies.push({
-            "name" : cy.nodes().length - 1,
+
+          v.$parent.$parent.graphVertexies.push({
+            "name" : v.id,
+            "color": "gray",
             "outgoingEdges" : [],
             "incomingEdges" :[]
           })
+          v.id += 1
         }
       })
     },
 
-    setMutableContextMenu(cy, v) {
-      let removed = false
-      var contextMenu = cy.contextMenus({
-        menuItems: [
-          {
-            id: 'remove',
-            content: 'remove',
-            tooltipText: 'remove',
-            image: {src: "https://img.icons8.com/material/24/000000/delete-sign--v1.png", width: 12, height: 12, x: 6, y: 4},
-            selector: 'node, edge',
-            onClickFunction: function (event) {
-              var target = event.target || event.cyTarget;
-              removed = target.remove();
-              contextMenu.showMenuItem('undo-last-remove');
-            },
-            hasTrailingDivider: true
-          },
-          {
-            id: 'undo-last-remove',
-            content: 'undo last remove',
-            selector: 'node, edge',
-            show: false,
-            coreAsWell: true,
-            onClickFunction: function (event) {
-              if (removed) {
-                removed.restore();
-              }
-              contextMenu.hideMenuItem('undo-last-remove');
-            },
-            hasTrailingDivider: true
-          },
-          {
-            id: 'color',
-            content: 'change color',
-            tooltipText: 'change color',
-            selector: 'node, edge',
-            hasTrailingDivider: true,
-            submenu: [
-              {
-                id: 'color-blue',
-                content: 'blue',
-                tooltipText: 'blue',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'blue')
-                    target.style('target-arrow-color', 'blue')
-                  }
-                  target.style('background-color', 'blue');
-                }
-              },
-              {
-                id: 'color-green',
-                content: 'green',
-                tooltipText: 'green',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'green')
-                    target.style('target-arrow-color', 'green')
-                  }
-                  target.style('background-color', 'green');
-                },
-              },
-              {
-                id: 'color-red',
-                content: 'red',
-                tooltipText: 'red',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'red')
-                    target.style('target-arrow-color', 'red')
-                  }
-                  target.style('background-color', 'red');
-                },
-              },
-              {
-                id: 'color-yellow',
-                content: 'yellow',
-                tooltipText: 'yellow',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'yellow')
-                    target.style('target-arrow-color', 'yellow')
-                  }
-                  target.style('background-color', 'yellow');
-                }
-              },
-              {
-                id: 'color-maroon',
-                content: 'maroon',
-                tooltipText: 'maroon',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'maroon')
-                    target.style('target-arrow-color', 'maroon')
-                  }
-                  target.style('background-color', 'maroon');
-                },
-              },
-              {
-                id: 'color-purple',
-                content: 'purple',
-                tooltipText: 'purple',
-                onClickFunction: function (event) {
-                  let target = event.target || event.cyTarget;
-                  if (target.backgrounding() === false) {
-                    target.style('line-color', 'purple')
-                    target.style('target-arrow-color', 'purple')
-                  }
-                  target.style('background-color', 'purple');
-                },
-              }
-            ]
-          },
-          {
-            id: 'changeContent',
-            content: 'change label',
-            tooltipText: 'change label',
-            selector: 'node, edge',
-            onClickFunction: function(event) {
-              var target = event.target || event.cyTarget;
-
-              target.data('name', v.labelData)
-            }
-          }
-        ],
-        menuItemClasses: ['custom-menu-item'],
-        contextMenuClasses: ['custom-context-menu'],
-        submenuIndicator: { src: 'https://img.icons8.com/material-outlined/24/000000/menu-2.png', width: 12, height: 12 }
-      });
-    },
-    setColorContextMenu(cy) {
+    setColorContextMenu(cy, v) {
       cy.contextMenus({
         menuItems: [
           {
@@ -275,7 +200,10 @@ export default {
                 tooltipText: 'blue',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'blue');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'blue');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'blue'
+                  }
                 }
               },
               {
@@ -284,7 +212,10 @@ export default {
                 tooltipText: 'green',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'green');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'green');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'green'
+                  }
                 },
               },
               {
@@ -293,7 +224,10 @@ export default {
                 tooltipText: 'red',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'red');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'red');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'red'
+                  }
                 },
               },
               {
@@ -302,7 +236,10 @@ export default {
                 tooltipText: 'yellow',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'yellow');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'yellow');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'yellow'
+                  }
                 }
               },
               {
@@ -311,7 +248,11 @@ export default {
                 tooltipText: 'maroon',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'maroon');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'maroon');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'maroon'
+                  }
+
                 },
               },
               {
@@ -320,10 +261,38 @@ export default {
                 tooltipText: 'purple',
                 onClickFunction: function (event) {
                   let target = event.target || event.cyTarget;
-                  target.style('background-color', 'purple');
+                  if (target.group() === 'nodes') {
+                    target.style('background-color', 'purple');
+                    v.$parent.$parent.graphVertexies.filter(item => item.name === target.data().name)[0].color = 'purple'
+                  }
+
                 },
               }
             ]
+          },
+          {
+            id: 'changeContent',
+            content: 'change label',
+            tooltipText: 'change label',
+            selector: 'node, edge',
+            onClickFunction: function(event) {
+              var target = event.target || event.cyTarget;
+              if (v.labelData.length > 0) {
+
+                  if (target.group() === 'edges') {
+                    v.$parent.$parent.graphVertexies
+                        .filter(item => item.name.toString() === target.data().source)[0]
+                        .outgoingEdges.filter(item => item.toV.toString() === target.data().target)[0]
+                        .weight = v.labelData
+                    v.$parent.$parent.graphVertexies
+                        .filter(item => item.name.toString() === target.data().target)[0]
+                        .incomingEdges.filter(item => item.fromV.toString() === target.data().source)[0]
+                        .weight = v.labelData
+
+                    target.data('name', v.labelData)
+                  }
+                }
+            }
           }
         ], menuItemClasses: ['custom-menu-item'],
           contextMenuClasses: ['custom-context-menu'],

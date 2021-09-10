@@ -7,49 +7,66 @@
         app
         color="indigo lighten-1"
         dark
-        dense
         height="64px"
     >
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title
       class="ma-4">Модуль графы</v-toolbar-title>
-      <v-btn
-          color="white"
-          text
-          class="ma-4 white--text"
-          :disabled="$route.path === '/'"
-          @click="showTaskConstructor"
-      >
+      <div v-if="$route.path === '/'">
         Конструктор задач
-      </v-btn>
-
-      <v-btn
-          color="white"
-          text
-          class="ma-4 white--text"
-          :disabled="$route.path === '/tasks'"
-          @click="showTaskList"
-      >
+      </div>
+      <div v-if="$route.path === '/tasks'">
         Список задач
-      </v-btn>
-
-      <v-btn
-          color="white"
-          text
-          class="ma-4 white--text"
-          :disabled="$route.path === '/plugins'"
-          @click="showPlugins"
-      >
-        Загрузка модулей
-      </v-btn>
-      <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
+      </div>
+      <div v-if="$route.path === '/plugins'">
+        Плагины
+      </div>
 
     </v-app-bar>
 
+    <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+    >
+      <v-list
+          nav
+          dense
+      >
+        <v-list-item-group
+            v-model="group"
+            active-class="indigo lighten-1"
+        >
+          <v-list-item
+              :disabled="$route.path === '/'"
+              @click="showTaskConstructor"
+          >
+            <v-list-item-icon>
+              <v-icon>edit</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Конструктор задач</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+              :disabled="$route.path === '/tasks'"
+              @click="showTaskList">
+            <v-list-item-icon>
+              <v-icon>task</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Список задач</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+              :disabled="$route.path === '/plugins'"
+              @click="showPlugins">
+            <v-list-item-icon>
+              <v-icon>extension</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Модули</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
 
 
     <v-main>
@@ -69,6 +86,8 @@ export default {
   data() {
     return {
       tab: null,
+      drawer: false,
+      group: null,
       items: [
           'Сборник задач', 'Конструктор задач', 'Новые модули'
       ]

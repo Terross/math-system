@@ -105,7 +105,7 @@ export default {
   },
   props: {
     graphVertexies: Array,
-    graphEdges: Array
+    graphEdgesCount: Number
   },
   watch: {
     graph(value) {
@@ -132,7 +132,7 @@ export default {
         if (this.graph) {
           graph = {
             "vertexCount" : this.graphVertexies.length,
-            "edgeCount" : this.graphEdges.length,
+            "edgeCount" : this.graphEdgesCount,
             "vertexes" : this.graphVertexies
           }
         }

@@ -1,8 +1,5 @@
 <template>
-  <v-card
-  min-height="85vh"
-  color="indigo lighten-5">
-    <v-card-text>
+  <v-container>
       <v-row>
         <navigation-graph>
         </navigation-graph>
@@ -11,12 +8,7 @@
         <network :graph-exist="graphExist">
         </network>
       </v-row>
-    </v-card-text>
-
-
-
-
-  </v-card>
+  </v-container>
 </template>
 
 <script>

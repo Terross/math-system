@@ -1,5 +1,5 @@
 <template>
-  <v-container id="edit-panel">
+  <v-card id="edit-panel">
     <v-row justify="start"  no-gutters>
         <v-btn
             color="white"
@@ -39,7 +39,17 @@
           Color
           <v-icon right dark>palette</v-icon>
         </v-btn>
-
+        <v-btn
+            color="white"
+            text
+            class="my-4 white--text"
+            :disabled="removeDisable"
+            @click="removeClick"
+            id="graphModeRemove"
+        >
+          Remove
+          <v-icon right dark>delete</v-icon>
+        </v-btn>
 
         <v-text-field
             dark
@@ -51,7 +61,7 @@
         ></v-text-field>
     </v-row>
 
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -62,7 +72,8 @@ export default {
       newLabel: '',
       moveDisable: true,
       editDisable: false,
-      colorDisable: false
+      colorDisable: false,
+      removeDisable: false
     }
   },
   methods: {
@@ -70,16 +81,25 @@ export default {
       this.moveDisable = true
       this.editDisable = false
       this.colorDisable = false
+      this.removeDisable = false
     },
     editClick() {
       this.moveDisable = false
       this.editDisable = true
       this.colorDisable = false
+      this.removeDisable = false
     },
     colorClick() {
       this.moveDisable = false
       this.editDisable = false
       this.colorDisable = true
+      this.removeDisable = false
+    },
+    removeClick() {
+      this.moveDisable = false
+      this.editDisable = false
+      this.colorDisable = false
+      this.removeDisable = true
     }
   }
 }
@@ -88,5 +108,7 @@ export default {
 <style scoped>
 #edit-panel {
   background-color: #5c6bc0;
+  width: 100%;
+
 }
 </style>

@@ -6,7 +6,7 @@
         </v-col>
         <v-col>
           <plugin-list :graph-vertexies="graphVertexies"
-                        :graph-edges="graphEdges">
+                        :graph-edges-count="edgeCount">
           </plugin-list>
         </v-col>
       </v-row>
@@ -24,8 +24,7 @@
           graphEditorVisible: false,
           vertexCount: 0,
           edgeCount: 0,
-          graphVertexies: [],
-          graphEdges: []
+          graphVertexies: []
         }
       }
     };

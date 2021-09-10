@@ -19,7 +19,7 @@ function stripAnsi(string) {
     throw new TypeError("Expected a `string`, got `".concat(typeof string, "`"));
   }
 
-  return string.replace((0,ansi_regex__WEBPACK_IMPORTED_MODULE_0__.default)(), '');
+  return string.replace((0,ansi_regex__WEBPACK_IMPORTED_MODULE_0__["default"])(), '');
 }
 
 /***/ }),
@@ -110,7 +110,7 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var strip_ansi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! strip-ansi */ "./node_modules/strip-ansi/index.js");
 
-/* harmony default export */ __webpack_exports__["default"] = (strip_ansi__WEBPACK_IMPORTED_MODULE_0__.default);
+/* harmony default export */ __webpack_exports__["default"] = (strip_ansi__WEBPACK_IMPORTED_MODULE_0__["default"]);
 }();
 var __webpack_export_target__ = exports;
 for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];

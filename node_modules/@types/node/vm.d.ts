@@ -32,7 +32,7 @@
  *
  * console.log(x); // 1; y is not defined.
  * ```
- * @see [source](https://github.com/nodejs/node/blob/v16.6.0/lib/vm.js)
+ * @see [source](https://github.com/nodejs/node/blob/v16.7.0/lib/vm.js)
  */
 declare module 'vm' {
     interface Context extends NodeJS.Dict<any> {}
@@ -267,7 +267,11 @@ declare module 'vm' {
          * @since v10.6.0
          */
         createCachedData(): Buffer;
+
+        /** @deprecated in favor of `script.createCachedData()` */
+        cachedDataProduced?: boolean | undefined;
         cachedDataRejected?: boolean | undefined;
+        cachedData?: Buffer | undefined;
     }
     /**
      * If given a `contextObject`, the `vm.createContext()` method will `prepare

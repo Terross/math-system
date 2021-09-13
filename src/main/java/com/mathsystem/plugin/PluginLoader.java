@@ -10,9 +10,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class PluginLoader {
-    private final File pluginDirectory = new File("/home/dmitry/IdeaProjects/PluginDir");
-    public PluginLoader() {
+    private final File pluginDirectory;
+
+    public PluginLoader(File pluginDirectory) {
+        this.pluginDirectory = pluginDirectory;
     }
+
     public Plugin loadPlugin(String pluginName) throws FileNotFoundException {
 
         Plugin instance = null;

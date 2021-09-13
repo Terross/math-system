@@ -27,14 +27,14 @@ public class Task {
 
     public boolean verify(Graph graph) throws FileNotFoundException {
         boolean result = true;
-        PluginLoader pluginLoader = new PluginLoader();
-        for (AlgAnswer alganswer:
-             algAnswerList) {
-            Plugin plugin = pluginLoader.loadPlugin(alganswer.getAlgorithm().getName());
-            if (Math.abs(plugin.execute(graph) - alganswer.getAnswer()) > 0.001 ) {
-                result = false;
-            }
-        }
+//        PluginLoader pluginLoader = new PluginLoader(pluginDirectory);
+//        for (AlgAnswer alganswer:
+//             algAnswerList) {
+//            Plugin plugin = pluginLoader.loadPlugin(alganswer.getAlgorithm().getName());
+//            if (Math.abs(plugin.execute(graph) - alganswer.getAnswer()) > 0.001 ) {
+//                result = false;
+//            }
+//        }
         return result;
     }
 

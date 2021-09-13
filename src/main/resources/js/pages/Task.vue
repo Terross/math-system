@@ -82,7 +82,7 @@ export default {
       graph: null,
       taskData: this.task,
       graphVertexies: null,
-      graphEdges: [],
+      edgeCount: 0,
       answer: false,
       result: "wrong"
       //graphExist: this.task.graph !== null
@@ -101,7 +101,7 @@ export default {
     verify() {
       const graph = {
         "vertexCount" : this.graphVertexies.length,
-        "edgeCount" : this.graphEdges.length + (this.task.graph !== null ? this.task.graph.edgeCount : 0),
+        "edgeCount" : this. edgeCount + (this.task.graph !== null ? this.task.graph.edgeCount : 0),
         "vertexes" : this.graphVertexies
       }
       console.log(graph)

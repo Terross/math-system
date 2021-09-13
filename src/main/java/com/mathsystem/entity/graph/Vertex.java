@@ -15,7 +15,7 @@ public class Vertex {
 
     private String name;
 
-    private String color;
+    private Color color;
 
     @OneToMany(mappedBy = "fromVertex", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> outgoingEdges;
@@ -52,11 +52,11 @@ public class Vertex {
         this.name = name;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 

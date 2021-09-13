@@ -12,8 +12,11 @@ public class Graph {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
+    private GraphType graphType;
+
     private int vertexCount;
     private int edgeCount;
+
 
     @OneToMany(mappedBy = "graph", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vertex> vertexes;
@@ -78,6 +81,15 @@ public class Graph {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+
+    public GraphType getGraphType() {
+        return graphType;
+    }
+
+    public void setGraphType(GraphType graphType) {
+        this.graphType = graphType;
     }
 
     @Override

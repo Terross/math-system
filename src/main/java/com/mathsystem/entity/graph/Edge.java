@@ -21,6 +21,7 @@ public class Edge {
     @JsonIgnore
     private Vertex toVertex;
 
+    private Color color;
 
     private String fromV;
     private String toV;
@@ -73,6 +74,14 @@ public class Edge {
 
     public void setWeight(Double weight) {
         this.weight = weight;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override

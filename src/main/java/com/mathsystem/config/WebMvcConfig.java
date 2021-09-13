@@ -16,4 +16,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
             container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/"));
         };
     }
+
+
 }

@@ -39,7 +39,7 @@ export default {
     var cy = cytoscape({
       container: document.getElementById('cy'),
       layout: {
-        name: 'breadthfirst'
+        name: 'circle'
       },
       elements: this.graphData
     })
@@ -108,6 +108,8 @@ export default {
           if (target.group().toString() === 'edges') {
             v.$parent.$parent.edgeCount -= 1
 
+            console.log(v.$parent.$parent.graphVertexies)
+            console.log(target.data())
             const outList = v.$parent.$parent.graphVertexies
                 .filter(item => item.name.toString() === target.data().source)[0]
                 .outgoingEdges;

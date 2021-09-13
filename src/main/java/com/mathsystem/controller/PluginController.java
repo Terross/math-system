@@ -140,10 +140,4 @@ public class PluginController {
         }
     }
 
-    @GetMapping("test2Plugin")
-    public void test() throws FileNotFoundException {
-        PluginLoader pluginLoader = new PluginLoader();
-        Plugin vertexEdgeCount = pluginLoader.loadPlugin("EdgeVertexCount");
-        System.out.println(vertexEdgeCount.execute(graphRepo.findAll().stream().findFirst().orElseThrow(PluginAlreadyExistsException::new)));
-    }
 }

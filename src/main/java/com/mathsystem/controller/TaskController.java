@@ -40,7 +40,7 @@ public class TaskController {
 
     @PostMapping("verifyTask/{id}")
     public boolean verifyTask(@PathVariable Long id,
-                              @RequestBody Graph graph) throws FileNotFoundException {
+                              @RequestBody Graph graph) throws FileNotFoundException, InterruptedException {
         Task task = taskRepo.getById(id);
         boolean result = task.verify(graph);
         return result;

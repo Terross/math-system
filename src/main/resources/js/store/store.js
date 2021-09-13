@@ -24,27 +24,30 @@ export default new Vuex.Store({
                     elements.push(
                         {
                             group: 'nodes',
-                            data: { label: '', id: adj[i].id, name: adj[i].name}
+                            data: { label: '', id: i, name: adj[i].name}
                         }
                     )
                 }
+                let idForEdge = adj.length
                 for (let i = 0; i < adj.length; i++) {
                     let edge = adj[i].incomingEdges;
                     for (let j = 0; j < edge.length; j++) {
                         let edgeSource = elements.find(v => v.data.name === edge[j].fromV && v.group === 'nodes')
                         let edgeTarget = elements.find(v => v.data.name === edge[j].toV  && v.group === 'nodes')
-
                         if (edgeSource !== null && edgeTarget !== null) {
+
                             elements.push(
                                 {
                                     group: 'edges',
-                                    data: { id: edge[j].weight, source: edgeSource.data.id, target: edgeTarget.data.id, name:edge[j].weight}
+                                    data: { id: idForEdge, source: edgeSource.data.id, target: edgeTarget.data.id, name:edge[j].weight}
                                 }
                             )
+                            idForEdge++;
                         }
 
                     }
                 }
+
 
             }
             return elements;

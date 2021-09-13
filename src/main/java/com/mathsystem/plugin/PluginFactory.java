@@ -17,9 +17,9 @@ import java.util.Objects;
 public class PluginFactory {
 
     @Value("${upload.path}")
-    private static String pluginPath;
+    private String pluginPath;
 
-    public static Plugin loadPlugin() {
+    public  Plugin loadPlugin() {
 
         System.out.println(new File(pluginPath));
 

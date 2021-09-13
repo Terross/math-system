@@ -21,7 +21,7 @@ public class PluginFactory {
 
     public static Plugin loadPlugin() {
 
-        System.out.println(pluginPath);
+        System.out.println(new File(pluginPath));
 
 //        Plugin instance = null;
 //

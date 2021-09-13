@@ -6,7 +6,7 @@ public class Vertex {
     private final String name;
     private final Color color;
 
-    public Vertex(Color color, String name) {
+    public Vertex(String name, Color color) {
         this.color = color;
         this.name = name;
     }

@@ -30,8 +30,8 @@ public class UndirectedGraph extends AbstractGraph {
         for (int i = 0; i < vertexCount; i++) {
             for (Edge edge: vertices.get(i).getOutgoingEdges()) {
                 adj.get(i).add(new UndirectedEdge(
-                        new Vertex(edge.getFromVertex().getColor(), edge.getFromV()),
-                        new Vertex(edge.getToVertex().getColor(), edge.getFromV()),
+                        new Vertex(edge.getFromV(), edge.getFromVertex().getColor()),
+                        new Vertex(edge.getFromV(), edge.getToVertex().getColor()),
                         edge.getWeight(),
                         edge.getColor()
                         ));
@@ -52,12 +52,12 @@ public class UndirectedGraph extends AbstractGraph {
 
         for (int i = 0; i < edgeCount; i++) {
             Vertex v = new Vertex(
-                    Color.valueOf(scanner.next().toUpperCase()),
-                    String.valueOf(scanner.nextInt())
+                    String.valueOf(scanner.nextInt()),
+                    Color.valueOf(scanner.next().toUpperCase())
             );
             Vertex w = new Vertex(
-                    Color.valueOf(scanner.next().toUpperCase()),
-                    String.valueOf(scanner.nextInt())
+                    String.valueOf(scanner.nextInt()),
+                    Color.valueOf(scanner.next().toUpperCase())
             );
             validateVertex(v);
             validateVertex(w);

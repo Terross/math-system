@@ -1,6 +1,8 @@
 package com.mathsystem.plugin;
 
+import com.mathsystem.config.PathConfig;
 import com.mathsystem.entity.graph.Graph;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +18,12 @@ import java.util.Objects;
 @Component
 public class PluginFactory {
 
-    @Value("${upload.path}")
-    private String pluginPath;
+    @Autowired
+    PathConfig pluginPath;
 
     public  Plugin loadPlugin() {
 
-        System.out.println(new File(pluginPath));
+        System.out.println(pluginPath.getPluginPath());
 
 //        Plugin instance = null;
 //

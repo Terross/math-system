@@ -23,11 +23,11 @@ public class GraphFactory {
         return abstractGraph;
     }
 
-    public static AbstractGraph loadUndirectedGraphFromFile(File file) throws FileNotFoundException {
+    public static UndirectedGraph loadUndirectedGraphFromFile(File file) throws FileNotFoundException {
         return new UndirectedGraph(file);
     }
 
-    public static AbstractGraph loadDirectedGraphFromFile(File file) throws FileNotFoundException {
+    public static DirectedGraph loadDirectedGraphFromFile(File file) throws FileNotFoundException {
         return new DirectedGraph(file);
     }
 }

@@ -10,38 +10,16 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class PluginLoader {
+
     private final File pluginDirectory;
 
     public PluginLoader(File pluginDirectory) {
         this.pluginDirectory = pluginDirectory;
     }
 
+
     public Plugin loadPlugin(String pluginName) throws FileNotFoundException {
 
-        Plugin instance = null;
-
-        File jarPlugin = Arrays.stream(Objects.requireNonNull(pluginDirectory.listFiles(
-                file -> {
-                    return file.isFile() && file.getName().equals(pluginName + ".jar");
-                }
-        ))).findFirst().orElseThrow(FileNotFoundException::new);
-
-        Class<?> pluginClass = null;
-        try {
-            URL jarURL = jarPlugin.toURI().toURL();
-            URLClassLoader classLoader = new URLClassLoader(new URL[]{jarURL});
-            pluginClass = classLoader.loadClass(pluginName);
-        } catch (MalformedURLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            assert pluginClass != null;
-            instance = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        return instance;
+        return null;
     }
 }

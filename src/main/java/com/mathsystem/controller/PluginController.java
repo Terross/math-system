@@ -3,8 +3,6 @@ package com.mathsystem.controller;
 import com.mathsystem.entity.task.Algorithm;
 import com.mathsystem.exceptions.PluginAlreadyExistsException;
 import com.mathsystem.exceptions.PluginNotFoundException;
-import com.mathsystem.plugin.Plugin;
-import com.mathsystem.plugin.PluginLoader;
 import com.mathsystem.repo.AlgorithmRepo;
 import com.mathsystem.repo.GraphRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;

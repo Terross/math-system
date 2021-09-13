@@ -1,8 +1,6 @@
 package com.mathsystem.entity.task;
 
 import com.mathsystem.entity.graph.Graph;
-import com.mathsystem.plugin.Plugin;
-import com.mathsystem.plugin.PluginLoader;
 
 import javax.persistence.*;
 import java.io.FileNotFoundException;

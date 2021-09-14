@@ -5,9 +5,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>math-system</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>math-system</name>
-    <description>math-system</description>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -58,32 +56,31 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
+        <plugins>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.2</version>
-                    <configuration> <!-- Compile java 7 compatible bytecode -->
-                        <source>11</source>
-                        <target>11</target>
-                    </configuration>
-                </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration> <!-- Compile java 7 compatible bytecode -->
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
 
-                <plugin>  <!-- Create sources.jar -->
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+            <plugin>  <!-- Create sources.jar -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
 <!--                <plugin>-->
 <!--                    <groupId>org.springframework.boot</groupId>-->
@@ -101,7 +98,6 @@
 <!--                    </executions>-->
 <!--                </plugin>-->
 
-            </plugins>
-        </pluginManagement>
-    </build>
+        </plugins>
+</build>
 </project>

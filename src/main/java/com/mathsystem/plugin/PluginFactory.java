@@ -8,9 +8,10 @@ import java.io.File;
 public class PluginFactory {
     private final static String pluginPath = "/home/dmitry/plugins/";
 
-    public static Plugin loadPlugin(String pluginName) throws FileNotFoundException {
+    private static Plugin loadPlugin(String pluginName){
 
         Plugin instance = null;
+
         try {
             File jarPlugin = new File(pluginPath + pluginName + ".jar");
 
@@ -24,7 +25,16 @@ public class PluginFactory {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return instance;
+    }
+
+    public static GraphProperty loadGraphProperty(String name){
+        return (GraphProperty) loadPlugin(name);
+    }
+
+    public static GraphCharacteristic loadGraphCharacteristic(String name) {
+        return (GraphCharacteristic) loadPlugin(name);
     }
 
 }

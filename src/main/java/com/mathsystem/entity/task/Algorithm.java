@@ -15,6 +15,7 @@ public class Algorithm {
 
     private String name;
     private String description;
+    private AlgorithmType algorithmType;
 
     @JsonIgnore
     @OneToMany(mappedBy = "algorithm", cascade = CascadeType.ALL)
@@ -22,6 +23,14 @@ public class Algorithm {
 
     public Long getId() {
         return id;
+    }
+
+    public AlgorithmType getAlgorithmType() {
+        return algorithmType;
+    }
+
+    public void setAlgorithmType(AlgorithmType algorithmType) {
+        this.algorithmType = algorithmType;
     }
 
     public void setId(Long id) {

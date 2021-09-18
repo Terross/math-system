@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <v-col>
-
       <v-card
           class="mx-auto"
           min-width="344"
@@ -10,14 +9,19 @@
           <p class="text-h4 text--primary">
             Описание задачи
           </p>
-          <div>
+          <div v-if="">
             Постройте граф, удовлетворяющий следующим свойствам:
           </div>
           <div
-          v-for="(plugin, i) in plugins"
-          :key="i"
-          v-if="selected[i] && values[i]">
-            {{plugin.description + " " + values[i]}}
+              v-for="(plugin, i) in plugins"
+              :key="i"
+              >
+            <div v-if="selected[i] && values[i] && plugin.algorithmType === 'CHARACTERISTIC'">
+              {{plugin.description + " " + values[i]}}
+            </div>
+            <div v-if="selected[i] && plugin.algorithmType === 'PROPERTY'">
+              {{plugin.description}}
+            </div>
           </div>
           <v-switch
               v-model="graph"
@@ -51,10 +55,8 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-
-
     </v-col>
-    <v-col
+    <v-col v-if="$store.state.plugins.plugins.length > 0"
     v-for="(plugin, i) in plugins"
     :key="i"
     cols="12">
@@ -69,7 +71,7 @@
           <div class="text--primary">
             {{plugin.description}}
           </div>
-          <v-text-field
+          <v-text-field v-if="plugin.algorithmType === 'CHARACTERISTIC'"
               v-model="values[i]"
               label="Требуемое значение"
               required
@@ -88,42 +90,55 @@
 
 import graphEditor from "../cylc/graphEditor.vue";
 import store from "../../store/store.js";
-import {mapActions} from "vuex";
+import {mapActions, mapMutations} from "vuex";
 export default {
   name: "pluginList",
   components: {graphEditor},
   data() {
     return {
-      plugins: store.state.plugins,
       values: [],
       selected: [],
       taskName: '',
       taskCategory: '',
-      graph: false,
+      graph: this.$store.state.constructorGraph.graphPresent,
       valid: true
     }
   },
-  props: {
-    graphVertexies: Array,
-    graphEdgesCount: Number
-  },
   watch: {
-    graph(value) {
-      this.$parent.graphEditorVisible = value
+    graph() {
+      this['constructorGraph/graphPresentMutation']()
+    }
+  },
+  computed: {
+    plugins() {
+      return this.$store.state.plugins.plugins
+    },
+    graphData() {
+      return this.$store.state.constructorGraph
     }
   },
   methods: {
-    ...mapActions(['addTaskAction']),
+    ...mapActions(['tasks/addTaskAction']),
+    ...mapMutations(['constructorGraph/graphPresentMutation']),
     saveTask() {
       if (this.$refs.form.validate()) {
         const algAnswerList = []
 
         for (let i = 0; i < this.plugins.length; i++) {
           if (this.selected[i]) {
-            algAnswerList.push({
-              "algorithm" : this.plugins[i],
-              "answer" : this.values[i]
-            })
+            if (this.plugins[i].algorithmType === 'CHARACTERISTIC') {
+              algAnswerList.push({
+                "type" : 'characteristic',
+                "algorithm" : this.plugins[i],
+                "answer" : this.values[i]
+              })
+            } else {
+              algAnswerList.push({
+                "type" : 'property',
+                "algorithm" : this.plugins[i],
+                "answer" : true
+              })
+            }
           }
         }
 
@@ -131,9 +146,10 @@ export default {
 
         if (this.graph) {
           graph = {
-            "vertexCount" : this.graphVertexies.length,
-            "edgeCount" : this.graphEdgesCount,
-            "vertexes" : this.graphVertexies
+            "vertexCount" : this.graphData.constructorGraph.length,
+            "edgeCount" : 2,
+            "vertexes" : this.graphData.constructorGraph,
+            "graphType" : this.$store.state.constructorGraph.direct ? "DIRECTED" : "UNDIRECTED"
           }
         }
 
@@ -144,10 +160,10 @@ export default {
           "graph" : graph
         }
 
-        this.addTaskAction(data)
-        // this.$http.post("task/addNewTask", data).then(response => {
-        //   console.log(response)
-        // })
+        //this['tasks/addTaskAction'](data)
+        this.$http.post("task/", data).then(response => {
+          console.log(response)
+        })
       }
 
     }

@@ -4,5 +4,5 @@ import com.mathsystem.entity.graph.Graph;
 import com.mathsystem.graphapi.AbstractGraph;
 
 public interface GraphCharacteristic extends Plugin {
-    Double execute(Graph graph);
+    Double execute(AbstractGraph graph);
 }

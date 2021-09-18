@@ -1,12 +1,13 @@
 <template>
     <v-container fluid>
       <v-row>
-        <v-col v-if="graphEditorVisible" md="7" >
-          <graph-editor :graph-exist="false"></graph-editor>
+        <v-col v-if="graphEditorVisible" >
+          <graph-editor></graph-editor>
         </v-col>
         <v-col>
-          <plugin-list :graph-vertexies="graphVertexies"
-                        :graph-edges-count="edgeCount">
+          <element-redactor v-if="graphEditorVisible">
+          </element-redactor>
+          <plugin-list >
           </plugin-list>
         </v-col>
       </v-row>
@@ -16,15 +17,18 @@
 <script>
     import PluginList from "../components/taskCreating/pluginList.vue";
     import graphEditor from "../components/cylc/graphEditor.vue";
+    import ElementRedactor from "../components/taskCreating/elementRedactor.vue";
     export default {
       name: 'taskConstructor',
-      components: {PluginList, graphEditor},
+      components: {ElementRedactor, PluginList, graphEditor},
       data() {
         return {
-          graphEditorVisible: false,
-          vertexCount: 0,
-          edgeCount: 0,
-          graphVertexies: []
+          selectedData: this.$store.state.constructorGraph.selectedData
+        }
+      },
+      computed: {
+        graphEditorVisible() {
+          return this.$store.state.constructorGraph.graphPresent
         }
       }
     };

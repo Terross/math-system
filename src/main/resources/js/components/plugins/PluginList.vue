@@ -13,39 +13,56 @@
             Загрузите jar файл. Название плагина должно совпадать с названием jar файла.
             Описание плагина должно описывать то, что плагин будет возвращать.
           </div>
-          <v-text-field
-              v-model="pluginName"
-              label="Название плагина"
-              required
-          ></v-text-field>
-          <v-text-field
-              v-model="pluginDescription"
-              label="Описание плагина"
-              required
-          ></v-text-field>
-          <v-file-input
-              v-model="files"
-              color="indigo lighten-1"
-              counter
-              label="Jar файл"
-              multiple
-              placeholder="Загрузите файл"
-              prepend-icon="mdi-paperclip"
-              outlined
-              :show-size="1000"
-          >
-            <template v-slot:selection="{ index, text }">
-              <v-chip
-                  v-if="index < 2"
-                  color="indigo lighten-1"
-                  dark
-                  label
-                  small
-              >
-                {{ text }}
-              </v-chip>
-            </template>
-          </v-file-input>
+          <v-form
+              ref = "form"
+              v-model = "valid"
+              lazy-validation>
+            <v-text-field
+                v-model="pluginName"
+                label="Название плагина"
+                :rules="[v => !!v || 'Требуется название плагина']"
+                required
+            ></v-text-field>
+            <v-text-field
+                v-model="pluginDescription"
+                label="Описание плагина"
+                :rules="[v => !!v || 'Требуется описание плагина']"
+                required
+            ></v-text-field>
+            <v-select
+                :items="['Свойство', 'Характеристика']"
+                label="Тип плагина"
+                v-model="pluginType"
+                :rules="[v => !!v || 'Требуется тип плагина']"
+                required
+            ></v-select>
+            <v-file-input
+                v-model="files"
+                color="indigo lighten-1"
+                counter
+                label="Jar файл"
+                placeholder="Загрузите файл"
+                prepend-icon="mdi-paperclip"
+                outlined
+                :rules="[
+                   v => !!v || 'File is required',
+                   v => (v && v.size > 0) || 'File is required',
+                ]"
+                :show-size="1000"
+            >
+              <template v-slot:selection="{ index, text }">
+                <v-chip
+                    v-if="index < 2"
+                    color="indigo lighten-1"
+                    dark
+                    label
+                    small
+                >
+                  {{ text }}
+                </v-chip>
+              </template>
+            </v-file-input>
+          </v-form>
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -60,7 +77,8 @@
     <v-col
         v-for="(plugin, i) in plugins"
         :key="i"
-        cols="12">
+        cols="12"
+        v-if="plugins.length > 0">
       <v-card
           class="mx-auto"
           min-width="344"
@@ -68,6 +86,9 @@
         <v-card-text>
           <p class="text-h4 text--primary">
             {{plugin.name}}
+          </p>
+          <p class="text-h6 text--primary">
+            {{plugin.algorithmType === 'CHARACTERISTIC' ?  'Характеристика' : 'Свойство'}}
           </p>
           <div class="text--primary">
             {{plugin.description}}
@@ -98,17 +119,19 @@ export default {
       selected: [],
       pluginName: '',
       pluginDescription: '',
-      files: []
+      pluginType: '',
+      files: [],
+      valid: true
     }
   },
   computed: {
     plugins() {
-      return store.state.plugins
+      return store.state.plugins.plugins
     }
   },
   methods: {
-    ...mapActions(['addPluginAction']),
-    ...mapMutations(['addPluginMutation', 'removePluginMutation']),
+    ...mapActions(['plugins/addPluginAction']),
+    ...mapMutations(['plugins/addPluginMutation', 'plugins/removePluginMutation']),
     removePlugin(id) {
       this.$http.delete(`/plugin/api/${id}`).then(response => {
         if (response.ok) {
@@ -117,24 +140,21 @@ export default {
       })
     },
     addPlugin() {
-      const data = {
-        "name" : this.pluginName,
-        "description" : this.pluginDescription,
-        "file" : this.files[0]
+
+      if (this.$refs.form.validate()) {
+        let file = this.files
+        let formData = new FormData();
+        console.log(file)
+        formData.append("file", file)
+        formData.append("name", this.pluginName)
+        formData.append("description", this.pluginDescription)
+        formData.append("algType", this.pluginType === 'Характеристика'
+                                              ? 'CHARACTERISTIC' : 'PROPERTY')
+
+        this.$http.post('/plugin/api', formData).then(response => {
+          this['plugins/addPluginMutation'](response.data)
+        })
       }
-
-      let file = this.files[0]
-      let formData = new FormData();
-      formData.append("file", this.files[0])
-      formData.append("name", this.pluginName)
-      formData.append("description", this.pluginDescription)
-      console.log(file)
-      console.log(formData.get("file"))
-
-      this.$http.post('/plugin/api', formData).then(response => {
-
-        this.addPluginMutation(response.data)
-      })
     }
   }
 }

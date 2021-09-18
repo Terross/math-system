@@ -5,7 +5,10 @@ com/mathsystem/graphapi/directed/DirectedGraph.class
 com/mathsystem/entity/graph/GraphType.class
 com/mathsystem/plugin/GraphCharacteristic.class
 com/mathsystem/entity/task/AlgAnswer.class
+com/mathsystem/plugin/PluginType.class
+com/mathsystem/controller/GraphController.class
 com/mathsystem/graphapi/undirected/UndirectedGraph.class
+com/mathsystem/entity/task/CharacteristicAnswer.class
 com/mathsystem/config/WebMvcConfig.class
 com/mathsystem/repo/VertexRepo.class
 com/mathsystem/graphapi/undirected/UndirectedEdge.class
@@ -26,6 +29,7 @@ com/mathsystem/plugin/PluginFactory.class
 com/mathsystem/repo/TaskRepo.class
 com/mathsystem/entity/graph/Edge.class
 com/mathsystem/MathSystemApplication.class
+com/mathsystem/entity/task/PropertyAnswer.class
 com/mathsystem/graphapi/GraphFactory$1.class
 com/mathsystem/exceptions/PluginNotFoundException.class
 com/mathsystem/controller/PluginController.class

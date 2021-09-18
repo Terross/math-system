@@ -7,10 +7,11 @@ import App from './pages/App.vue'
 import store from "./store/store";
 import router from "./router/router";
 import 'vuetify/dist/vuetify.min.css'
-
+import VueCytoscape from 'vue-cytoscape'
 
 
 Vue.use(Vuetify)
+Vue.use(VueCytoscape)
 
 
 new Vue({

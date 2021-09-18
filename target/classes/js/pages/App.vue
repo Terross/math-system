@@ -26,7 +26,8 @@
 
     <v-navigation-drawer
         v-model="drawer"
-        absolute
+        fixed
+        app
         temporary
     >
       <v-list

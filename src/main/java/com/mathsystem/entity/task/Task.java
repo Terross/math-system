@@ -1,6 +1,12 @@
 package com.mathsystem.entity.task;
 
 import com.mathsystem.entity.graph.Graph;
+import com.mathsystem.graphapi.AbstractGraph;
+import com.mathsystem.graphapi.GraphFactory;
+import com.mathsystem.plugin.GraphCharacteristic;
+import com.mathsystem.plugin.GraphProperty;
+
+import com.mathsystem.plugin.PluginFactory;
 
 import javax.persistence.*;
 import java.io.FileNotFoundException;
@@ -25,14 +31,26 @@ public class Task {
 
     public boolean verify(Graph graph) throws FileNotFoundException {
         boolean result = true;
-//        PluginLoader pluginLoader = new PluginLoader(pluginDirectory);
-//        for (AlgAnswer alganswer:
-//             algAnswerList) {
-//            Plugin plugin = pluginLoader.loadPlugin(alganswer.getAlgorithm().getName());
-//            if (Math.abs(plugin.execute(graph) - alganswer.getAnswer()) > 0.001 ) {
-//                result = false;
-//            }
-//        }
+
+        //TO-DO: переписать этот костыль
+        for (AlgAnswer alganswer:
+             algAnswerList) {
+            String name = alganswer.getAlgorithm().getName();
+            AbstractGraph abstractGraph = GraphFactory.createGraph(graph);
+            if (alganswer instanceof CharacteristicAnswer) {
+                GraphCharacteristic graphCharacteristic =
+                        (GraphCharacteristic) PluginFactory.loadPlugin(name);
+                if (Math.abs(graphCharacteristic.execute(abstractGraph) - ((CharacteristicAnswer) alganswer).getAnswer()) > 0.0001 ) {
+                    result = false;
+                }
+            } else {
+                GraphProperty graphProperty =
+                        (GraphProperty) PluginFactory.loadPlugin(name);
+                if (graphProperty.execute(abstractGraph) == ((PropertyAnswer) alganswer).isAnswer()) {
+                    result = false;
+                }
+            }
+        }
         return result;
     }
 

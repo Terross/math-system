@@ -3,8 +3,7 @@ package com.mathsystem.controller;
 import com.mathsystem.entity.graph.Edge;
 import com.mathsystem.entity.graph.Graph;
 import com.mathsystem.entity.graph.Vertex;
-import com.mathsystem.entity.task.AlgAnswer;
-import com.mathsystem.entity.task.Task;
+import com.mathsystem.entity.task.*;
 import com.mathsystem.repo.AlgAnswerRepo;
 import com.mathsystem.repo.AlgorithmRepo;
 import com.mathsystem.repo.TaskRepo;
@@ -48,7 +47,7 @@ public class TaskController {
 
     @PostMapping
     public Task addNewTask(@RequestBody Task task) throws ChangeSetPersister.NotFoundException {
-        System.out.println(task);
+
         List<AlgAnswer> algAnswerList = task.getAlgAnswerList();
         Graph graph = task.getGraph();
         if (graph != null) {
@@ -75,6 +74,22 @@ public class TaskController {
         taskRepo.save(task);
         System.out.println(task);
         return task;
+    }
+    @PostMapping("/test")
+    public void test(@RequestBody List<AlgAnswer> algAnswers) {
+        System.out.println(algAnswers.size());
+        AlgAnswer a = algAnswers.get(0);
+        //AlgAnswer b = algAnswers.get(1);
+        if (a instanceof PropertyAnswer) {
+            System.out.println(((PropertyAnswer) a).isAnswer());
+        } else {
+            System.out.println(((CharacteristicAnswer) a).getAnswer());
+        }
+//        if (b instanceof PropertyAnswer) {
+//            System.out.println(((PropertyAnswer) b).isAnswer());
+//        } else {
+//            System.out.println(((CharacteristicAnswer) b).getAnswer());
+//        }
     }
 
     @DeleteMapping("/{id}")

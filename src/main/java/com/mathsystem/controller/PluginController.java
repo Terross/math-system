@@ -1,6 +1,7 @@
 package com.mathsystem.controller;
 
 import com.mathsystem.entity.task.Algorithm;
+import com.mathsystem.entity.task.AlgorithmType;
 import com.mathsystem.exceptions.PluginAlreadyExistsException;
 import com.mathsystem.exceptions.PluginNotFoundException;
 import com.mathsystem.repo.AlgorithmRepo;
@@ -19,7 +20,8 @@ import java.util.List;
 public class PluginController {
     private final AlgorithmRepo algorithmRepo;
     private final GraphRepo graphRepo;
-    private final String defaultDirForPlugin = "/home/dmitry/IdeaProjects/math-system/plugins/";
+    private final String defaultDirForPlugin =
+            "/home/dmitry/Documents/Diplom/math-system/plugins/";
 
     private static class PluginBody {
         private String description;
@@ -63,11 +65,10 @@ public class PluginController {
         return algorithms;
     }
 
-
-
     @PostMapping
     public Algorithm addNewAlgorithm(@RequestParam("description") String description,
                                      @RequestParam("name") String name,
+                                     @RequestParam("algType") String algType,
                                      @RequestParam("file") MultipartFile file) {
         if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
             throw new PluginAlreadyExistsException();
@@ -76,12 +77,17 @@ public class PluginController {
         Algorithm algorithm = null;
 
         try {
+            File pluginsDir = new File(defaultDirForPlugin);
+            if (!pluginsDir.exists()) {
+                pluginsDir.mkdir();
+            }
             File newJarFile = new File(defaultDirForPlugin + name + ".jar" );
             if (newJarFile.createNewFile()) {
                 file.transferTo(newJarFile);
                 algorithm = new Algorithm();
                 algorithm.setName(name);
                 algorithm.setDescription(description);
+                algorithm.setAlgorithmType(AlgorithmType.valueOf(algType));
                 algorithmRepo.save(algorithm);
             } else {
                 throw new FileAlreadyExistsException("File already exist!");

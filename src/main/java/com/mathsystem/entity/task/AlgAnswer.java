@@ -1,26 +1,34 @@
 package com.mathsystem.entity.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.mathsystem.plugin.PluginType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "alg_answer")
-public class AlgAnswer {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "algorithm_type")
+@JsonTypeInfo( use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PropertyAnswer.class, name = "property"),
+        @JsonSubTypes.Type(value = CharacteristicAnswer.class, name = "characteristic")
+})
+public abstract class AlgAnswer {
     @Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 
     @ManyToOne
     @JoinColumn(name = "algorithm_id")
-    private Algorithm algorithm;
+    protected Algorithm algorithm;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "task_id")
-    private Task task;
-
-    private Double answer;
+    protected Task task;
 
     public Long getId() {
         return id;
@@ -38,14 +46,6 @@ public class AlgAnswer {
         this.algorithm = algorithm;
     }
 
-    public Double getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Double answer) {
-        this.answer = answer;
-    }
-
     public Task getTask() {
         return task;
     }
@@ -58,8 +58,8 @@ public class AlgAnswer {
     public String toString() {
         return "AlgAnswer{" +
                 "id=" + id +
-                ", algorithm=" + algorithm +
-                ", answer=" + answer +
+//                ", algorithm=" + algorithm +
+//                ", task=" + task +
                 '}';
     }
 }

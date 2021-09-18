@@ -1,31 +1,47 @@
 <template>
   <v-container>
       <v-row>
-        <navigation-graph>
+        <navigation-graph :networkType="networkType">
         </navigation-graph>
       </v-row>
       <v-row style="height: 85vh;">
-        <network :graph-exist="graphExist">
+        <network :networkType="networkType">
         </network>
       </v-row>
   </v-container>
+
 </template>
 
 <script>
 import network from "./network.vue";
 import NavigationGraph from "./naviagationGraph.vue";
-import { mapGetters } from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 
 export default {
-  props: {
-    graphExist: Boolean
+  data() {
+    return {
+      networkType: this.$route.path.includes('/task/') ? 'task' : 'constructor'
+    }
+  },
+  computed: {
+    dialog() {
+      return this.$store.state.constructorGraph.dialog
+    }
+  },
+  watch: {
+    selectedData() {
+      this['constructorGraph/selectedDataMutation'](this.selectedData)
+    }
   },
   name: 'graphEditor',
   components: {
     'navigationGraph': NavigationGraph,
-    'network': network},
+    'network': network
+  },
   methods: {
+    ...mapMutations(['constructorGraph/selectedDataMutation'])
   }
+
 }
 </script>
 

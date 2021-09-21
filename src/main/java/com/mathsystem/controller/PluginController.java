@@ -3,9 +3,16 @@ package com.mathsystem.controller;
 import com.mathsystem.entity.task.Algorithm;
 import com.mathsystem.entity.task.AlgorithmType;
 import com.mathsystem.exceptions.PluginAlreadyExistsException;
+import com.mathsystem.exceptions.PluginCreatingException;
 import com.mathsystem.exceptions.PluginNotFoundException;
+import com.mathsystem.plugin.GraphCharacteristic;
+import com.mathsystem.plugin.GraphProperty;
+import com.mathsystem.plugin.Plugin;
+import com.mathsystem.plugin.PluginFactory;
 import com.mathsystem.repo.AlgorithmRepo;
 import com.mathsystem.repo.GraphRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +29,7 @@ public class PluginController {
     private final GraphRepo graphRepo;
     private final String defaultDirForPlugin =
             "/home/dmitry/Documents/Diplom/math-system/plugins/";
+    private Logger logger = LoggerFactory.getLogger(PluginController.class);
 
     private static class PluginBody {
         private String description;
@@ -59,20 +67,18 @@ public class PluginController {
         this.graphRepo = graphRepo;
     }
 
-    @GetMapping("showPlugins")
-    public List<Algorithm> showAllAlgorithm() {
-        List<Algorithm> algorithms = algorithmRepo.findAll();
-        return algorithms;
-    }
-
     @PostMapping
     public Algorithm addNewAlgorithm(@RequestParam("description") String description,
                                      @RequestParam("name") String name,
                                      @RequestParam("algType") String algType,
                                      @RequestParam("file") MultipartFile file) {
-        if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
-            throw new PluginAlreadyExistsException();
-        }
+
+            if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
+                logger.error("Plugin already exist!!!");
+                throw new PluginAlreadyExistsException();
+            }
+
+
 
         Algorithm algorithm = null;
 
@@ -80,6 +86,7 @@ public class PluginController {
             File pluginsDir = new File(defaultDirForPlugin);
             if (!pluginsDir.exists()) {
                 pluginsDir.mkdir();
+                logger.info(pluginsDir.getAbsolutePath() + " has created");
             }
             File newJarFile = new File(defaultDirForPlugin + name + ".jar" );
             if (newJarFile.createNewFile()) {
@@ -88,6 +95,7 @@ public class PluginController {
                 algorithm.setName(name);
                 algorithm.setDescription(description);
                 algorithm.setAlgorithmType(AlgorithmType.valueOf(algType));
+                verifyPlugin(algorithm, file.getOriginalFilename());
                 algorithmRepo.save(algorithm);
             } else {
                 throw new FileAlreadyExistsException("File already exist!");
@@ -129,17 +137,36 @@ public class PluginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return algorithm;
-
     }
 
     private void deleteFileFromDisk(String fileName) {
         File file = new File(fileName);
         if (file.delete()) {
-            System.out.println(file.getName() + " deleted");
+            logger.info(file.getName() + " deleted");
         } else {
-            System.out.println("Failed");
+            logger.error(file.getName() + " error");
+        }
+    }
+
+    private void verifyPlugin(Algorithm algorithm, String jarName) {
+        if (!(algorithm.getName() + ".jar").equals(jarName)) {
+            logger.error("Plugin name doesn't equal file name");
+        }
+        if (algorithm.getAlgorithmType() == AlgorithmType.PROPERTY) {
+            Plugin plugin =  PluginFactory.loadPlugin(algorithm.getName());
+            if (! (plugin instanceof GraphProperty)) {
+                logger.error("Wrong class type");
+                deleteFileFromDisk(defaultDirForPlugin + algorithm.getName() + ".jar");
+                throw new PluginCreatingException();
+            }
+        } else {
+            Plugin plugin =  PluginFactory.loadPlugin(algorithm.getName());
+            if (! (plugin instanceof GraphCharacteristic)) {
+                logger.error("Wrong class type");
+                deleteFileFromDisk(defaultDirForPlugin + algorithm.getName() + ".jar");
+                throw new PluginCreatingException();
+            }
         }
     }
 

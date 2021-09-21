@@ -1,5 +1,4 @@
 package com.mathsystem.graphapi;
-
 import com.mathsystem.entity.graph.Color;
 
 public class Vertex {
@@ -21,7 +20,6 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", name, color);
+        return String.format("%s ", name, color);
     }
-
 }

@@ -5,7 +5,8 @@
         </navigation-graph>
       </v-row>
       <v-row style="height: 85vh;">
-        <network :networkType="networkType">
+        <network :networkType="networkType"
+                 :config-elements="configElements">
         </network>
       </v-row>
   </v-container>
@@ -23,15 +24,9 @@ export default {
       networkType: this.$route.path.includes('/task/') ? 'task' : 'constructor'
     }
   },
-  computed: {
-    dialog() {
-      return this.$store.state.constructorGraph.dialog
-    }
-  },
-  watch: {
-    selectedData() {
-      this['constructorGraph/selectedDataMutation'](this.selectedData)
-    }
+  props: {
+    configElements: Array,
+    graphType: Boolean
   },
   name: 'graphEditor',
   components: {

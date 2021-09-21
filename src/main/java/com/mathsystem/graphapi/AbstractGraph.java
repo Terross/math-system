@@ -1,12 +1,11 @@
 package com.mathsystem.graphapi;
-
-import com.mathsystem.graphapi.undirected.UndirectedEdge;
-
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractGraph {
     protected int vertexCount;
     protected int edgeCount;
+    protected Map<String, Vertex> vertices;
 
     protected void validateVertex(Vertex vertex) {
         int v = Integer.parseInt(vertex.getName());
@@ -31,4 +30,18 @@ public abstract class AbstractGraph {
         this.edgeCount = edgeCount;
     }
 
+    public Map<String, Vertex> getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(Map<String, Vertex> vertices) {
+        this.vertices = vertices;
+    }
+
+    @Override
+    public String toString() {
+        return  "\nvertexCount: " + vertexCount +
+                "\nedgeCount: " + edgeCount +
+                "\nvertices: " + vertices;
+    }
 }

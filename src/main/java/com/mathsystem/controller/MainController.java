@@ -35,6 +35,7 @@ public class MainController {
         List<Algorithm> algorithms = algorithmRepo.findAll();
         List<Task> tasks = taskRepo.findAll();
         HashMap<Object, Object> data = new HashMap<>();
+
         data.put("graph", null);
         data.put("algorithms", algorithms);
         data.put("tasks", tasks);

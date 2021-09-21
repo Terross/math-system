@@ -10,6 +10,7 @@
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/plugin/GraphCharacteristic.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/directed/DirectedEdge.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/plugin/PluginFactory.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginClassNotFoundException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/repo/AlgAnswerRepo.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/Graph.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/TaskController.java
@@ -21,7 +22,10 @@
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/GraphType.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/Vertex.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/directed/DirectedGraph.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/AlgorithmType.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginCreatingException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/AbstractGraph.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/TaskPermission.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/Color.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/PluginController.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/MainController.java

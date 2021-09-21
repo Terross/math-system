@@ -1,72 +1,118 @@
 <template>
   <v-card id="edit-panel">
     <v-row justify="start"  no-gutters>
+
       <v-col>
-        <v-btn
-            color="white"
-            text
-            class="ma-2 white--text"
-            @click="moveClick"
-            :disabled="this.editType === 'move'"
-            id="graphModeMove"
-        >
-          Move
-          <v-icon right dark>open_with</v-icon>
-        </v-btn>
-        <v-btn
-            color="white"
-            text
-            class="ma-2 white--text"
-            :disabled="this.editType === 'edit'"
-            @click="editClick"
-            id="graphModeEdit"
-        >
-          Edit
-          <v-icon right dark>edit</v-icon>
-        </v-btn>
+        <v-btn-toggle
+                      color="primary"
+                      dense
+                      group>
+          <v-btn
+              dark
+              class="ma-4"
+              @click="moveClick"
+              :disabled="this.editType === 'move'"
+              id="graphModeMove"
+          >
+            Move
+            <v-icon  dark>open_with</v-icon>
+          </v-btn>
+          <v-btn
+              dark
+              class="ma-4"
+              :disabled="this.editType === 'edit' ||
+               (!this.permission.edit && this.networkType !== 'constructor')"
+              @click="editClick"
+              id="graphModeEdit"
+          >
+            Edit
+            <v-icon dark>edit</v-icon>
+          </v-btn>
 
-        <v-btn
-            color="white"
-            text
-            class="ma-2 white--text"
-            :disabled="this.editType === 'remove'"
-            @click="removeClick"
-            id="graphModeRemove"
-        >
-          Remove
-          <v-icon right dark>delete</v-icon>
-        </v-btn>
-        <v-btn color="white"
-               text
-               class="ma-2 white--text"
-               :disabled="this.editType === 'remove'"
-               @click="removeClick"
-               id="graphModeRemove">
+          <v-btn
+              dark
+              class="ma-4"
+              :disabled="this.editType === 'remove' ||
+              (!this.permission.remove &&  this.networkType !== 'constructor')"
+              @click="removeClick"
+              id="graphModeRemove"
+          >
+            Remove
+            <v-icon dark>delete</v-icon>
+          </v-btn>
+        </v-btn-toggle>
+      </v-col>
 
-        </v-btn>
+      <v-col>
+        <v-menu offset-y class = "mx-4">
+          <template v-slot:activator="{ on, attrs }" >
+            <v-btn
+                color="indigo lighten-4"
+                text
+                v-bind="attrs"
+                v-on="on"
+                id="testId2"
+                class = "ma-4 align-center"
+            >
+              Расстановка графа
+            </v-btn>
+          </template>
+          <v-list color="indigo lighten-1">
+            <v-list-item
+            >
+              <v-btn
+                  text
+                  color="indigo lighten-4"
+                  dark
+                  id="random-layout"
+              >Random
+                <v-icon dark>shuffle</v-icon>
+              </v-btn>
+            </v-list-item>
+            <v-list-item
+            >
+              <v-btn
+                  text
+                  color="indigo lighten-4"
+                  dark
+                  id="circle-layout"
+              >circle
+                <v-icon dark>motion_photos_on</v-icon>
+              </v-btn>
+            </v-list-item>
+            <v-list-item
+            >
+              <v-btn
+                  text
+                  color="indigo lighten-4"
+                  dark
+                  id="cola-layout"
+              >components
+                <v-icon dark>group_work</v-icon>
+              </v-btn>
+            </v-list-item>
+            <v-list-item
+            >
+              <v-btn
+                  text
+                  color="indigo lighten-4"
+                  dark
+                  id="tree-layout"
+              >tree
+                <v-icon dark>account_tree</v-icon>
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
       <v-col>
-        <v-btn
-            color="white"
-            text
-            class="ma-2 white--text"
-            :disabled="this.direct === true"
-            @click="directedTypeClick"
-            id="directed-type-graph"
-        >
-           Ориентированный граф
-          <v-icon right dark>moving</v-icon>
-        </v-btn>
-        <v-btn
-            color="white"
-            text
-            class="ma-2 white--text"
-            :disabled="this.direct === false"
-            @click="undirectedTypeClick"
-            id="undirected-type-graph"
-        >
-          Неориентированный граф
-          <v-icon right dark>show_chart</v-icon>
+        <v-btn text
+               color="indigo lighten-4"
+               dark
+               id="download-graph"
+               class="ma-4"
+            @click="saveFile">
+          Скачать граф файлом
         </v-btn>
       </v-col>
     </v-row>
@@ -76,6 +122,7 @@
 
 <script>
 import {mapMutations} from "vuex";
+import {saveAS} from 'file-saver'
 
 export default {
   name: "navigationGraph",
@@ -84,20 +131,22 @@ export default {
   },
   computed: {
     changeColor() {
-      return this.networkType === 'task' ? null
-          : this.$store.state.constructorGraph.changeColor
+      return this.$store.state.constructorGraph.changeColor
     },
     editType() {
-      return this.networkType === 'task' ? null
-          : this.$store.state.constructorGraph.editType
+      return this.$store.state.constructorGraph.editType
     },
     changeLabel() {
-      return this.networkType === 'task' ? null
-          : this.$store.state.constructorGraph.changeLabel
+      return  this.$store.state.constructorGraph.changeLabel
     },
     direct() {
-      return this.networkType === 'task' ? null
-          : this.$store.state.constructorGraph.direct
+      return this.$store.state.constructorGraph.direct
+    },
+    graphInfo() {
+      return this.$store.state.constructorGraph
+    },
+    permission() {
+      return this.$store.state.constructorGraph.permission
     }
   },
   methods: {
@@ -105,6 +154,27 @@ export default {
         'constructorGraph/changeEditTypeMutation',
         'constructorGraph/changeDirectTypeMutation'
     ]),
+    async saveFile() {
+      let file = this.graphInfo.vertexCount
+      file = file + ' ' + this.graphInfo.edgeCount +'\n'
+      let vertexList = this.graphInfo.constructorGraph
+      for (let i = 0; i < vertexList.length; i++) {
+        file = file + vertexList[i].name + ' ' + vertexList[i].color +'\n'
+      }
+
+      for (let i = 0; i < vertexList.length;i++) {
+        for (let j = 0; j < vertexList[i].outgoingEdges.length; j++) {
+          let edge = vertexList[i].outgoingEdges[j]
+          let fromVertex = vertexList.filter(item => item.name.toString() === edge.fromV.toString())[0]
+          let toVertex = vertexList.filter(item => item.name.toString() === edge.toV.toString())[0]
+          file = file +
+              fromVertex.name +  ' ' + toVertex.name + ' '
+              + (edge.weight === ''? 0 : edge.weight) + ' ' + edge.color + '\n'
+        }
+      }
+      var blob = new Blob([file], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "graph.txt");
+    },
     moveClick() {
       this['constructorGraph/changeEditTypeMutation']('move')
     },

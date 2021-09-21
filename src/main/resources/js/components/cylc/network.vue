@@ -28,71 +28,48 @@ import {mapActions, mapGetters, mapMutations} from 'vuex'
 import edgehandles from 'cytoscape-edgehandles'
 import contextMenus from 'cytoscape-context-menus'
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
-
+import cola from 'cytoscape-cola'
+import dagre from 'cytoscape-dagre';
 
 
 export default {
   name: "network",
   data() {
     return {
-      nodeId: 0,
-      edgeId: 0,
       selectedData: {
         data: null,
         color: '',
         group: ''
       },
-      reg: this.$store.state.constructorGraph.reg
-    }
-  },
-  props: {
-    networkType: String
-  },
-  computed: {
-    changeColor() {
-      return this.$store.state.constructorGraph.changeColor
-    },
-    editType() {
-      return this.$store.state.constructorGraph.editType
-    },
-    changeLabel() {
-      return this.$store.state.constructorGraph.changeLabel
-    },
-    direct() {
-      return this.$store.state.constructorGraph.direct
-    },
-    config() {
-      return {
-        style: this.cytoscapeStyle,
-        layout: {
-          name: 'circle'
+      reg: this.$store.state.constructorGraph.reg,
+      directedStyle: [
+        {
+          selector: 'node[name]',
+          style: {
+            'content': 'data(name)',
+          }
         },
-        wheelSensitivity: 0.5,
-        elements: this.$store.getters["constructorGraph/cytoscapeConfigElements"]
-      }
-    },
-    elementData() {
-      return this.$store.state.constructorGraph.elementData
-    },
-    testGraph() {
-      return this.$store.state.constructorGraph.constructorGraph
-    },
-    graphInfo() {
-      return this.$store.state.constructorGraph
-    },
-    cytoscapeStyle() {
-      return [{
-        selector: 'node[name]',
-        style: {
-          'content': 'data(name)',
-          'background-color': "gray"
-        }
-      },
+        {
+          selector: 'node[color]',
+          style: {
+            'background-color': 'data(color)',
+          }
+        },
         {
           selector: 'edge',
           style: {
             'curve-style': 'bezier',
             'target-arrow-shape': 'triangle',
+          }
+        },
+        {
+          selector: 'edge[color]',
+          style: {
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'line-color' : 'data(color)',
+            'background-color' : 'data(color)',
+            'target-arrow-color': 'data(color)'
           }
         },
         {
@@ -156,7 +133,134 @@ export default {
           style: {
             'opacity': 0
           }
+        }],
+      undirectedStyle: [
+        {
+          selector: 'node[name]',
+          style: {
+            'content': 'data(name)',
+          }
+        },
+        {
+          selector: 'node[color]',
+          style: {
+            'background-color': 'data(color)',
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'curve-style': 'bezier',
+          }
+        },
+        {
+          selector: 'edge[name]',
+          style: {
+            'curve-style': 'bezier',
+            'content': 'data(name)',
+          }
+        },
+        {
+          selector: ':selected',
+          style: {
+            "border-width": 2,
+            "border-color": "blue"
+          }
+        },
+        {
+          selector: '.eh-handle',
+          style: {
+            'background-color': 'red',
+            'width': 12,
+            'height': 12,
+            'shape': 'ellipse',
+            'overlay-opacity': 0,
+            'border-width': 12, // makes the handle easier to hit
+            'border-opacity': 0
+          }
+        },
+        {
+          selector: '.eh-hover',
+          style: {
+            'background-color': 'red'
+          }
+        },
+        {
+          selector: '.eh-source',
+          style: {
+            'border-width': 2,
+            'border-color': 'red'
+          }
+        },
+        {
+          selector: '.eh-target',
+          style: {
+            'border-width': 2,
+            'border-color': 'red'
+          }
+        },
+        {
+          selector: '.eh-preview, .eh-ghost-edge',
+          style: {
+            'background-color': 'red',
+            'line-color': 'red',
+          }
+        },
+        {
+          selector: '.eh-ghost-edge.eh-preview-active',
+          style: {
+            'opacity': 0
+          }
         }]
+    }
+  },
+  props: {
+    networkType: String,
+    configElements: Array,
+    graphType: Boolean
+  },
+  computed: {
+    changeColor() {
+      return this.$store.state.constructorGraph.changeColor
+    },
+    editType() {
+      return this.$store.state.constructorGraph.editType
+    },
+    changeLabel() {
+      return this.$store.state.constructorGraph.changeLabel
+    },
+    direct() {
+      return this.$store.state.constructorGraph.direct
+    },
+    permission() {
+      if (this.networkType === 'constructor') {
+        return {
+          "edit" : true,
+          "color" : true,
+          "weight" : true,
+          "remove" : true
+        }
+      } else {
+        return this.$store.state.constructorGraph.permission
+      }
+    },
+    config() {
+      return {
+        layout: {
+          name: 'circle'
+        },
+        wheelSensitivity: 0.5,
+        elements: this.configElements
+      }
+    },
+    elementData() {
+      return this.$store.state.constructorGraph.elementData
+    },
+    testGraph() {
+      return this.$store.state.constructorGraph.constructorGraph
+    },
+    graphInfo() {
+      return this.$store.state.constructorGraph
     }
   },
   methods: {
@@ -176,39 +280,57 @@ export default {
     ]),
     ...mapGetters([
        'tasks/findGraphDataByTaskId',
-        'tasks/findTaskById'
+        'tasks/findTaskById',
     ]),
     preConfig(cytoscape) {
-      if (this.networkType === 'task') {
-        let id = this.$route.params.id
-        this['constructorGraph/initMutation'](
-            this.$store.getters["tasks/findGraphDataByTaskId"](this.$store.getters["tasks/findTaskById"](id)))
-      }
+
       if (!this.reg) {
         cytoscape.use(edgehandles)
+        cytoscape.use(cola)
+        cytoscape.use(dagre)
         this['constructorGraph/registrationMutation']()
       }
     },
     afterCreated(cy) {
-      console.log(123)
-      cy.layout({ name: 'circle' }).run()
       let eh = cy.edgehandles()
+      const directedStyle = this.directedStyle
+      const undirectedStyle = this.undirectedStyle
+
       if (this.graphInfo.editType === 'edit') {
         eh.enableDrawMode()
       }
-      cy.zoom({
-        level: 1.0, // the zoom level
-      });
+
+      if (this.graphInfo.direct) {
+        cy.style().fromJson(directedStyle).update()
+      } else {
+        cy.style().fromJson(undirectedStyle).update()
+      }
+
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
-        this.edgeId++
         const edgeWeight = addedEdge.data().weight
+        addedEdge.data().color = 'gray'
         this['constructorGraph/addEdgeMutation']({
-          "color" : 'gray',
+          "color" : this.elementData.enableColor ? this.elementData.color : 'gray',
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
-          "weight" : edgeWeight == null ? 0 : edgeWeight
+          "weight" : edgeWeight == null ? '' : edgeWeight
         })
       });
+
+      document.getElementById('testId2').addEventListener('click', function () {
+        document.querySelector('#circle-layout').addEventListener('click', function() {
+          cy.layout({ name: 'circle' }).run()
+        })
+        document.querySelector('#tree-layout').addEventListener('click', function() {
+          cy.layout({ name: 'dagre' }).run()
+        })
+        document.querySelector('#cola-layout').addEventListener('click', function() {
+          cy.layout({ name: 'cola' }).run()
+        })
+        document.querySelector('#random-layout').addEventListener('click', function() {
+          cy.layout({ name: 'random' }).run()
+        })
+      })
       document.querySelector('#graphModeEdit').addEventListener('click', function() {
         eh.enableDrawMode()
       })
@@ -218,170 +340,17 @@ export default {
       document.querySelector('#graphModeMove').addEventListener('click', function() {
         eh.disableDrawMode()
       })
-      document.querySelector('#directed-type-graph').addEventListener('click', function() {
-        cy.style().fromJson(
-            [
-                {
-              selector: 'node[name]',
-              style: {
-                'content': 'data(name)',
-                'background-color': "gray"
-              }
-            },
-              {
-                selector: 'edge',
-                style: {
-                  'curve-style': 'bezier',
-                  'target-arrow-shape': 'triangle',
-                }
-              },
-              {
-                selector: 'edge[name]',
-                style: {
-                  'curve-style': 'bezier',
-                  'target-arrow-shape': 'triangle',
-                  'content': 'data(name)',
-                }
-              },
-              {
-                selector: ':selected',
-                style: {
-                  "border-width": 2,
-                  "border-color": "blue"
-                }
-              },
-              {
-                selector: '.eh-handle',
-                style: {
-                  'background-color': 'red',
-                  'width': 12,
-                  'height': 12,
-                  'shape': 'ellipse',
-                  'overlay-opacity': 0,
-                  'border-width': 12, // makes the handle easier to hit
-                  'border-opacity': 0
-                }
-              },
-              {
-                selector: '.eh-hover',
-                style: {
-                  'background-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-source',
-                style: {
-                  'border-width': 2,
-                  'border-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-target',
-                style: {
-                  'border-width': 2,
-                  'border-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-preview, .eh-ghost-edge',
-                style: {
-                  'background-color': 'red',
-                  'line-color': 'red',
-                  'target-arrow-color': 'red',
-                  'source-arrow-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-ghost-edge.eh-preview-active',
-                style: {
-                  'opacity': 0
-                }
-              }]
-        ).update()
-      })
-      document.querySelector('#undirected-type-graph').addEventListener('click', function() {
-        cy.style().fromJson(
-            [
-              {
-                selector: 'node[name]',
-                style: {
-                  'content': 'data(name)',
-                  'background-color': "gray"
-                }
-              },
-              {
-                selector: 'edge',
-                style: {
-                  'curve-style': 'bezier',
-                }
-              },
-              {
-                selector: 'edge[name]',
-                style: {
-                  'curve-style': 'bezier',
-                  'content': 'data(name)',
-                }
-              },
-              {
-                selector: ':selected',
-                style: {
-                  "border-width": 2,
-                  "border-color": "blue"
-                }
-              },
-              {
-                selector: '.eh-handle',
-                style: {
-                  'background-color': 'red',
-                  'width': 12,
-                  'height': 12,
-                  'shape': 'ellipse',
-                  'overlay-opacity': 0,
-                  'border-width': 12, // makes the handle easier to hit
-                  'border-opacity': 0
-                }
-              },
-              {
-                selector: '.eh-hover',
-                style: {
-                  'background-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-source',
-                style: {
-                  'border-width': 2,
-                  'border-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-target',
-                style: {
-                  'border-width': 2,
-                  'border-color': 'red'
-                }
-              },
-              {
-                selector: '.eh-preview, .eh-ghost-edge',
-                style: {
-                  'background-color': 'red',
-                  'line-color': 'red',
-                }
-              },
-              {
-                selector: '.eh-ghost-edge.eh-preview-active',
-                style: {
-                  'opacity': 0
-                }
-              }]
-        ).update()
-      })
+      if (document.querySelector('#directed-type-graph') != null) {
+        document.querySelector('#directed-type-graph').addEventListener('click', function() {
+          cy.style().fromJson(directedStyle).update()
+        })
+        document.querySelector('#undirected-type-graph').addEventListener('click', function() {
+          cy.style().fromJson(undirectedStyle).update()
+        })
+      }
+
       document.querySelector('#zoom').addEventListener('click', function () {
-        cy.layout({ name: 'random' }).run()
         cy.fit()
-      })
-      this.$nextTick(() => {
-        cy.layout({ name: 'circle' }).run()
       })
 
     },
@@ -399,20 +368,21 @@ export default {
     },
     addNode(event) {
       let {position} = event
-
       if (event.target === event.cy) {
+        const newName = this.$store.getters["constructorGraph/nextVertexName"]
         event.cy.add({
           group: 'nodes',
           data: {
-            id: this.nodeId,
-            name: this.nodeId},
+            id: newName,
+            name: newName,
+            color: 'gray'
+          },
           position: {x: position.x, y: position.y}
         })
-        this.nodeId++
         this['constructorGraph/addNodeMutation'](
             {
-              "name": this.nodeId - 1,
-              "color": "gray",
+              "name": this.$store.getters["constructorGraph/nextVertexName"],
+              "color": 'gray',
               "outgoingEdges" : [],
               "incomingEdges" :[]
             }
@@ -436,14 +406,15 @@ export default {
         }
       }
     },
-
     rightClick(event) {
       let {target} = event
       let {cy} = event
       if (target !== cy) {
         const color = this.elementData.color.toString()
         const weight = this.elementData.weight
-        if (color.length > 0 && color !== '-') {
+        const colorEnable = this.elementData.enableColor
+        const weightEnable = this.elementData.enableWeight
+        if (color.length > 0 && colorEnable) {
           if (target.group().toString() === 'edges') {
             target.style('background-color', color)
             target.style('line-color', color)
@@ -465,7 +436,7 @@ export default {
             )
           }
         }
-        if (weight.length > 0 && isFinite(weight)) {
+        if (weight.length > 0 && isFinite(weight) && weightEnable) {
           if (target.group().toString() === 'edges') {
             target.style('label', this.elementData.weight)
             this['constructorGraph/updateEdgeWeightMutation'](
@@ -493,9 +464,8 @@ export default {
 
 #cytoscape-div {
   width: 100%;
-  height: 100%;
+  height: 95%;
 }
-
 
 custom-context-menu {
   border-color: purple !important;

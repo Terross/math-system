@@ -1,6 +1,11 @@
 package com.mathsystem.entity.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mathsystem.graphapi.AbstractGraph;
+import com.mathsystem.plugin.GraphCharacteristic;
+import com.mathsystem.plugin.GraphProperty;
+import com.mathsystem.plugin.Plugin;
+import com.mathsystem.plugin.PluginFactory;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,6 +36,24 @@ public class Algorithm {
 
     public void setAlgorithmType(AlgorithmType algorithmType) {
         this.algorithmType = algorithmType;
+    }
+
+    public String getAnswerForGraph(AbstractGraph abstractGraph) {
+        String result;
+
+        String name = getName();
+
+        Plugin plugin =  PluginFactory.loadPlugin(name);
+        if (plugin instanceof GraphCharacteristic) {
+            result = String.valueOf(((GraphCharacteristic) plugin).execute(abstractGraph));
+        } else {
+            if (((GraphProperty) plugin).execute(abstractGraph)) {
+                result = "Верно";
+            } else {
+                result = "Неверно";
+            }
+        }
+        return result;
     }
 
     public void setId(Long id) {

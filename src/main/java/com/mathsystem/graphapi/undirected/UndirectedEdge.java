@@ -13,6 +13,6 @@ public class UndirectedEdge extends AbstractEdge   {
 
     @Override
     public String toString() {
-        return String.format("%s <-> %s %.2f, color = %s", v, w, weight, color);
+        return String.format("%s <-> %s %.2f (%s)\n", v, w, weight, color);
     }
 }

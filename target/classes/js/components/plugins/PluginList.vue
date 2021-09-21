@@ -13,6 +13,7 @@
             Загрузите jar файл. Название плагина должно совпадать с названием jar файла.
             Описание плагина должно описывать то, что плагин будет возвращать.
           </div>
+
           <v-form
               ref = "form"
               v-model = "valid"
@@ -63,6 +64,47 @@
               </template>
             </v-file-input>
           </v-form>
+
+          <v-alert
+              type="success"
+              v-model="successAlert"
+              text
+              outlined
+              dismissible>
+            Плагин успешно загружен!
+          </v-alert>
+          <v-alert
+              type="error"
+              v-model="errorNameAlert"
+              text
+              outlined
+              dismissible>
+            Имя плагина не совпадает с именем файла!
+          </v-alert>
+          <v-alert
+              type="error"
+              v-model="errorInterfaceAlert"
+              text
+              outlined
+              dismissible>
+            Класс в jar реализует другой тип плагина!
+          </v-alert>
+          <v-alert
+              type="error"
+                   v-model="errorJarAlert"
+                   text
+                   outlined
+                   dismissible>
+            Класса именем {{pluginName}} не обнаружено в jar!
+          </v-alert>
+          <v-alert
+              type="error"
+              v-model="alreadyExistAlert"
+              text
+              outlined
+              dismissible>
+            Плагин уже добавлен!
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-btn
@@ -121,7 +163,13 @@ export default {
       pluginDescription: '',
       pluginType: '',
       files: [],
-      valid: true
+      valid: true,
+      successAlert: false,
+      errorNameAlert: false,
+      errorInterfaceAlert: false,
+      errorJarAlert: false,
+      alreadyExistAlert: false
+
     }
   },
   computed: {
@@ -135,7 +183,7 @@ export default {
     removePlugin(id) {
       this.$http.delete(`/plugin/api/${id}`).then(response => {
         if (response.ok) {
-          this.removePluginMutation(this.plugins.filter(item => item.id === id)[0])
+          this['plugins/removePluginMutation'](this.plugins.filter(item => item.id === id)[0])
         }
       })
     },
@@ -143,17 +191,59 @@ export default {
 
       if (this.$refs.form.validate()) {
         let file = this.files
-        let formData = new FormData();
-        console.log(file)
-        formData.append("file", file)
-        formData.append("name", this.pluginName)
-        formData.append("description", this.pluginDescription)
-        formData.append("algType", this.pluginType === 'Характеристика'
-                                              ? 'CHARACTERISTIC' : 'PROPERTY')
+        if (this.pluginName + '.jar' === file.name) {
 
-        this.$http.post('/plugin/api', formData).then(response => {
-          this['plugins/addPluginMutation'](response.data)
-        })
+          console.log(this.pluginName + '.jar')
+          console.log(file.name)
+          console.log()
+          let formData = new FormData();
+          formData.append("file", file)
+          formData.append("name", this.pluginName)
+          formData.append("description", this.pluginDescription)
+          formData.append("algType", this.pluginType === 'Характеристика'
+              ? 'CHARACTERISTIC' : 'PROPERTY')
+
+
+            this.$http.post('/plugin/api', formData).then(response => {
+
+              this['plugins/addPluginMutation'](response.data)
+              this.alreadyExistAlert = false
+              this.errorJarAlert = false
+              this.errorNameAlert = false
+              this.errorInterfaceAlert = false
+              this.successAlert = true
+            }, err => {
+              if (err.data.message === 'PluginAlreadyExists') {
+                this.alreadyExistAlert = true
+                this.errorJarAlert = false
+                this.errorNameAlert = false
+                this.errorInterfaceAlert = false
+                this.successAlert = false
+              }
+              if (err.data.message === 'Wrong jar file') {
+                this.alreadyExistAlert = false
+                this.errorJarAlert = false
+                this.errorNameAlert = false
+                this.errorInterfaceAlert = true
+                this.successAlert = false
+              }
+              if (err.data.message === 'Class wasn\'t found in jar') {
+                this.alreadyExistAlert = false
+                this.errorJarAlert = true
+                this.errorNameAlert = false
+                this.errorJarAlert = false
+                this.successAlert = false
+              }
+            })
+
+        } else {
+          this.alreadyExistAlert = false
+          this.errorJarAlert = false
+          this.errorNameAlert = true
+          this.errorJarAlert = false
+          this.successAlert = false
+        }
+
       }
     }
   }

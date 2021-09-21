@@ -1,6 +1,7 @@
 package com.mathsystem.entity.task;
 
 import com.mathsystem.entity.graph.Graph;
+import com.mathsystem.entity.graph.GraphType;
 import com.mathsystem.graphapi.AbstractGraph;
 import com.mathsystem.graphapi.GraphFactory;
 import com.mathsystem.plugin.GraphCharacteristic;
@@ -19,6 +20,8 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
+    private GraphType graphType;
+
     private String name;
     private String category;
 
@@ -29,26 +32,31 @@ public class Task {
     @JoinColumn(name = "graph_id")
     private Graph graph;
 
-    public boolean verify(Graph graph) throws FileNotFoundException {
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "task_permission_id")
+    private TaskPermission taskPermission;
+
+    public boolean verify(AbstractGraph abstractGraph) throws FileNotFoundException {
         boolean result = true;
 
         //TO-DO: переписать этот костыль
         for (AlgAnswer alganswer:
              algAnswerList) {
             String name = alganswer.getAlgorithm().getName();
-            AbstractGraph abstractGraph = GraphFactory.createGraph(graph);
+
             if (alganswer instanceof CharacteristicAnswer) {
                 GraphCharacteristic graphCharacteristic =
                         (GraphCharacteristic) PluginFactory.loadPlugin(name);
+
                 if (Math.abs(graphCharacteristic.execute(abstractGraph) - ((CharacteristicAnswer) alganswer).getAnswer()) > 0.0001 ) {
                     result = false;
                 }
             } else {
                 GraphProperty graphProperty =
                         (GraphProperty) PluginFactory.loadPlugin(name);
-                if (graphProperty.execute(abstractGraph) == ((PropertyAnswer) alganswer).isAnswer()) {
-                    result = false;
-                }
+
+                    result = graphProperty.execute(abstractGraph) == ((PropertyAnswer) alganswer).isAnswer();
+
             }
         }
         return result;
@@ -94,6 +102,22 @@ public class Task {
         this.graph = graph;
     }
 
+    public TaskPermission getTaskPermission() {
+        return taskPermission;
+    }
+
+    public void setTaskPermission(TaskPermission taskPermission) {
+        this.taskPermission = taskPermission;
+    }
+
+    public GraphType getGraphType() {
+        return graphType;
+    }
+
+    public void setGraphType(GraphType graphType) {
+        this.graphType = graphType;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -102,6 +126,7 @@ public class Task {
                 ", category='" + category + '\'' +
                 ", algAnswerList=" + algAnswerList +
                 ", graph=" + graph +
+                ", permission=" + taskPermission +
                 '}';
     }
 }

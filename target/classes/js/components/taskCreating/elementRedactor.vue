@@ -9,23 +9,29 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col
-            >
-              <v-text-field
-                  label="Вес (для ребер)"
-                  v-model="elementData.weight"
-                  :rules="[v => isFinite(v)]"
-              ></v-text-field>
-            </v-col>
-            <v-col
-            >
-              <v-select
-                  :items="['red', 'pink', 'blue', 'green','yellow', 'brown', 'gray', '-']"
-                  label="Цвет"
-                  v-model="elementData.color"
+            <v-checkbox
+                :disabled="!permission.weight &&  this.networkType !== 'constructor'"
+                v-model="elementData.enableWeight"
+            ></v-checkbox>
+            <v-text-field
+                :disabled="!permission.weight &&  this.networkType !== 'constructor'"
+                label="Вес (для ребер)"
+                v-model="elementData.weight"
+                :rules="[v => isFinite(v)]"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-checkbox
+                v-model="elementData.enableColor"
+                :disabled="!permission.color &&  this.networkType !== 'constructor'"
+            ></v-checkbox>
+            <v-select
+                :disabled="!permission.color &&  this.networkType !== 'constructor'"
+                :items="['red', 'pink', 'blue', 'green','yellow', 'brown', 'gray']"
+                label="Цвет"
+                v-model="elementData.color"
 
-              ></v-select>
-            </v-col>
+            ></v-select>
           </v-row>
         </v-container>
       </v-card-text>
@@ -41,7 +47,8 @@ export default {
   name: "elementRedactor",
   data() {
     return {
-      elementData: this.$store.state.constructorGraph.elementData
+      elementData: this.$store.state.constructorGraph.elementData,
+      networkType: this.$route.path.includes('/task/') ? 'task' : 'constructor'
     }
   },
   watch: {
@@ -51,6 +58,11 @@ export default {
   },
   methods: {
     ...mapMutations['constructorGraph/changeElementDataMutation']
+  },
+  computed: {
+    permission() {
+      return this.$store.state.constructorGraph.permission
+    }
   }
 }
 </script>

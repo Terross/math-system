@@ -1,10 +1,14 @@
 import pluginApi from "../api/plugins";
 
 const state = () => ({
-    plugins: frontendData.algorithms
+    plugins: frontendData.algorithms,
+    answers: []
 })
 
 const mutations = {
+    addAnswerMutation(state, answers) {
+        state.answers = answers
+    },
     addPluginMutation(state, plugin) {
         state.plugins = [
             ...state.plugins,
@@ -29,7 +33,6 @@ const actions = {
         const data = await result.json()
         const index = state.plugins.findIndex()
 
-        console.log(data)
         if (index > -1) {
             console.log(1234556)
         } else {

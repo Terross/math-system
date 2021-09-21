@@ -16,7 +16,9 @@
           {{task.category}}
         </div>
         <div v-for="(algA, i) in task.algAnswerList"  class="text--primary">
-          {{algA.algorithm.description + " : " + algA.answer + "\n"}}
+          {{algA.algorithm.description + " " +
+        ((algA.type === 'characteristic') ? algA.answer :
+            (algA.answer?': выполнено':': невыполнено'))}}
         </div>
       </v-card-text>
       <v-card-actions>
@@ -26,12 +28,6 @@
             dark
         >
           Решить задачу
-        </v-btn>
-        <v-btn
-            color="amber lighten-1"
-            @click="updateTask(task.id)"
-            dark>
-          Изменить задачу
         </v-btn>
         <v-btn
             color="red lighten-1"
@@ -48,7 +44,7 @@
 <script>
 import graphEditor from "../components/cylc/graphEditor.vue";
 import TaskDescription from "../components/cylc/taskDescription.vue";
-import {mapActions} from "vuex";
+import {mapActions, mapMutations} from "vuex";
 export default {
   name: "taskList",
   components: {
@@ -66,15 +62,17 @@ export default {
     }
   },
   methods : {
-    ...mapActions(['removeTaskAction']),
-    solveTask(i) {
-      this.$router.push({ path: `/task/${i}` })
+    ...mapMutations(['constructorGraph/initMutation']),
+    ...mapActions(['tasks/removeTaskAction']),
+    solveTask(id) {
+      this.$router.push({ path: `/task/${id}` })
     },
     updateTask(i) {
       this.$router.push({path : `/changeTask/${i}`})
     },
     removeTask(id) {
-      this.removeTaskAction(this.tasks.filter(item => item.id === id)[0])
+      this['tasks/removeTaskAction'](this.tasks.filter(item => item.id === id)[0])
+
     }
   }
 

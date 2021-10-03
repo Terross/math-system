@@ -4,89 +4,110 @@ import com.mathsystem.entity.graph.Color;
 import com.mathsystem.entity.graph.Edge;
 import com.mathsystem.graphapi.AbstractGraph;
 import com.mathsystem.graphapi.Vertex;
+import lombok.Data;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
+/**
+ * Класс ориентированного графа
+ */
+@Data
 public class DirectedGraph extends AbstractGraph {
-    private List<List<DirectedEdge>> adj;
 
+    /**
+     * Конструктор - создание нового объекта
+     * ориентированного графа с определенными значениями.
+     * Используется в контроллерах - не используется в плагинах
+     * @param vertexCount - количество вершин
+     * @param edgeCount - количество ребер
+     * @param edges - список ребер
+     * @param vertices - список вершин
+     */
     public DirectedGraph(int vertexCount,
                          int edgeCount,
-                         ArrayList<Edge> edges,
+                         List<Edge> edges,
                          List<com.mathsystem.entity.graph.Vertex> vertices) {
         this.vertexCount = vertexCount;
         this.edgeCount = edgeCount;
-        this.vertices = new HashMap<>();
-        this.adj = new ArrayList<>();
+        this.vertices = new ArrayList<>();
 
         for (int i = 0; i < vertexCount; i++) {
-            adj.add(new ArrayList<>());
             com.mathsystem.entity.graph.Vertex v =  vertices.get(i);
-            String vertexName = v.getName();
-            Color vertexColor = v.getColor();
-            this.vertices.put(
-                    vertexName,
-                    new Vertex(vertexName, vertexColor));
+            this.vertices.add(new Vertex(
+                    Integer.parseInt(v.getName()),
+                    v.getName(),
+                    v.getColor(),
+                    v.getWeight(),
+                    v.getLabel(),
+                    new LinkedList<>()
+            ));
         }
 
         for (Edge edge: edges) {
-            DirectedEdge directedEdge= new DirectedEdge(
-                    this.vertices.get(edge.getFromV()),
-                    this.vertices.get(edge.getToV()),
-                    edge.getWeight() == null ? 0 : edge.getWeight(),
-                    edge.getColor()
-            );
-            adj.get(Integer.parseInt(edge.getFromVertex().getName())).add(directedEdge);
+            this.vertices
+                    .get(Integer.parseInt(edge.getFromVertex().getName()))
+                    .getEdgeList().add(new DirectedEdge(
+                            this.vertices.get(Integer.parseInt(edge.getFromV())),
+                            this.vertices.get(Integer.parseInt(edge.getToV())),
+                            edge.getWeight() == null ? 0 : edge.getWeight(),
+                            edge.getColor(),
+                            edge.getLabel(),
+                            edge.getName()
+                    ));
         }
     }
 
-    public DirectedGraph(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
+    /**
+     * Конструктор - создание нового объекта
+     * ориентированного графа с определенными значениями из файла.
+     * Используется в плагинах
+     * @param file - объект файла с графом
+     * @throws FileNotFoundException
+     */
+    public DirectedGraph(File file)  {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         this.vertexCount = scanner.nextInt();
         this.edgeCount = scanner.nextInt();
-        this.vertices = new HashMap<>();
-        this.adj = new ArrayList<>();
+        this.vertices = new ArrayList<>();
 
         for (int i = 0; i < vertexCount; i++) {
-            adj.add(new ArrayList<>());
-            String vertexName = scanner.next();
-            Color vertexColor = Color.valueOf(scanner.next().toLowerCase());
-            this.vertices.put(
-                    vertexName,
-                    new Vertex(vertexName, vertexColor)
-            );
+            String name = scanner.next();
+            this.vertices.add(new Vertex(
+                    Integer.parseInt(name),
+                    name,
+                    Color.valueOf(scanner.next().toLowerCase()),
+                    scanner.nextInt(),
+                    scanner.next(),
+                    new LinkedList<>()
+            ));
         }
 
         for (int i = 0; i < edgeCount; i++) {
-            Vertex v = this.vertices.get(scanner.next());
-            Vertex w = this.vertices.get(scanner.next());
-//            validateVertex(v);
-//            validateVertex(w);
+            Vertex v = this.vertices.get(Integer.parseInt(scanner.next()));
+            Vertex w = this.vertices.get(Integer.parseInt(scanner.next()));
 
-            double weight = scanner.nextDouble();
-            Color color = Color.valueOf(scanner.next().toLowerCase());
-            DirectedEdge directedEdge = new DirectedEdge(v, w, weight, color);
-
-            adj.get(Integer.parseInt(v.getName())).add(directedEdge);
+            this.vertices.get(Integer.parseInt(v.getName()))
+                    .getEdgeList().add(new DirectedEdge(
+                            v,
+                            w,
+                            scanner.nextInt(),
+                            Color.valueOf(scanner.next().toLowerCase()),
+                            scanner.next(),
+                            scanner.next()
+                    ));
         }
-
-    }
-
-    public void setAdj(List<List<DirectedEdge>> adj) {
-        this.adj = adj;
-    }
-
-    public List<List<DirectedEdge>> getAdj() {
-        return adj;
     }
 
     @Override
     public String toString() {
-        return "DirectedGraph: " + super.toString() +
-                "\nEdges: " + adj;
+        return "DirectedGraph = {" + super.toString()
+                + "\n}";
     }
 }

@@ -5,8 +5,6 @@
           <graph-editor></graph-editor>
         </v-col>
         <v-col>
-          <element-redactor v-if="graphEditorVisible">
-          </element-redactor>
           <plugin-list :graphEditorVisible="graphEditorVisible">
           </plugin-list>
         </v-col>

@@ -14,7 +14,7 @@
     <v-card-actions>
       <v-btn
           dark
-          color="indigo lighten-1"
+          color="primary"
       >
         Отправить решение
       </v-btn>

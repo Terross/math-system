@@ -3,29 +3,39 @@ import {deleteEdge} from '../util/collections.js'
 
 const defaultState = {
     constructorGraph: [],
+    menu: false,
     edgeCount: 0,
     vertexCount: 0,
-    editType: 'move', //'edit', 'remove'
+    editType: 'move', //'edit', 'remove', 'draw'
     changeLabel: true,
     direct: true,
-    elementData: {
-        color: 'gray',
-        weight: '0',
-        enableColor: true,
-        enableWeight: false
-    },
+    selectedElement: null,
     reg: false,
     graphPresent: false,
     permission: {
+        "draw" : true,
         "edit" : true,
         "color" : true,
-        "weight" : true,
         "remove" : true
     }
 }
 
 const state = () => (defaultState)
 const getters = {
+    findVertexById: (state) => id => {
+        return state.constructorGraph.find(item =>
+        item.name === id)
+    },
+    findEdgeById: (state) => id => {
+        for (let i = 0; i < state.vertexCount; i++) {
+            let edge = state.constructorGraph[i].outgoingEdges.find(
+                item => item.name === id
+            )
+            if (typeof edge != "undefined") {
+                return edge
+            }
+        }
+    },
     nextVertexName: (state) => {
       let name = 0
       while (true) {
@@ -39,6 +49,7 @@ const getters = {
       return name
     },
     cytoscapeConfigElements: (state) => {
+
         let elements = [];
         let adj = state.constructorGraph;
         for (let i = 0; i < adj.length; i++) {
@@ -47,19 +58,20 @@ const getters = {
                     group: 'nodes',
                     data: {
                         label: '',
-                        id: i,
+                        id: adj[i].name,
                         name: adj[i].name,
                         color: adj[i].color
                     }
                 }
             )
         }
-        let idForEdge = adj.length
         for (let i = 0; i < adj.length; i++) {
             let edge = adj[i].incomingEdges;
+
             for (let j = 0; j < edge.length; j++) {
-                let edgeSource = elements.find(v => v.data.name === edge[j].fromV && v.group === 'nodes')
-                let edgeTarget = elements.find(v => v.data.name === edge[j].toV  && v.group === 'nodes')
+                let edgeSource = elements.find(v => v.data.name.toString() === edge[j].fromV.toString() && v.group === 'nodes')
+                let edgeTarget = elements.find(v => v.data.name.toString() === edge[j].toV.toString()  && v.group === 'nodes')
+
                 if (edgeSource !== null && edgeTarget !== null) {
 
                     elements.push(
@@ -69,20 +81,37 @@ const getters = {
                                 label: '',
                                 source: edgeSource.data.id,
                                 target: edgeTarget.data.id,
-                                name: edge[j].weight,
+                                weight: edge[j].weight,
+                                name: edge[j].name,
                                 color: edge[j].color
                             }
                         }
                     )
-                    idForEdge++;
                 }
-
             }
         }
         return elements;
     }
 }
 const mutations = {
+    changeEdgeData(state, edge) {
+        for (let i = 0; i < state.vertexCount; i++) {
+            let index = state.constructorGraph[i].outgoingEdges.findIndex(
+                item => item.name === edge.name
+            )
+            if (index > -1) {
+                state.constructorGraph[i].outgoingEdges[index].label = edge.label
+                state.constructorGraph[i].outgoingEdges[index].weight = edge.weight
+            }
+        }
+    },
+    changeVertexData(state, node) {
+        const index = state.constructorGraph.findIndex(
+            item => item.name.toString() === node.name.toString()
+        )
+        state.constructorGraph[index].label = node.label
+        state.constructorGraph[index].weight = node.weight
+    },
     updatePermissionMutation(state, newPermission) {
         state.permission = newPermission
     },
@@ -94,24 +123,22 @@ const mutations = {
         state.changeLabel = true
         state.direct = true
         state.permission = {
+            "draw" : true,
             "edit" : true,
             "color" : true,
-            "weight" : true,
             "remove" : true
         }
     },
     initMutation(state, graphData) {
+
         state.editType = 'move'
         state.constructorGraph = graphData.vertexes
         state.edgeCount = graphData.edgeCount
         state.vertexCount = graphData.vertexCount
         state.permission = graphData.permission
         state.direct = graphData.direct
-        state.elementData =  {
-                color: 'gray',
-                weight: '0',
-                enableColor: false,
-                enableWeight: false
+        for (let i = 0; i < state.constructorGraph.length; i++) {
+            state.constructorGraph[i].index = state.constructorGraph[i].name
         }
     },
     addNodeMutation(state, node) {
@@ -128,14 +155,14 @@ const mutations = {
         const vertexTargetIndex = state.constructorGraph.findIndex(
             item => item.name === edge.toV
         )
-
         state.constructorGraph[vertexSourceIndex].outgoingEdges.push(edge)
         state.constructorGraph[vertexTargetIndex].incomingEdges.push(edge)
         state.edgeCount = state.edgeCount + 1
     },
     removeNodeMutation(state, node) {
+
         const removeIndex = state.constructorGraph.findIndex(
-            item => item.name === node.name
+            item => item.name.toString() === node.name.toString()
         )
 
         const removeNode = state.constructorGraph[removeIndex]
@@ -154,6 +181,22 @@ const mutations = {
         ]
 
         state.vertexCount = state.vertexCount - 1
+        let index = node
+        for (let i = 0; i < state.vertexCount; i++) {
+            let node = state.constructorGraph[i]
+            if (node.name > index.name) {
+                node.name = (Number(node.name) - 1).toString()
+
+                for (let j = 0; j < node.outgoingEdges.length; j++) {
+                    node.outgoingEdges[j].fromV = node.name
+                    node.outgoingEdges[j].toV = (Number(node.outgoingEdges[j].toV) - 1).toString()
+                }
+                for (let j = 0; j < node.incomingEdges.length; j++) {
+                    node.incomingEdges[j].toV = node.name
+                    node.incomingEdges[j].fromV = (Number(node.incomingEdges[j].fromV) - 1).toString()
+                }
+            }
+        }
     },
     removeEdgeMutation(state, edge) {
         deleteEdge(state, edge)
@@ -176,7 +219,7 @@ const mutations = {
         const inArrayIndex = inArray.findIndex(
             item => item.fromV.toString() === edge.fromV.toString()
         )
-        console.log(color)
+
         state.constructorGraph[vertexSourceIndex].outgoingEdges[outArrayIndex].color = color
         state.constructorGraph[vertexTargetIndex].incomingEdges[inArrayIndex].color = color
     },
@@ -203,7 +246,6 @@ const mutations = {
         state.constructorGraph[vertexTargetIndex].incomingEdges[inArrayIndex].weight = weight
     },
     updateNodeColorMutation(state, node) {
-        console.log(node.color)
         const index = state.constructorGraph.findIndex(
             item => item.name.toString() === node.name.toString()
         )
@@ -226,7 +268,7 @@ const mutations = {
     },
     graphPresentMutation(state) {
         state.graphPresent = !state.graphPresent
-    },
+    }
 
 }
 

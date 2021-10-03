@@ -1,32 +1,109 @@
 <template>
+
   <cytoscape ref="cy"
              id="cy"
              :config="config"
              :afterCreated="afterCreated"
              :preConfig="preConfig"
-             v-on:tap="leftClick"
-             v-on:cxttapstart="rightClick"
+             v-on:click="leftClick"
+             style="height: 75vh"
   >
-    <v-btn
-        class="ma-2"
-        fab
-        dark
-        small
-        color="indigo lighten-1"
-        id="zoom"
+    <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="290"
     >
-      <v-icon dark>
-        zoom_out_map
-      </v-icon>
-    </v-btn>
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">{{ selectedElement === null ? '' :
+              (selectedElement.elementType === 'vertex' ? "Редактор вершин" : "Редактор ребер") }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+              >
+                <v-text-field
+                    v-model="selectedElement.label"
+                    :value = "selectedElement.label"
+                    label="Метка"
+                    required
+                ></v-text-field>
+                <v-text-field
+                    v-model="selectedElement.weight"
+                    :value = "selectedElement.weight"
+                    label="Вес"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              color="blue darken-1"
+              text
+              dark
+              @click="dialog = false"
+          >
+            Закрыть
+          </v-btn>
+          <v-btn
+              id="saveNewData"
+              color="blue darken-1"
+              text
+              dark
+              @click="saveNewElementData(selectedElement.elementType, selectedElement.name)"
+          >
+            Сохранить
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+        v-model="info"
+        persistent
+        max-width="290"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">{{ selectedElement === null ? '' :
+              (selectedElement.elementType === 'vertex' ? "Редактор вершин" : "Редактор ребер") }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+              >
+                <p class="text-h7">{{ 'Метка: '.concat(selectedElement.label) }}</p>
 
+                <p class="text-h7">{{ 'Вес: '.concat(selectedElement.weight) }}</p>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              color="blue darken-1"
+              text
+              dark
+              @click="info = false"
+          >
+            Закрыть
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </cytoscape>
 </template>
 
 <script>
 import {mapActions, mapGetters, mapMutations} from 'vuex'
 import edgehandles from 'cytoscape-edgehandles'
-import contextMenus from 'cytoscape-context-menus'
+import cxtmenu from 'cytoscape-cxtmenu';
+import popper from 'cytoscape-popper';
+
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import cola from 'cytoscape-cola'
 import dagre from 'cytoscape-dagre';
@@ -36,17 +113,22 @@ export default {
   name: "network",
   data() {
     return {
-      selectedData: {
-        data: null,
-        color: '',
-        group: ''
+      edgeName: 0,
+      menu: false,
+      message: false,
+      hints: true,
+      dialog: false,
+      info: false,
+      selectedElement: {
+        "label" : '',
+        "weight" : ''
       },
       reg: this.$store.state.constructorGraph.reg,
       directedStyle: [
         {
           selector: 'node[name]',
           style: {
-            'content': 'data(name)',
+            'content': 'data(name)'
           }
         },
         {
@@ -59,7 +141,7 @@ export default {
           selector: 'edge',
           style: {
             'curve-style': 'bezier',
-            'target-arrow-shape': 'triangle',
+            'target-arrow-shape': 'triangle'
           }
         },
         {
@@ -69,15 +151,16 @@ export default {
             'target-arrow-shape': 'triangle',
             'line-color' : 'data(color)',
             'background-color' : 'data(color)',
-            'target-arrow-color': 'data(color)'
+            'target-arrow-color': 'data(color)',
+
           }
         },
         {
-          selector: 'edge[name]',
+          selector: 'edge[weight]',
           style: {
             'curve-style': 'bezier',
             'target-arrow-shape': 'triangle',
-            'content': 'data(name)',
+            'content': 'data(weight)'
           }
         },
         {
@@ -154,10 +237,10 @@ export default {
           }
         },
         {
-          selector: 'edge[name]',
+          selector: 'edge[weight]',
           style: {
             'curve-style': 'bezier',
-            'content': 'data(name)',
+            'content': 'data(weight)',
           }
         },
         {
@@ -232,18 +315,6 @@ export default {
     direct() {
       return this.$store.state.constructorGraph.direct
     },
-    permission() {
-      if (this.networkType === 'constructor') {
-        return {
-          "edit" : true,
-          "color" : true,
-          "weight" : true,
-          "remove" : true
-        }
-      } else {
-        return this.$store.state.constructorGraph.permission
-      }
-    },
     config() {
       return {
         layout: {
@@ -276,19 +347,43 @@ export default {
         'constructorGraph/updateEdgeWeightMutation',
         'constructorGraph/updateNodeColorMutation',
         'constructorGraph/initMutation',
-        'constructorGraph/cleanGraphMutation'
+        'constructorGraph/cleanGraphMutation',
+        'constructorGraph/changeEdgeData',
+        'constructorGraph/changeVertexData'
     ]),
     ...mapGetters([
        'tasks/findGraphDataByTaskId',
         'tasks/findTaskById',
     ]),
     preConfig(cytoscape) {
-
       if (!this.reg) {
         cytoscape.use(edgehandles)
         cytoscape.use(cola)
         cytoscape.use(dagre)
+        cytoscape.use(cxtmenu)
+        cytoscape.use(popper)
         this['constructorGraph/registrationMutation']()
+      }
+    },
+    changeElemColor(ele, color) {
+      ele.style('background-color', color)
+      if (ele.group().toString() === 'edges') {
+        ele.style('line-color', color)
+        ele.style('target-arrow-color', color)
+        this['constructorGraph/updateEdgeColorMutation'](
+            {
+              "fromV": ele.data().source,
+              "toV": ele.data().target,
+              "color": color
+            }
+        )
+      } else {
+        this['constructorGraph/updateNodeColorMutation'](
+            {
+              "name" : ele.data().name,
+              "color": color
+            }
+        )
       }
     },
     afterCreated(cy) {
@@ -300,6 +395,66 @@ export default {
         eh.enableDrawMode()
       }
 
+      if (this.graphInfo.permission.color) {
+        cy.cxtmenu({
+          menuRadius: function(ele){ return 75; },
+          selector: 'node, edge',
+          outsideMenuCancel: 10,
+          commands: [
+            {
+              fillColor: 'red',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'red')
+              }
+            },
+            {
+              fillColor: 'pink',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'pink')
+              }
+            },
+            {
+              fillColor: 'blue',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'blue')
+              }
+            },
+            {
+              fillColor: 'green',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'green')
+              }
+            },
+            {
+              fillColor: 'yellow',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'yellow')
+              }
+            },
+            {
+              fillColor: 'brown',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'brown')
+              }
+            },
+            {
+              fillColor: 'gray',
+              content: '',
+              select: (ele) => {
+                this.changeElemColor(ele, 'gray')
+              }
+            },
+          ],
+          activeFillColor: 'rgba(103,58,183,0.25)'
+        });
+      }
+
       if (this.graphInfo.direct) {
         cy.style().fromJson(directedStyle).update()
       } else {
@@ -308,16 +463,22 @@ export default {
 
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
         const edgeWeight = addedEdge.data().weight
+        addedEdge.data().name = this.edgeName
         addedEdge.data().color = 'gray'
+        addedEdge.data().classes = 'top'
+        console.log(addedEdge)
         this['constructorGraph/addEdgeMutation']({
-          "color" : this.elementData.enableColor ? this.elementData.color : 'gray',
+          "name":  this.edgeName,
+          "color" : 'gray',
           "fromV" : sourceNode.data().name,
           "toV" : targetNode.data().name,
-          "weight" : edgeWeight == null ? '' : edgeWeight
+          "weight" : 0,
+          "label": ''
         })
+        this.edgeName++
       });
 
-      document.getElementById('testId2').addEventListener('click', function () {
+      document.getElementById('layouts').addEventListener('click', function () {
         document.querySelector('#circle-layout').addEventListener('click', function() {
           cy.layout({ name: 'circle' }).run()
         })
@@ -330,16 +491,31 @@ export default {
         document.querySelector('#random-layout').addEventListener('click', function() {
           cy.layout({ name: 'random' }).run()
         })
+        document.querySelector('#zoom').addEventListener('click', function () {
+          cy.fit()
+        })
       })
-      document.querySelector('#graphModeEdit').addEventListener('click', function() {
-        eh.enableDrawMode()
-      })
-      document.querySelector('#graphModeRemove').addEventListener('click', function() {
-        eh.disableDrawMode()
-      })
-      document.querySelector('#graphModeMove').addEventListener('click', function() {
-        eh.disableDrawMode()
-      })
+      if (document.querySelector('#graphModeDraw') != null) {
+        document.querySelector('#graphModeDraw').addEventListener('click', function() {
+          eh.enableDrawMode()
+        })
+      }
+      if (document.querySelector('#graphModeRemove') != null) {
+        document.querySelector('#graphModeRemove').addEventListener('click', function() {
+          eh.disableDrawMode()
+        })
+      }
+      if (document.querySelector('#graphModeMove') != null) {
+        document.querySelector('#graphModeMove').addEventListener('click', function() {
+          eh.disableDrawMode()
+        })
+      }
+      if (document.querySelector('#graphModeEdit') != null) {
+        document.querySelector('#graphModeEdit').addEventListener('click', function() {
+          eh.disableDrawMode()
+        })
+      }
+
       if (document.querySelector('#directed-type-graph') != null) {
         document.querySelector('#directed-type-graph').addEventListener('click', function() {
           cy.style().fromJson(directedStyle).update()
@@ -349,22 +525,84 @@ export default {
         })
       }
 
-      document.querySelector('#zoom').addEventListener('click', function () {
-        cy.fit()
-      })
 
     },
     leftClick(event) {
       switch (this.editType) {
-        case 'edit':
+        case 'draw':
           this.addNode(event)
           break
         case 'move':
+          this.showDetails(event)
           break
         case 'remove':
           this.removeElem(event)
           break
+        case 'edit':
+          this.editElem(event)
+          break
+        case 'details':
+          this.showDetails(event)
+          break;
       }
+    },
+    showDetails(event) {
+      let {target} = event
+      let {cy} = event
+      if (event.target !== event.cy) {
+        if (target.group().toString() === 'nodes') {
+          this.selectedElement.weight =
+              this.$store.getters["constructorGraph/findVertexById"](target.data().name).weight
+          this.selectedElement.label =
+              this.$store.getters["constructorGraph/findVertexById"](target.data().name).label
+          this.selectedElement.name = target.data().name
+          this.selectedElement.elementType = "vertex"
+          this.info = true
+        } else {
+          if (target.group().toString() === 'edges') {
+
+            this.selectedElement.weight =
+                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).weight
+            this.selectedElement.label =
+                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).label
+            this.selectedElement.elementType = "edge"
+            this.selectedElement.name = target.data().name
+            this.selectedElement.edge = target
+            this.selectedElement.target = target
+            this.info = true
+          }
+        }
+      }
+    },
+
+    editElem(event) {
+      let {target} = event
+      let {cy} = event
+      if (event.target !== event.cy) {
+        if (target.group().toString() === 'nodes') {
+          this.selectedElement.weight =
+              this.$store.getters["constructorGraph/findVertexById"](target.data().name).weight
+          this.selectedElement.label =
+              this.$store.getters["constructorGraph/findVertexById"](target.data().name).label
+          this.selectedElement.name = target.data().name
+          this.selectedElement.elementType = "vertex"
+          this.dialog = true
+        } else {
+          if (target.group().toString() === 'edges') {
+
+            this.selectedElement.weight =
+                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).weight
+            this.selectedElement.label =
+                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).label
+            this.selectedElement.elementType = "edge"
+            this.selectedElement.name = target.data().name
+            this.selectedElement.edge = target
+            this.selectedElement.target = target
+            this.dialog = true
+          }
+        }
+      }
+
     },
     addNode(event) {
       let {position} = event
@@ -381,10 +619,13 @@ export default {
         })
         this['constructorGraph/addNodeMutation'](
             {
-              "name": this.$store.getters["constructorGraph/nextVertexName"],
+              "index": newName,
+              "name": newName,
               "color": 'gray',
-              "outgoingEdges" : [],
-              "incomingEdges" :[]
+              "weight": 0,
+              "label": '',
+              "outgoingEdges": [],
+              "incomingEdges": []
             }
         )
       }
@@ -396,59 +637,43 @@ export default {
         cy.remove(target)
         if (target.group().toString() === 'edges') {
           this['constructorGraph/removeEdgeMutation']({
+            "name" : target.data().name,
             "fromV" : target.data().source,
             "toV" : target.data().target
           })
         } else {
+          let index = target.data().name
+          console.log(index)
+          for (let i = 0; i < cy.nodes().length; i++) {
+            let node = cy.nodes()[i]
+            if (node.data().name > index) {
+              node.data('name', node.data().name - 1)
+            }
+          }
           this['constructorGraph/removeNodeMutation']({
             "name" : target.data().name
           })
         }
       }
     },
-    rightClick(event) {
-      let {target} = event
-      let {cy} = event
-      if (target !== cy) {
-        const color = this.elementData.color.toString()
-        const weight = this.elementData.weight
-        const colorEnable = this.elementData.enableColor
-        const weightEnable = this.elementData.enableWeight
-        if (color.length > 0 && colorEnable) {
-          if (target.group().toString() === 'edges') {
-            target.style('background-color', color)
-            target.style('line-color', color)
-            target.style('target-arrow-color', color)
-            this['constructorGraph/updateEdgeColorMutation'](
-                {
-                  "fromV": target.data().source,
-                  "toV": target.data().target,
-                  "color": color
-                }
-            )
-          } else {
-            target.style('background-color', color)
-            this['constructorGraph/updateNodeColorMutation'](
-                {
-                  "name" : target.data().name,
-                  "color": color
-                }
-            )
-          }
-        }
-        if (weight.length > 0 && isFinite(weight) && weightEnable) {
-          if (target.group().toString() === 'edges') {
-            target.style('label', this.elementData.weight)
-            this['constructorGraph/updateEdgeWeightMutation'](
-                {
-                  "fromV": target.data().source,
-                  "toV": target.data().target,
-                  "weight": weight
-                }
-            )
-          }
+    saveNewElementData(elementType, name) {
+      if (elementType === 'edge') {
+        this['constructorGraph/changeEdgeData']({
+          "name" : name,
+          "label" : this.selectedElement.label,
+          "weight" : this.selectedElement.weight
+        })
+        this.selectedElement.edge.data('weight', this.selectedElement.weight)
+      } else {
+        if (elementType === 'vertex')  {
+          this['constructorGraph/changeVertexData']({
+            "name" : name,
+            "label" : this.selectedElement.label,
+            "weight" : this.selectedElement.weight
+          })
         }
       }
+      this.dialog = false
     }
   }
 }
@@ -459,7 +684,7 @@ export default {
 #cy {
   width: 100%;
   height: 100%;
-  background-color: #e8eaf6 ;
+  background-color: #e8ebf6;
 }
 
 #cytoscape-div {

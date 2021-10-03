@@ -1,43 +1,48 @@
 <template>
-  <v-card id="edit-panel">
-    <v-row justify="start"  no-gutters>
 
+  <v-card id="edit-panel">
+    <v-row no-gutters>
       <v-col>
         <v-btn-toggle
-                      color="primary"
-                      dense
-                      group>
+            color="secondary"
+            mandatory
+            v-model="editType"
+            group>
           <v-btn
               dark
-              class="ma-4"
               @click="moveClick"
-              :disabled="this.editType === 'move'"
               id="graphModeMove"
+              value="move"
           >
-            Move
             <v-icon  dark>open_with</v-icon>
           </v-btn>
           <v-btn
+              v-if="permission.draw"
               dark
-              class="ma-4"
-              :disabled="this.editType === 'edit' ||
-               (!this.permission.edit && this.networkType !== 'constructor')"
+              @click="drawClick"
+              id="graphModeDraw"
+              value="draw"
+          >
+            <v-icon dark>gesture</v-icon>
+          </v-btn>
+
+          <v-btn
+              v-if="permission.edit"
+              dark
               @click="editClick"
               id="graphModeEdit"
+              value="edit"
           >
-            Edit
             <v-icon dark>edit</v-icon>
           </v-btn>
 
           <v-btn
+              v-if="permission.remove"
               dark
-              class="ma-4"
-              :disabled="this.editType === 'remove' ||
-              (!this.permission.remove &&  this.networkType !== 'constructor')"
+              value="remove"
               @click="removeClick"
               id="graphModeRemove"
           >
-            Remove
             <v-icon dark>delete</v-icon>
           </v-btn>
         </v-btn-toggle>
@@ -47,22 +52,35 @@
         <v-menu offset-y class = "mx-4">
           <template v-slot:activator="{ on, attrs }" >
             <v-btn
-                color="indigo lighten-4"
+                color="secondary"
                 text
                 v-bind="attrs"
                 v-on="on"
-                id="testId2"
-                class = "ma-4 align-center"
+                id="layouts"
+                class="ma-2"
             >
-              Расстановка графа
+              Отображение графа
             </v-btn>
           </template>
-          <v-list color="indigo lighten-1">
+          <v-list color="primary">
             <v-list-item
             >
               <v-btn
                   text
-                  color="indigo lighten-4"
+                  color="secondary"
+                  dark
+                  id="zoom"
+              >Zoom
+                <v-icon dark>center_focus_strong
+
+                </v-icon>
+              </v-btn>
+            </v-list-item>
+            <v-list-item
+            >
+              <v-btn
+                  text
+                  color="secondary"
                   dark
                   id="random-layout"
               >Random
@@ -73,7 +91,7 @@
             >
               <v-btn
                   text
-                  color="indigo lighten-4"
+                  color="secondary"
                   dark
                   id="circle-layout"
               >circle
@@ -84,7 +102,7 @@
             >
               <v-btn
                   text
-                  color="indigo lighten-4"
+                  color="secondary"
                   dark
                   id="cola-layout"
               >components
@@ -95,7 +113,7 @@
             >
               <v-btn
                   text
-                  color="indigo lighten-4"
+                  color="secondary"
                   dark
                   id="tree-layout"
               >tree
@@ -107,16 +125,15 @@
       </v-col>
       <v-col>
         <v-btn text
-               color="indigo lighten-4"
+               color="secondary"
                dark
                id="download-graph"
-               class="ma-4"
-            @click="saveFile">
+               class="ma-2"
+               @click="saveFile">
           Скачать граф файлом
         </v-btn>
       </v-col>
     </v-row>
-
   </v-card>
 </template>
 
@@ -129,12 +146,15 @@ export default {
   props: {
     networkType: String
   },
+  data() {
+    return {
+      editType: this.$store.state.constructorGraph.editType
+    }
+  },
+
   computed: {
     changeColor() {
       return this.$store.state.constructorGraph.changeColor
-    },
-    editType() {
-      return this.$store.state.constructorGraph.editType
     },
     changeLabel() {
       return  this.$store.state.constructorGraph.changeLabel
@@ -159,7 +179,12 @@ export default {
       file = file + ' ' + this.graphInfo.edgeCount +'\n'
       let vertexList = this.graphInfo.constructorGraph
       for (let i = 0; i < vertexList.length; i++) {
-        file = file + vertexList[i].name + ' ' + vertexList[i].color +'\n'
+        file =
+            file +
+            vertexList[i].name + ' ' +
+            vertexList[i].color + ' ' +
+            vertexList[i].weight + ' ' +
+            (vertexList[i].label === '' ? 'null' : vertexList[i].label) + '\n'
       }
 
       for (let i = 0; i < vertexList.length;i++) {
@@ -167,9 +192,14 @@ export default {
           let edge = vertexList[i].outgoingEdges[j]
           let fromVertex = vertexList.filter(item => item.name.toString() === edge.fromV.toString())[0]
           let toVertex = vertexList.filter(item => item.name.toString() === edge.toV.toString())[0]
-          file = file +
-              fromVertex.name +  ' ' + toVertex.name + ' '
-              + (edge.weight === ''? 0 : edge.weight) + ' ' + edge.color + '\n'
+          file =
+              file +
+              fromVertex.name +  ' ' +
+              toVertex.name + ' ' +
+              edge.weight + ' ' +
+              edge.color + ' ' +
+              (edge.label === '' ? 'null' : edge.label)  + ' ' +
+              edge.name + '\n'
         }
       }
       var blob = new Blob([file], {type: "text/plain;charset=utf-8"});
@@ -184,6 +214,9 @@ export default {
     removeClick() {
       this['constructorGraph/changeEditTypeMutation']('remove')
     },
+    drawClick() {
+      this['constructorGraph/changeEditTypeMutation']('draw')
+    },
     directedTypeClick() {
       this['constructorGraph/changeDirectTypeMutation'](true)
     },
@@ -196,7 +229,7 @@ export default {
 
 <style scoped>
 #edit-panel {
-  background-color: #5c6bc0;
+  background-color: #673AB7;
   width: 100%;
 }
 </style>

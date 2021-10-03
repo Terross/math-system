@@ -1,39 +1,57 @@
 package com.mathsystem.graphapi;
 
 import com.mathsystem.entity.graph.Color;
-import com.mathsystem.graphapi.undirected.UndirectedEdge;
+import lombok.Data;
 
-public abstract class AbstractEdge implements Comparable<UndirectedEdge> {
+import java.util.List;
+
+/**
+ * Абстрактный класс ребра
+ * @see AbstractEdge#AbstractEdge(Vertex, Vertex, Integer, Color, String, String)
+ */
+@Data
+public abstract class AbstractEdge implements Comparable<AbstractEdge> {
+    /**Начальная вершина*/
     protected final Vertex v;
+    /**Целевая вершина*/
     protected final Vertex w;
-    protected final double weight;
+    /**Вес ребра*/
+    protected final Integer weight;
+    /**Цвет ребра*/
     protected final Color color;
+    /**Метка ребра*/
+    protected final String label;
+    /**Имя ребра. Поле используется как индекс */
+    protected final String name;
 
-    public AbstractEdge(Vertex v, Vertex w, double weight, Color color) {
+    /**
+     * Конструктор - создание нового объекта ребра с определенными значениями
+     * @param v - начальная вершина
+     * @param w - целевая вершина
+     * @see Vertex#Vertex(Integer, String, Color, Integer, String, List)
+     * @param weight - вес ребра
+     * @param color - цвет ребра
+     * @param label - метка ребра
+     * @param name - имя ребра
+     */
+    public AbstractEdge(
+            Vertex v,
+            Vertex w,
+            Integer weight,
+            Color color,
+            String label,
+            String name
+    ) {
         this.v = v;
         this.w = w;
         this.weight = weight;
         this.color = color;
+        this.label = label;
+        this.name = name;
     }
 
     @Override
-    public int compareTo(UndirectedEdge undirectedEdge) {
-        return Double.compare(this.weight, undirectedEdge.getWeight());
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public Vertex getV() {
-        return v;
-    }
-
-    public Vertex getW() {
-        return w;
+    public int compareTo(AbstractEdge abstractEdge) {
+        return this.weight.compareTo(abstractEdge.getWeight());
     }
 }

@@ -1,14 +1,17 @@
 <template>
   <v-container>
-      <v-row>
-        <navigation-graph :networkType="networkType">
-        </navigation-graph>
-      </v-row>
-      <v-row style="height: 85vh;">
-        <network :networkType="networkType"
-                 :config-elements="configElements">
-        </network>
-      </v-row>
+    <v-col>
+
+          <navigation-graph :networkType="networkType">
+          </navigation-graph>
+
+
+          <network :networkType="networkType"
+                   :config-elements="configElements">
+          </network>
+
+    </v-col>
+
   </v-container>
 
 </template>

@@ -6,7 +6,6 @@
       cols="12">
     <v-card
         class="mx-auto"
-        min-width="344"
     >
       <v-card-text>
         <p class="text-h4 text--primary">
@@ -15,26 +14,29 @@
         <div class="text--primary">
           {{task.category}}
         </div>
-        <div v-for="(algA, i) in task.algAnswerList"  class="text--primary">
-          {{algA.algorithm.description + " " +
-        ((algA.type === 'characteristic') ? algA.answer :
-            (algA.answer?': выполнено':': невыполнено'))}}
-        </div>
+        <span  style="white-space: pre-line">
+                {{task.taskDescription}}
+        </span>
       </v-card-text>
       <v-card-actions>
-        <v-btn
-            color="indigo lighten-1"
-            @click="solveTask(task.id)"
-            dark
-        >
-          Решить задачу
-        </v-btn>
-        <v-btn
-            color="red lighten-1"
-            @click="removeTask(task.id)"
-            dark>
-          Удалить задачу
-        </v-btn>
+        <v-col>
+          <v-btn
+              color="primary"
+              class="ma-2"
+              @click="solveTask(task.id)"
+              dark
+          >
+            Решить задачу
+          </v-btn>
+          <v-btn
+              color="error"
+              @click="removeTask(task.id)"
+              class="ma-2"
+              dark>
+            Удалить задачу
+          </v-btn>
+        </v-col>
+
       </v-card-actions>
     </v-card>
   </v-col>

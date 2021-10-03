@@ -2,11 +2,13 @@ package com.mathsystem.entity.graph;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "vertex")
 public class Vertex {
     @Id
@@ -16,6 +18,10 @@ public class Vertex {
     private String name;
 
     private Color color;
+
+    private Integer weight;
+
+    private String label;
 
     @OneToMany(mappedBy = "fromVertex", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> outgoingEdges;
@@ -34,54 +40,6 @@ public class Vertex {
 
     public void addIncomingEdge(Edge edge) {
         incomingEdges.add(edge);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Graph getGraph() {
-        return graph;
-    }
-
-    public void setGraph(Graph graph) {
-        this.graph = graph;
-    }
-
-    public List<Edge> getOutgoingEdges() {
-        return outgoingEdges;
-    }
-
-    public void setOutgoingEdges(List<Edge> outgoingEdges) {
-        this.outgoingEdges = outgoingEdges;
-    }
-
-    public List<Edge> getIncomingEdges() {
-        return incomingEdges;
-    }
-
-    public void setIncomingEdges(List<Edge> incomingEdges) {
-        this.incomingEdges = incomingEdges;
     }
 
     @Override

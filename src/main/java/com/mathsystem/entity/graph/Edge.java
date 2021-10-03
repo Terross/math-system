@@ -1,11 +1,13 @@
 package com.mathsystem.entity.graph;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "edge")
+@Data
 public class Edge {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -22,67 +24,11 @@ public class Edge {
     private Vertex toVertex;
 
     private Color color;
-
     private String fromV;
     private String toV;
-
-    private Double weight;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Vertex getFromVertex() {
-        return fromVertex;
-    }
-
-    public void setFromVertex(Vertex fromVertex) {
-        this.fromVertex = fromVertex;
-    }
-
-    public Vertex getToVertex() {
-        return toVertex;
-    }
-
-    public void setToVertex(Vertex toVertex) {
-        this.toVertex = toVertex;
-    }
-
-    public String getFromV() {
-        return fromV;
-    }
-
-    public void setFromV(String fromV) {
-        this.fromV = fromV;
-    }
-
-    public String getToV() {
-        return toV;
-    }
-
-    public void setToV(String toV) {
-        this.toV = toV;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    private Integer weight;
+    private String label;
+    private String name;
 
     @Override
     public String toString() {

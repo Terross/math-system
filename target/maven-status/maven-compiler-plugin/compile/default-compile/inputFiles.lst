@@ -1,4 +1,4 @@
-/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/GraphController.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/ExceptionHandlingController.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/Algorithm.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/AbstractEdge.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/repo/EdgeRepo.java
@@ -13,6 +13,7 @@
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginClassNotFoundException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/repo/AlgAnswerRepo.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/Graph.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/util/Validator.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/TaskController.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/Vertex.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/Task.java
@@ -26,16 +27,19 @@
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginCreatingException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/AbstractGraph.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/TaskPermission.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/TaskAlreadyExistsException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/graph/Color.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/PluginController.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/controller/MainController.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/PropertyAnswer.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/repo/GraphRepo.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/graphapi/undirected/UndirectedEdge.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginTimeExecuteException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/AlgAnswer.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/PluginNotFoundException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/plugin/PluginType.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/repo/AlgorithmRepo.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/entity/task/CharacteristicAnswer.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/plugin/Plugin.java
+/home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/exceptions/SomethingWrongInPluginException.java
 /home/dmitry/Documents/Diplom/math-system/src/main/java/com/mathsystem/config/WebMvcConfig.java

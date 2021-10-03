@@ -1,0 +1,23 @@
+13 9
+0 red 0 null
+1 gray 0 null
+2 brown 0 null
+3 yellow 0 null
+4 gray 0 null
+5 gray 0 null
+6 blue 0 null
+7 red 0 null
+8 gray 0 null
+9 gray 0 null
+10 blue 0 14
+11 green 0 null
+12 gray 0 null
+1 3 0 gray null 0
+3 6 11 red null 1
+4 2 0 gray null 5
+5 4 0 green null 4
+6 7 0 gray 11 2
+7 1 15 gray null 3
+8 3 0 gray null 7
+9 6 12 gray null 6
+10 0 0 yellow 11 8

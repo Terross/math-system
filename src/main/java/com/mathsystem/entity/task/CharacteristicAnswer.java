@@ -1,6 +1,8 @@
 package com.mathsystem.entity.task;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -8,15 +10,7 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("characteristic")
 @JsonRootName("characteristic")
+@Data
 public class CharacteristicAnswer extends AlgAnswer {
-
-    private Double answer;
-
-    public Double getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Double answer) {
-        this.answer = answer;
-    }
+    private Integer answer;
 }

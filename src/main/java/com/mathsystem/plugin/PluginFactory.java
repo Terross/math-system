@@ -9,23 +9,32 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.io.File;
 
+/**
+ * Клас фабрики для создания графов
+ */
 public class PluginFactory {
     private final static String pluginPath = "/home/dmitry/Documents/Diplom/math-system/plugins/";
     private static Logger logger = LoggerFactory.getLogger(PluginFactory.class);
 
+    /**
+     * Статическая функция загружающая модуль
+     * @param pluginName - имя модуля (без формата файла)
+     * @return возващает тип Plugin - общий тип для GraphCharacteristic и GraphProperty
+     */
     public static Plugin loadPlugin(String pluginName) {
         Plugin instance = null;
-        try {
-            File jarPlugin = new File(pluginPath + pluginName + ".jar");
-
-            instance = loadPluginFromFile(jarPlugin, pluginName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        File jarPlugin = new File(pluginPath + pluginName + ".jar");
+        instance = loadPluginFromFile(jarPlugin, pluginName);
 
         return instance;
     }
 
+    /**
+     * Статическая функция загружающая модуль из конкретного файла
+     * @param jarPlugin - объект файла с плагином
+     * @param pluginName - имя модуля (без формата файла)
+     * @return возващает тип Plugin - общий тип для GraphCharacteristic и GraphProperty
+     */
     public static Plugin loadPluginFromFile(File jarPlugin, String pluginName) {
 
         Plugin instance = null;
@@ -46,11 +55,11 @@ public class PluginFactory {
             assert pluginClass != null;
             instance = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
 
-        } catch (ClassNotFoundException classNotFoundException) {
-            throw new PluginClassNotFoundException();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception classNotFoundException) {
+            if (classNotFoundException instanceof ClassNotFoundException) {
+                throw new PluginClassNotFoundException();
+            }
+
         }
 
         return instance;

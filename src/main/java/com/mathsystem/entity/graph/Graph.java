@@ -2,11 +2,13 @@ package com.mathsystem.entity.graph;
 
 import com.mathsystem.entity.task.Task;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 public class Graph {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -16,7 +18,6 @@ public class Graph {
 
     private int vertexCount;
     private int edgeCount;
-
 
     @OneToMany(mappedBy = "graph", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vertex> vertexes;
@@ -33,63 +34,10 @@ public class Graph {
 
     public void addEdge(Edge edge, Vertex from, Vertex to) {
         edgeCount++;
-
         edge.setToVertex(to);
         edge.setFromVertex(from);
-
         from.addOutgoingEdge(edge);
         to.addIncomingEdge(edge);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
-    public void setVertexCount(int vertexCount) {
-        this.vertexCount = vertexCount;
-    }
-
-    public int getEdgeCount() {
-        return edgeCount;
-    }
-
-    public void setEdgeCount(int edgeCount) {
-        this.edgeCount = edgeCount;
-    }
-
-
-    public List<Vertex> getVertexes() {
-        return vertexes;
-    }
-
-    public void setVertexes(List<Vertex> vertexes) {
-        this.vertexCount = vertexes.size();
-        this.vertexes = vertexes;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
-
-    public GraphType getGraphType() {
-        return graphType;
-    }
-
-    public void setGraphType(GraphType graphType) {
-        this.graphType = graphType;
     }
 
     @Override

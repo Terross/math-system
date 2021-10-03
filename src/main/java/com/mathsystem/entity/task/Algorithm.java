@@ -1,11 +1,13 @@
 package com.mathsystem.entity.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mathsystem.entity.graph.GraphType;
 import com.mathsystem.graphapi.AbstractGraph;
 import com.mathsystem.plugin.GraphCharacteristic;
 import com.mathsystem.plugin.GraphProperty;
 import com.mathsystem.plugin.Plugin;
 import com.mathsystem.plugin.PluginFactory;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @Table(name = "algorithm")
 @Entity
+@Data
 public class Algorithm {
     @Id
     @GeneratedValue
@@ -21,6 +24,8 @@ public class Algorithm {
     private String name;
     private String description;
     private AlgorithmType algorithmType;
+    private GraphType graphType;
+    private String fileName;
 
     @JsonIgnore
     @OneToMany(mappedBy = "algorithm", cascade = CascadeType.ALL)
@@ -40,12 +45,13 @@ public class Algorithm {
 
     public String getAnswerForGraph(AbstractGraph abstractGraph) {
         String result;
-
-        String name = getName();
+        int index = fileName.lastIndexOf('.');
+        String name = fileName.substring(0, index);
 
         Plugin plugin =  PluginFactory.loadPlugin(name);
         if (plugin instanceof GraphCharacteristic) {
             result = String.valueOf(((GraphCharacteristic) plugin).execute(abstractGraph));
+
         } else {
             if (((GraphProperty) plugin).execute(abstractGraph)) {
                 result = "Верно";
@@ -56,39 +62,11 @@ public class Algorithm {
         return result;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<AlgAnswer> getAlgAnswerList() {
-        return algAnswerList;
-    }
-
-    public void setAlgAnswerList(List<AlgAnswer> algAnswerList) {
-        this.algAnswerList = algAnswerList;
-    }
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("[");
-        for (int i = 0; i < algAnswerList.size(); i++) {
-            stringBuilder.append(algAnswerList.get(i).getId());
+        for (AlgAnswer algAnswer : algAnswerList) {
+            stringBuilder.append(algAnswer.getId());
         }
         stringBuilder.append("]");
         return "Algorithm{" +

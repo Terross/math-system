@@ -2,77 +2,71 @@
   <v-container fluid>
       <v-row>
         <v-col>
-          <graph-editor :config-elements="graph"></graph-editor>
+          <graph-editor :config-elements="graph">
+          </graph-editor>
         </v-col>
         <v-col>
-          <v-row>
-            <element-redactor>
-            </element-redactor>
-            <v-container>
-              <v-col>
-                <v-card
-                    class="mx-auto"
-                    min-width="344"
-                >
-                  <v-card-text>
-                    <p class="text-h4 text--primary">
-                      {{ task.name }}
-                    </p>
-                    <div>
-                      {{task.category}}
-                    </div>
-                    <div>
-                      Постройте {{this.dataForGraph.graphType === "DIRECTED"
-                        ? 'ориентированный': 'неориентированный'}} граф, удовлетворяющий следующим свойствам:
-                    </div>
-                    <div
-                        v-for="(plugin, i) in task.algAnswerList"
-                        :key="i">
-                      {{plugin.algorithm.description + " " +
-                    ((plugin.type === 'characteristic') ? plugin.answer :
-                    (plugin.answer?'выполнено':'невыполнено'))}}
-                    </div>
-                  </v-card-text>
+          <v-container>
+            <v-col>
+              <v-card
+                  class="mx-auto"
 
-                  <v-card-actions>
-                    <v-btn
-                        color="indigo lighten-1"
-                        @click="verify"
-                        dark
-                    >
-                      Отправить решение
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-container>
-          </v-row>
-          <v-row>
-            <v-col v-if="answer && result === 'wrong'">
-              <v-card class="mx-auto"
-                      min-width="344"
-                      color="red lighten-4"
               >
                 <v-card-text>
-                  <p class="text-h4">
-                    Решение неверно, повторите попытку.
-                  </p>
+                  <v-row>
+                    <v-col>
+                      <p class="text-h4 text--primary">
+                        {{ task.name }}
+                      </p>
+                      <div>
+                        {{task.category}}
+                      </div>
+                      <span  style="white-space: pre-line">
+                      {{task.taskDescription}}
+                      </span>
+                    </v-col>
+
+
+                  </v-row>
+
                 </v-card-text>
+
+                <v-card-actions>
+                  <v-btn
+                      color="indigo lighten-1"
+                      @click="verify"
+                      dark
+                  >
+                    Отправить решение
+                  </v-btn>
+                </v-card-actions>
               </v-card>
+
+
+
+              <v-alert
+                  type="success"
+                  v-model="rightAnswer"
+                  class="my-2"
+                  text
+                  outlined
+                  dismissible>
+                Задача решена верно!
+              </v-alert>
+              <v-alert
+                  type="error"
+                  v-model="wrongAnswer"
+                  class="my-2"
+                  text
+                  outlined
+                  dismissible>
+                Вы ошиблись, попробуйте снова!
+              </v-alert>
             </v-col>
-            <v-col v-if="answer && result === 'right'">
-              <v-card class="mx-auto"
-                      min-width="344"
-                      color="green lighten-4"
-              >
-                <v-card-text>
-                  <p class="text-h4">
-                    Задача решена верно!!!
-                  </p>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
+          </v-container>
+
+
+
         </v-col>
       </v-row>
   </v-container>
@@ -81,18 +75,17 @@
 <script>
 import graphEditor from "../components/cylc/graphEditor.vue";
 import {mapGetters, mapMutations} from "vuex";
-import ElementRedactor from "../components/taskCreating/elementRedactor.vue";
 
 export default {
   name: "Task",
   data() {
     return {
-      answer: false,
-      result: "wrong"
+      result: "wrong",
+      rightAnswer: false,
+      wrongAnswer: false
     }
   },
   components: {
-    ElementRedactor,
     graphEditor
   },
   computed: {
@@ -131,8 +124,16 @@ export default {
       }
 
       this.$http.post(`/task/verifyTask/${this.$route.params.id}`, graph).then(response => {
-        this.answer = true
-        this.result = response.data ? 'right' : 'wrong'
+        let answer = response.data
+
+        if (answer) {
+          this.rightAnswer = true
+          this.wrongAnswer = false
+        } else {
+          this.rightAnswer = false
+          this.wrongAnswer = true
+        }
+
       })
     }
   },
@@ -146,7 +147,7 @@ export default {
           'vertexCount': graph.vertexCount,
           'vertexes' : graph.vertexes,
           'permission' : permission,
-          'direct' : graph.direct
+          'direct' : graph.graphType === 'DIRECTED'
         }
         : {
           'edgeCount' : 0,

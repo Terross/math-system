@@ -902,6 +902,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@popperjs/core@^2.0.0":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.1.tgz#728ecd95ab207aab8a9a4e421f0422db329232be"
+  integrity sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw==
+
 "@sindresorhus/is@^4.0.0":
   version "4.0.1"
   resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-4.0.1.tgz"
@@ -1713,6 +1718,11 @@ cytoscape-context-menus@^4.1.0:
   resolved "https://registry.npmjs.org/cytoscape-context-menus/-/cytoscape-context-menus-4.1.0.tgz"
   integrity sha512-qbrdRfz8JQuZBZamhzmExPpJvUNR4VA3rcN4qChu4eVplWYU4n8N98A0ksrr2kfmUvCAL529N04KzwZd8xra7w==
 
+cytoscape-cxtmenu@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-cxtmenu/-/cytoscape-cxtmenu-3.4.0.tgz#5ef4652b5a2e9718827adaab6467a28e0be21718"
+  integrity sha512-ZKaGUuYwNPcHc0DbiznfbWGz7IYcu1jmNJj14Jm0LO3IfjTJECWkQJ2RYVbQqcvQzydFemLTXs+8CAsIAcyAIA==
+
 cytoscape-dagre@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/cytoscape-dagre/-/cytoscape-dagre-2.3.2.tgz#f83d4357642c86d3bd7530dd9c1dffc2e1079d3c"
@@ -1727,6 +1737,13 @@ cytoscape-edgehandles@^4.0.1:
   dependencies:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
+
+cytoscape-popper@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-popper/-/cytoscape-popper-2.0.0.tgz#d93917695a9b8af3dbda1d8ee433618ac4d4e359"
+  integrity sha512-b7WSOn8qXHWtdIXFNmrgc8qkaOs16tMY0EwtRXlxzvn8X+al6TAFrUwZoYATkYSlotfd/36ZMoeKMEoUck6feA==
+  dependencies:
+    "@popperjs/core" "^2.0.0"
 
 cytoscape@^3.19.1, cytoscape@^3.8.1:
   version "3.19.1"
@@ -2537,6 +2554,11 @@ human-signals@^2.1.0:
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-2.1.0.tgz"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
+humps@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/humps/-/humps-2.0.1.tgz#dd02ea6081bd0568dc5d073184463957ba9ef9aa"
+  integrity sha1-3QLqYIG9BWjcXQcxhEY5V7qe+ao=
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
@@ -3335,6 +3357,11 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
+popper.js@^1.14.7:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
+  integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
+
 portfinder@^1.0.28:
   version "1.0.28"
   resolved "https://registry.npmjs.org/portfinder/-/portfinder-1.0.28.tgz"
@@ -3986,6 +4013,13 @@ thunky@^1.0.2:
   resolved "https://registry.npmjs.org/thunky/-/thunky-1.1.0.tgz"
   integrity sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
 
+tippy.js@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-4.3.5.tgz#882bff8d92f09bb0546d2826d5668c0560006f54"
+  integrity sha512-NDq3efte8nGK6BOJ1dDN1/WelAwfmh3UtIYXXck6+SxLzbIQNZE/cmRSnwScZ/FyiKdIcvFHvYUgqmoGx8CcyA==
+  dependencies:
+    popper.js "^1.14.7"
+
 to-fast-properties@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/to-fast-properties/-/to-fast-properties-2.0.0.tgz"
@@ -4164,6 +4198,14 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+
+vue-tippy@v4:
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/vue-tippy/-/vue-tippy-4.11.0.tgz#fbb5c21b3a6ea4d0e7e45c588f23e87545001569"
+  integrity sha512-dPVErfe3Gpj9S42fSliD20aw9In1AqWW7rHwpjLmVynxYfKFZhgxxKLCIdrwYibPtGAtIW9sZ/8PdVGbtgHGng==
+  dependencies:
+    humps "^2.0.1"
+    tippy.js "^4.3.5"
 
 vue@^2.6.10, vue@^2.6.14:
   version "2.6.14"

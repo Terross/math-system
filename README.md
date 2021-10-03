@@ -1,6 +1,7 @@
 # Math-System
 
 ##Описание системы
+
 Работа выполнена в качестве учебного проекта. Система используется для
 создания и решения различных задач на графы. В условия задачи можно добавлять 
 различные внешние модули, которые могут быть загружены в систему.
@@ -26,20 +27,37 @@
 
 2. В файле **pom.xml** добавляем в зависимости библиотеку для работы с графами. Есть два 
     способа это сделать
-   * Загрузить библиотеку в качестве jar файла
-    ```maven
-        <dependencies>
+   * Загрузить библиотеку в качестве jar файла, где вместо 
+     **path-to-jar** следует указать путь к jar файлу **graph-lib.jar**, 
+     который можно скачать из этого репозитория.
+      ```maven
+     <dependencies>
+          <dependency>
+              <groupId>com.example</groupId>
+              <artifactId>math-system</artifactId>
+              <version>1.0-SNAPSHOT</version>
+              <scope>system</scope>
+              <systemPath>path-to-jar</systemPath>
+          </dependency>
+     </dependencies>
+      ```
+     * Воспользоваться [jitpack](https://jitpack.io/)
+      ```maven
+     <repositories>
+              <repository>
+                  <id>jitpack.io</id>
+                  <url>https://jitpack.io</url>
+              </repository>
+     </repositories>
+   
+     <dependencies>
         <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>math-system</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>path-to-jar</systemPath>
+             <groupId>com.github.Terross</groupId>
+             <artifactId>math-system</artifactId>
+             <version>v1.1</version>
         </dependency>
-        </dependencies>
-    ```
-   * Воспользоваться [jitpack](https://jitpack.io/)
-
+     </dependencies>
+      ```
 3. Создаем класс вашей задачи, а затем реализовать необходимый 
     интерфейс
 4. Настраиваем проект для создания jar файла модуля

@@ -21,6 +21,7 @@
 **IntelliJ IDEA**.
 
 1. Создаем новый maven проект.
+   ![Image alt](https://github.com/{Terross}/{math-system}/raw/{main}/{images-for-doc}/maven-project.png)
    ![alt text](/home/dmitry/Documents/Diplom/math-system/images-for-doc/maven-project.png)
    ![alt text](/home/dmitry/Documents/Diplom/math-system/images-for-doc/project-name.png)
 

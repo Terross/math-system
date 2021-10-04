@@ -126,8 +126,8 @@
 
 В поле **название плагина** введите желаемое имя плагина. В качестве примера используем **"Квадрат графа"**.
 
-В поле **описание плагина** вводим ту информацию, которая будет генирировать система при создании задачи с этим плагином,
-в нашем случаае это **"Красные ребра дополняют исходный граф до квадрата"**
+В поле **описание плагина** вводим ту информацию, которая будет генерировать система при создании задачи с этим плагином,
+в нашем случае это **"Красные ребра дополняют исходный граф до квадрата"**
 
 В поле **тип плагина** следует выбрать является ли плагин характеристикой или свойством. Важно указать именно
 тот тип, который реализует ваш плагин, в противном случае будет выдана ошибка. В нашем случае тип является свойством,
@@ -142,7 +142,7 @@
 ![Image alt](https://github.com/Terross/math-system/raw/main/images-for-doc/loadInterface2.png)
 
 В сообщение
-об ошибке будет приведина информация о том, как от нее избавится. Существуют следующие ошибки: 
+об ошибке будет приведена информация о том, как от нее избавится. Существуют следующие ошибки: 
 * Ошибка в коде плагина - вернет текст ошибки в Java коде (например выход за пределы массива).
 * Долгое время выполнения - если ваш плаигн не справится с тестовым графом за 3 секунды, то вызовется
    данная ошибка.
@@ -151,5 +151,243 @@
 * Класс обнаружен, но реализует не тот тип - в этом случае нужно либо реализовать другой тип 
     плагина, либо указать другой тип плагина на сайте
 ## Дополнительные возможности
+Чтобы писать плагины, нужно разобраться как устроен класс **AbstractGraph** и все что с ним связано.
+
+В абстрактном классе графа 3 поля - количество ребер, количество вершин и список всех вершин.
+Чтобы получить доступ к любому из полей можно использовать геттеры.
+```java
+/**
+ * Абстрактный класс графа
+ */
+@Data
+public abstract class AbstractGraph {
+    /**Количество вершин в графе*/
+    protected int vertexCount;
+    /**Количество ребер в графе*/
+    protected int edgeCount;
+    /**Список вершин Vertex */
+    protected List<Vertex> vertices;
+
+    @Override
+    public String toString() {
+        return  "\nvertexCount = " + vertexCount +
+                "\nedgeCount = " + edgeCount +
+                "\nСписок смежности = " + vertices;
+    }
+}
+```
+
+От абстрактного графа наследуются два класса - класс ориентированного графа и неориентированного графа
+
+**Ориентированный граф**, как и неориентированный имеет все поля родителя, а кроме того имеет два
+конструктора. Первый конструктор имеет множество параметров, но он используется в контроллерах, поэтому
+для написания своих модулей он не требуется. Второй конструктор принимает в качестве параметра файл, который
+можно получить на сайте в режиме **конструктора графа**. Ниже представлен код ориентированного графа, код 
+неориентированного аналогичен. 
+```java
+/**
+ * Класс ориентированного графа
+ */
+@Data
+public class DirectedGraph extends AbstractGraph {
+
+    /**
+     * Конструктор - создание нового объекта
+     * ориентированного графа с определенными значениями.
+     * Используется в контроллерах - не используется в плагинах
+     * @param vertexCount - количество вершин
+     * @param edgeCount - количество ребер
+     * @param edges - список ребер
+     * @param vertices - список вершин
+     */
+    public DirectedGraph(int vertexCount,
+                         int edgeCount,
+                         List<Edge> edges,
+                         List<com.mathsystem.entity.graph.Vertex> vertices) {
+        ...
+    }
+
+    /**
+     * Конструктор - создание нового объекта
+     * ориентированного графа с определенными значениями из файла.
+     * Используется в плагинах
+     * @param file - объект файла с графом
+     * @throws FileNotFoundException
+     */
+    public DirectedGraph(File file)  {
+        ...
+    }
+
+    @Override
+    public String toString() {
+        return "DirectedGraph = {" + super.toString()
+                + "\n}";
+    }
+}
+```
+
+Для того чтобы получить граф из файла, рекомендуется использовать фабрику графа выбрав одну
+из двух требуемых функций - **loadUndirectedGraphFromFile** или **loadDirectedGraphFromFile**
+соответственно для неориентированного и ориентированного графа. Данные действия требуется проводить
+для тестирования работы модуля. **Итоговый модуль должен работать с AbstractGraph, который
+он получает в системе**. Не пытайтесь загрузить граф из файла в коде результирующего класса.
+Делайте это в main и передавайте абстрактный граф в метод execute вашего модуля.
+
+```java
+GraphSquare graphSquare = new GraphSquare();
+System.out.println(graphSquare.
+execute(GraphFactory.loadUndirectedGraphFromFile(
+new File("/home/dmitry/Downloads/graph.txt"))));
+```
+
+**Класс вершины Vertex**. Имеет поля, которые задают вершину - индекс, имя (совпадает с
+индексом, только является строкой, а не числом), цвет, вес, дополнительная метка. Также
+имеет список ребер, которые выходят из данной вершины.
+
+```java
+/**
+ * Класс вершины в графе
+ * @see Vertex#Vertex(Integer, String, Color, Integer, String, List)
+ */
+@Data
+public class Vertex {
+    private final Integer index;
+    /**Имя вершины. Поле используется как индекс */
+    private final String name;
+    /**Цвет вершины */
+    private final Color color;
+    /**Вес вершины */
+    private final Integer weight;
+    /**Метка для дополнительной информации о вершине */
+    private final String label;
+    /**Список выходящих из вершины ребер */
+    private List<AbstractEdge> edgeList;
+    /**
+     * Конструктор - создание нового объекта вершины с определенными значениями
+     * @param index - производитель
+     * @param label - цена
+     * @param color - цвет
+     * @param weight - вес
+     * @param name - имя
+     * @param edgeList - список выходящих ребер @see AbstractEdge
+     * @see AbstractEdge#AbstractEdge(Vertex, Vertex, Integer, Color, String, String)
+     */
+    public Vertex(
+            Integer index,
+            String name,
+            Color color,
+            Integer weight,
+            String label,
+            List<AbstractEdge> edgeList
+    ) {
+        this.index = index;
+        this.color = color;
+        this.name = name;
+        this.weight = weight;
+        this.label = label;
+        this.edgeList = edgeList;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\nVertex %s = {" +
+                "\ncolor = %s" +
+                "\nweight = %s" +
+                "\nlabel = %s" +
+                "\nedgeList = %s",
+                name, color, weight, label, edgeList);
+    }
+}
+```
+
+**Клас ребра**. Абстрактный класс ребра имеет следующие поля:
+
+* v - исходная вершина
+* w - целевая вершина (важно для ориентированного ребра)
+* weight - вес
+* color - цвет
+* label - метка
+* name - имя
+
+Метод **eihter** возвращает первую вершину v, а метод **other** принимая одну вершину
+вернет вторую.
+
+```java
+/**
+ * Абстрактный класс ребра
+ * @see AbstractEdge#AbstractEdge(Vertex, Vertex, Integer, Color, String, String)
+ */
+@Data
+public abstract class AbstractEdge implements Comparable<AbstractEdge> {
+    /**Начальная вершина*/
+    protected final Vertex v;
+    /**Целевая вершина*/
+    protected final Vertex w;
+    /**Вес ребра*/
+    protected final Integer weight;
+    /**Цвет ребра*/
+    protected final Color color;
+    /**Метка ребра*/
+    protected final String label;
+    /**Имя ребра. Поле используется как индекс */
+    protected final String name;
+
+    /**
+     * Конструктор - создание нового объекта ребра с определенными значениями
+     * @param v - начальная вершина
+     * @param w - целевая вершина
+     * @see Vertex#Vertex(Integer, String, Color, Integer, String, List)
+     * @param weight - вес ребра
+     * @param color - цвет ребра
+     * @param label - метка ребра
+     * @param name - имя ребра
+     */
+    public AbstractEdge(
+            Vertex v,
+            Vertex w,
+            Integer weight,
+            Color color,
+            String label,
+            String name
+    ) {
+        this.v = v;
+        this.w = w;
+        this.weight = weight;
+        this.color = color;
+        this.label = label;
+        this.name = name;
+    }
+
+    /**
+     *
+     * @return одна из вершин данного ребра
+     */
+    public Vertex either() {
+        return v;
+    }
+
+    public Vertex other(Vertex vertex) {
+        if (vertex.getName().equals(v.getName())) {
+            return w;
+        } else {
+            if (vertex.getName().equals(w.getName())) {
+                return v;
+            } else {
+                throw new RuntimeException("Недопустимое ребро");
+            }
+        }
+    }
+
+    @Override
+    public int compareTo(AbstractEdge abstractEdge) {
+        return this.weight.compareTo(abstractEdge.getWeight());
+    }
+}
+```
+
+Классы ориентированного и неориентированного ребра отличаются только выводом графа на экран,
+а также ориентированное ребро имеет методы from и to, которые возвращают исходную
+и целевую вершину соответственно.
+
 
 

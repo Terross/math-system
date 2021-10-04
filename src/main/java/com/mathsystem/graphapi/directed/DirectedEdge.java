@@ -33,6 +33,14 @@ public class DirectedEdge extends AbstractEdge {
         super(v, w, weight, color, label, name);
     }
 
+    public Vertex from() {
+        return v;
+    }
+
+    public Vertex to() {
+        return w;
+    }
+
     @Override
     public String toString() {
         return String.format("Edge %s = {" +

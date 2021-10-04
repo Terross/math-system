@@ -33,7 +33,7 @@
 
                 <v-card-actions>
                   <v-btn
-                      color="indigo lighten-1"
+                      color="primary"
                       @click="verify"
                       dark
                   >

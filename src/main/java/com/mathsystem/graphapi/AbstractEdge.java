@@ -50,6 +50,28 @@ public abstract class AbstractEdge implements Comparable<AbstractEdge> {
         this.name = name;
     }
 
+    /**
+     *
+     * @return одна из вершин данного ребра
+     */
+    public Vertex either() {
+        return v;
+    }
+
+    public Vertex other(Vertex vertex) {
+        if (vertex.getName().equals(v.getName())) {
+            return w;
+        } else {
+            if (vertex.getName().equals(w.getName())) {
+                return v;
+            } else {
+                throw new RuntimeException("Недопустимое ребро");
+            }
+        }
+    }
+
+
+
     @Override
     public int compareTo(AbstractEdge abstractEdge) {
         return this.weight.compareTo(abstractEdge.getWeight());

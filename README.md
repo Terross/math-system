@@ -21,9 +21,9 @@
 **IntelliJ IDEA**.
 
 1. Создаем новый maven проект.
-   ![Image alt](https://github.com/{Terross}/{math-system}/raw/{main}/images-for-doc/maven-project.png)
-   ![alt text](/home/dmitry/Documents/Diplom/math-system/images-for-doc/maven-project.png)
-   ![alt text](/home/dmitry/Documents/Diplom/math-system/images-for-doc/project-name.png)
+   ![Image alt](https://github.com/Terross/math-system/raw/main/images-for-doc/maven-project.png)
+   ![Image alt](https://github.com/Terross/math-system/raw/main/images-for-doc/project-name.png)
+   
 
 
 2. В файле **pom.xml** добавляем в зависимости библиотеку для работы с графами. Есть два 

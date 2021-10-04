@@ -187,15 +187,15 @@
                 {{plugin.description}}
               </div>
               <v-text-field v-if="plugin.algorithmType === 'CHARACTERISTIC'"
-                            v-model="values[i]"
+                            v-model="valuesForDirected[i]"
                             label="Требуемое значение"
                             required
               ></v-text-field>
               <v-switch v-if="plugin.algorithmType !== 'CHARACTERISTIC'"
-                        v-model="values[i]"
-                        :label="`Требование: ${values[i]? ' выполняется' :  'невыполняется'}`"></v-switch>
+                        v-model="valuesForDirected[i]"
+                        :label="`Требование: ${valuesForDirected[i]? ' выполняется' :  'невыполняется'}`"></v-switch>
               <v-switch
-                  v-model="selected[i]"
+                  v-model="selectedForDirected[i]"
                   label="Добавить плагин в задачу"></v-switch>
               <p class="text-h8 text--primary" v-if="answersPresent" >
                 Результат плагина для текущего графа: {{typeof answers[i] == "undefined" ? '' : answers[i].answer}}
@@ -218,15 +218,15 @@
                 {{plugin.description}}
               </div>
               <v-text-field v-if="plugin.algorithmType === 'CHARACTERISTIC'"
-                            v-model="values[i]"
+                            v-model="valuesForUndirected[i]"
                             label="Требуемое значение"
                             required
               ></v-text-field>
               <v-switch v-if="plugin.algorithmType !== 'CHARACTERISTIC'"
-                        v-model="values[i]"
-                        :label="`Требование: ${values[i]? ' выполняется' :  'невыполняется'}`"></v-switch>
+                        v-model="valuesForUndirected[i]"
+                        :label="`Требование: ${valuesForUndirected[i]? ' выполняется' :  'невыполняется'}`"></v-switch>
               <v-switch
-                  v-model="selected[i]"
+                  v-model="selectedForUndirected[i]"
                   label="Добавить плагин в задачу"></v-switch>
               <p class="text-h8 text--primary" v-if="answersPresent" >
                 Результат плагина для текущего графа: {{typeof answers[i] == "undefined" ? '' : answers[i].answer}}
@@ -253,8 +253,10 @@ export default {
   },
   data() {
     return {
-      values: [],
-      selected: [],
+      valuesForDirected: [],
+      valuesForUndirected: [],
+      selectedForDirected: [],
+      selectedForUndirected: [],
       taskName: '',
       taskCategory: '',
       added: false,
@@ -310,6 +312,7 @@ export default {
   },
   mounted() {
     this.taskDescriptionText = this.taskDescription
+
   },
   methods: {
     ...mapActions(['tasks/addTaskAction']),
@@ -322,40 +325,81 @@ export default {
         'tasks/addTaskMutation'
     ]),
     setTaskDescription() {
+
+
       let text = 'Постройте ' + (this.graphType ? 'ориентированный': 'неориентированный') +
           ' удовлетворяющий следующим условиям:' +'\n'
-      for (let i = 0; i < this.plugins.length; i++) {
-        if (this.selected[i] && this.values[i] && this.plugins[i].algorithmType === 'CHARACTERISTIC') {
-          text = text + this.plugins[i].description + ' ' + this.values[i] +'\n'
-        } else {
-          if (this.selected[i]  && this.plugins[i].algorithmType === 'PROPERTY') {
-            text = text + this.plugins[i].description + ' ' + (this.values[i] ? 'выполнено' : 'невыполнено') + '\n'
+      if (this.graphType) {
+        for (let i = 0; i < this.pluginsForDirected.length; i++) {
+          if (this.selectedForDirected[i] && this.valuesForDirected[i] && this.pluginsForDirected[i].algorithmType === 'CHARACTERISTIC') {
+            text = text + this.pluginsForDirected[i].description + ' ' + this.valuesForDirected[i] +'\n'
+          } else {
+            if (this.selectedForDirected[i]  && this.pluginsForDirected[i].algorithmType === 'PROPERTY') {
+              text = text + this.pluginsForDirected[i].description + ' ' + (this.valuesForDirected[i] ? 'выполнено' : 'невыполнено') + '\n'
+            }
+          }
+        }
+      } else {
+        for (let i = 0; i < this.pluginsForUnDirected.length; i++) {
+          if (this.selectedForUndirected[i] && this.valuesForUndirected[i] && this.pluginsForUnDirected[i].algorithmType === 'CHARACTERISTIC') {
+            text = text + this.pluginsForUnDirected[i].description + ' ' + this.valuesForUndirected[i] +'\n'
+          } else {
+            if (this.selectedForUndirected[i]  && this.pluginsForUnDirected[i].algorithmType === 'PROPERTY') {
+              text = text + this.pluginsForUnDirected[i].description + ' ' + (this.valuesForUndirected[i] ? 'выполнено' : 'невыполнено') + '\n'
+            }
           }
         }
       }
+
+
+
       return text
     },
     saveTask() {
       if (this.$refs.form.validate()) {
         const algAnswerList = []
 
-        for (let i = 0; i < this.plugins.length; i++) {
-          if (this.selected[i]) {
-            if (this.plugins[i].algorithmType === 'CHARACTERISTIC') {
-              algAnswerList.push({
-                "type" : 'characteristic',
-                "algorithm" : this.plugins[i],
-                "answer" : this.values[i]
-              })
-            } else {
-              algAnswerList.push({
-                "type" : 'property',
-                "algorithm" : this.plugins[i],
-                "answer" : this.values[i]
-              })
-            }
+        console.log(this.plugins.length)
+        if (this.graphType) {
+          for (let i = 0; i < this.pluginsForDirected.length; i++) {
+              if (this.selectedForDirected[i]) {
+                if (this.pluginsForDirected[i].algorithmType === 'CHARACTERISTIC') {
+                  algAnswerList.push({
+                    "type" : 'characteristic',
+                    "algorithm" : this.pluginsForDirected[i],
+                    "answer" : this.valuesForDirected[i]
+                  })
+                } else {
+                  algAnswerList.push({
+                    "type" : 'property',
+                    "algorithm" : this.pluginsForDirected[i],
+                    "answer" : this.valuesForDirected[i]
+                  })
+                }
+              }
+          }
+        } else {
+          for (let i = 0; i < this.pluginsForUnDirected.length; i++) {
+
+              if (this.selectedForUndirected[i]) {
+                if (this.pluginsForUnDirected[i].algorithmType === 'CHARACTERISTIC') {
+                  algAnswerList.push({
+                    "type" : 'characteristic',
+                    "algorithm" : this.pluginsForUnDirected[i],
+                    "answer" : this.valuesForUndirected[i]
+                  })
+                } else {
+                  algAnswerList.push({
+                    "type" : 'property',
+                    "algorithm" : this.pluginsForUnDirected[i],
+                    "answer" : this.valuesForUndirected[i]
+                  })
+                }
+              }
           }
         }
+      console.log(algAnswerList)
+
 
         let graph = null;
 
@@ -383,7 +427,6 @@ export default {
           "graph" : graph,
           "graphType" : this.$store.state.constructorGraph.direct ? "DIRECTED" : "UNDIRECTED"
         }
-        this['tasks/addTaskAction'](data)
         this.$http.post('task', data).then(
             response => {
               this['tasks/addTaskMutation'](response.data)

@@ -49,7 +49,7 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return String.format("Vertex %s = {" +
+        return String.format("\nVertex %s = {" +
                 "\ncolor = %s" +
                 "\nweight = %s" +
                 "\nlabel = %s" +

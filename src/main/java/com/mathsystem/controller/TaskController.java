@@ -73,6 +73,7 @@ public class TaskController {
         }
         taskRepo.save(task);
         logger.info(String.valueOf(task));
+        System.out.println(task.getGraph());
         return task;
     }
 

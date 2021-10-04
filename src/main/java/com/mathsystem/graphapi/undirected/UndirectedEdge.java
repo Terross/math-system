@@ -39,6 +39,6 @@ public class UndirectedEdge extends AbstractEdge   {
                         "\nweight =  %d" +
                         "\ncolor = %s" +
                         "\nlabel = %s",
-                name, v, w, weight, color, label);
+                name, v.getName(), w.getName(), weight, color, label);
     }
 }

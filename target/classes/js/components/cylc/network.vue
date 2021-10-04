@@ -32,6 +32,8 @@
                 <v-text-field
                     v-model="selectedElement.weight"
                     :value = "selectedElement.weight"
+                    :rules="[v => !isNaN(Number(v)) || 'Требуется целое число']"
+                    required
                     label="Вес"
                 ></v-text-field>
               </v-col>
@@ -41,8 +43,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-              color="blue darken-1"
-              text
+              color="primary"
               dark
               @click="dialog = false"
           >
@@ -50,8 +51,8 @@
           </v-btn>
           <v-btn
               id="saveNewData"
-              color="blue darken-1"
-              text
+              color="primary"
+
               dark
               @click="saveNewElementData(selectedElement.elementType, selectedElement.name)"
           >
@@ -657,23 +658,26 @@ export default {
       }
     },
     saveNewElementData(elementType, name) {
-      if (elementType === 'edge') {
-        this['constructorGraph/changeEdgeData']({
-          "name" : name,
-          "label" : this.selectedElement.label,
-          "weight" : this.selectedElement.weight
-        })
-        this.selectedElement.edge.data('weight', this.selectedElement.weight)
-      } else {
-        if (elementType === 'vertex')  {
-          this['constructorGraph/changeVertexData']({
+
+      if (!isNaN(Number(this.selectedElement.weight))) {
+        if (elementType === 'edge') {
+          this['constructorGraph/changeEdgeData']({
             "name" : name,
             "label" : this.selectedElement.label,
             "weight" : this.selectedElement.weight
           })
+          this.selectedElement.edge.data('weight', this.selectedElement.weight)
+        } else {
+          if (elementType === 'vertex')  {
+            this['constructorGraph/changeVertexData']({
+              "name" : name,
+              "label" : this.selectedElement.label,
+              "weight" : this.selectedElement.weight
+            })
+          }
         }
+        this.dialog = false
       }
-      this.dialog = false
     }
   }
 }

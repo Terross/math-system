@@ -46,6 +46,7 @@
               </span>
               <v-btn color="primary"
                      dark
+                     block
                      @click="dialog = true">
                 Изменить описание вручуную
               </v-btn>

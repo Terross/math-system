@@ -46,8 +46,9 @@
               </span>
               <v-btn color="primary"
                      dark
+                     small
                      @click="dialog = true">
-                Изменить описание вручуную
+                Изменить описание
               </v-btn>
               <v-switch
                   v-model="graph"

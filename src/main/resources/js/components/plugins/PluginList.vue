@@ -139,39 +139,46 @@ export default {
     addPlugin() {
       if (this.$refs.form.validate()) {
         let file = this.files
-        let formData = new FormData();
-        formData.append("file", file)
-        this.jarName = file.name
-        formData.append("name", this.pluginName)
-        formData.append("description", this.pluginDescription)
-        formData.append("algType", this.pluginType === 'Характеристика'
-            ? 'CHARACTERISTIC' : 'PROPERTY')
-        formData.append("graphType", this.graphType === 'Ориентированный'
-            ? 'DIRECTED' : 'UNDIRECTED')
+        if (file.size > 131000) {
+          console.log(123)
+          this.alertType = 'errorSize'
+        } else {
 
-        this.$http.post('/plugin/api', formData).then(response => {
-          this['plugins/addPluginMutation'](response.data)
-          this.alertType = 'success'
-        }, err => {
-          console.log(err)
-          if (err.data === null) {
-            this.alertType = 'somethingWrong'
-            this.javaError = err.bodyText
-          } else {
-            if (err.data.message === 'PluginAlreadyExists') {
-              this.alertType = 'errorExist'
+          let formData = new FormData();
+          formData.append("file", file)
+          this.jarName = file.name
+          console.log(file.size)
+          formData.append("name", this.pluginName)
+          formData.append("description", this.pluginDescription)
+          formData.append("algType", this.pluginType === 'Характеристика'
+              ? 'CHARACTERISTIC' : 'PROPERTY')
+          formData.append("graphType", this.graphType === 'Ориентированный'
+              ? 'DIRECTED' : 'UNDIRECTED')
+
+          this.$http.post('/plugin/api', formData).then(response => {
+            this['plugins/addPluginMutation'](response.data)
+            this.alertType = 'success'
+          }, err => {
+            if (err.data === null) {
+              this.alertType = 'somethingWrong'
+              this.javaError = err.bodyText
+            } else {
+              if (err.data.message === 'PluginAlreadyExists') {
+                this.alertType = 'errorExist'
+              }
+              if (err.data.message === 'Wrong jar file') {
+                this.alertType = 'errorInterface'
+              }
+              if (err.data.message === 'Class wasnt found in jar') {
+                this.alertType = 'errorJar'
+              }
+              if (err.data.message === 'The plugin takes too long to execute') {
+                this.alertType = 'errorTime'
+              }
             }
-            if (err.data.message === 'Wrong jar file') {
-              this.alertType = 'errorInterface'
-            }
-            if (err.data.message === 'Class wasnt found in jar') {
-              this.alertType = 'errorJar'
-            }
-            if (err.data.message === 'The plugin takes too long to execute') {
-              this.alertType = 'errorTime'
-            }
-          }
-        })
+          })
+        }
+
       }
     }
   }

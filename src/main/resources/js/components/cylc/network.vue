@@ -371,10 +371,13 @@ export default {
       if (ele.group().toString() === 'edges') {
         ele.style('line-color', color)
         ele.style('target-arrow-color', color)
+        const source = ele.data().source
+        const target = ele.data().target
+
         this['constructorGraph/updateEdgeColorMutation'](
             {
-              "fromV": ele.data().source,
-              "toV": ele.data().target,
+              "fromV": ele.data().find(item => item.id === source).name,
+              "toV": ele.data().find(item => item.id === target).name,
               "color": color
             }
         )
@@ -609,10 +612,11 @@ export default {
       let {position} = event
       if (event.target === event.cy) {
         const newName = this.$store.getters["constructorGraph/nextVertexName"]
+        const newIndex = this.$store.getters["constructorGraph/nextVertexIndex"]
+        console.log(event.cy.nodes())
         event.cy.add({
           group: 'nodes',
           data: {
-            id: newName,
             name: newName,
             color: 'gray'
           },
@@ -620,7 +624,7 @@ export default {
         })
         this['constructorGraph/addNodeMutation'](
             {
-              "index": newName,
+              "index": newIndex,
               "name": newName,
               "color": 'gray',
               "weight": 0,
@@ -637,14 +641,17 @@ export default {
       if (target !== cy) {
         cy.remove(target)
         if (target.group().toString() === 'edges') {
+          const sourceV = target.data().source
+          const targetV = target.data().target
+          let ver = []
+          cy.nodes().map(item => ver.push(item.data()))
           this['constructorGraph/removeEdgeMutation']({
             "name" : target.data().name,
-            "fromV" : target.data().source,
-            "toV" : target.data().target
+            "fromV" : ver.find(item => item.id === sourceV).name,
+            "toV" : ver.find(item => item.id === targetV).name
           })
         } else {
           let index = target.data().name
-          console.log(index)
           for (let i = 0; i < cy.nodes().length; i++) {
             let node = cy.nodes()[i]
             if (node.data().name > index) {

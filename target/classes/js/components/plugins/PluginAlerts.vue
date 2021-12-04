@@ -4,7 +4,8 @@
                 errorJarAlert ||
                 errorInterfaceAlert ||
                 successAlert ||
-                somethingWrong">
+                somethingWrong ||
+                errorSize ">
     <v-alert
         type="success"
         v-model="successAlert"
@@ -60,6 +61,15 @@
         dismissible>
       {{"В вашем коде ошибка: \n" + javaError}}
     </v-alert>
+    <v-alert
+        type="error"
+        v-model="errorSize"
+        text
+        outlined
+        class="ma-4"
+        dismissible>
+      Размер jar файла не должен превышать 128кб!
+    </v-alert>
 
   </v-col>
 </template>
@@ -79,7 +89,8 @@ export default {
       errorJarAlert: false,
       errorInterfaceAlert: false,
       successAlert: false,
-      somethingWrong: false
+      somethingWrong: false,
+      errorSize: false
     }
   },
   watch: {
@@ -92,6 +103,7 @@ export default {
               = this.errorJarAlert
               = this.errorInterfaceAlert
               = this.successAlert
+              = this.errorSize
               = false
           this.somethingWrong = true
           break
@@ -101,6 +113,7 @@ export default {
               = this.errorJarAlert
               = this.errorInterfaceAlert
               = this.somethingWrong
+              = this.errorSize
               = false
           this.successAlert = true
           break
@@ -110,6 +123,7 @@ export default {
               = this.errorJarAlert
               = this.successAlert
               = this.somethingWrong
+              = this.errorSize
               = false
           this.errorInterfaceAlert = true
           break
@@ -119,6 +133,7 @@ export default {
               = this.successAlert
               = this.errorInterfaceAlert
               = this.somethingWrong
+              = this.errorSize
               = false
           this.errorJarAlert = true
           break
@@ -128,6 +143,7 @@ export default {
               = this.errorJarAlert
               = this.errorInterfaceAlert
               = this.somethingWrong
+              = this.errorSize
               = false
           this.alreadyExistAlert = true
           break
@@ -137,8 +153,20 @@ export default {
               = this.errorJarAlert
               = this.errorInterfaceAlert
               = this.somethingWrong
+              = this.errorSize
               = false
           this.longTimeExecute = true
+          break
+        case 'errorSize':
+          this.successAlert
+              = this.alreadyExistAlert
+              = this.errorJarAlert
+              = this.errorInterfaceAlert
+              = this.somethingWrong
+              = this.longTimeExecute
+              = false
+          this.errorSize = true
+          console.log(123123)
           break
         default:
           this.successAlert
@@ -147,6 +175,7 @@ export default {
               = this.errorInterfaceAlert
               = this.longTimeExecute
               = this.somethingWrong
+              = this.errorSize
               = false
           break
       }

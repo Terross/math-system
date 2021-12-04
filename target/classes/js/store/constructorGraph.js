@@ -48,6 +48,19 @@ const getters = {
       }
       return name
     },
+    nextVertexIndex: (state) => {
+        let index = 0
+        while (true) {
+            if (state.constructorGraph.filter(item =>
+                item.index.toString() === index.toString()).length > 0) {
+                index++
+            } else {
+                break
+            }
+        }
+        console.log(index)
+        return index
+    },
     cytoscapeConfigElements: (state) => {
 
         let elements = [];
@@ -185,7 +198,8 @@ const mutations = {
         for (let i = 0; i < state.vertexCount; i++) {
             let node = state.constructorGraph[i]
             if (node.name > index.name) {
-                node.name = (Number(node.name) - 1).toString()
+                node.name = (Number(node.name) - 1)
+
 
                 for (let j = 0; j < node.outgoingEdges.length; j++) {
                     node.outgoingEdges[j].fromV = node.name
@@ -199,6 +213,7 @@ const mutations = {
         }
     },
     removeEdgeMutation(state, edge) {
+
         deleteEdge(state, edge)
     },
     updateEdgeColorMutation(state, edge) {

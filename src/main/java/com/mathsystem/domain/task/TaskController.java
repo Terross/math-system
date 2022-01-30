@@ -1,15 +1,14 @@
-package com.mathsystem.controller;
+package com.mathsystem.domain.task;
 
-import com.mathsystem.domain.task.graph.repo.Edge;
-import com.mathsystem.domain.task.graph.repo.Graph;
-import com.mathsystem.domain.task.graph.repo.Vertex;
-import com.mathsystem.entity.task.*;
+import com.mathsystem.domain.plugin.repository.PluginAnswerProjection;
+import com.mathsystem.domain.plugin.repository.PluginRepository;
+import com.mathsystem.domain.task.graph.repository.EdgeProjection;
+import com.mathsystem.domain.task.graph.repository.GraphProjection;
+import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.domain.task.repository.TaskProjection;
+import com.mathsystem.domain.task.repository.TaskRepository;
 import com.mathsystem.exceptions.TaskAlreadyExistsException;
-import com.mathsystem.repo.AlgAnswerRepo;
-import com.mathsystem.repo.AlgorithmRepo;
-import com.mathsystem.repo.TaskRepo;
-import com.mathsystem.domain.task.graph.repo.VertexRepo;
-import com.mathsystem.util.Validator;
+import com.mathsystem.domain.plugin.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,72 +17,76 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("task")
 public class TaskController {
-    private final AlgorithmRepo algorithmRepo;
-    private final TaskRepo taskRepo;
+    private final PluginRepository pluginRepository;
+    private final TaskRepository taskRepository;
+    private final Validator validator;
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+
     @Autowired
-    public TaskController(AlgorithmRepo algorithmRepo, TaskRepo taskRepo, AlgAnswerRepo algAnswerRepo, VertexRepo vertexRepo) {
-        this.algorithmRepo = algorithmRepo;
-        this.taskRepo = taskRepo;
+    public TaskController(PluginRepository pluginRepository, TaskRepository taskRepository, Validator validator) {
+        this.pluginRepository = pluginRepository;
+        this.taskRepository = taskRepository;
+        this.validator = validator;
     }
 
     @PostMapping("verifyTask/{id}")
-    public boolean verifyTask(@PathVariable Long id,
-                              @RequestBody Graph graph) throws FileNotFoundException, InterruptedException, ChangeSetPersister.NotFoundException {
-        Task task = taskRepo.getById(id);
-        Validator validator = new Validator(graph);
-        boolean result = validator.verifyTask(task);
-        System.out.println(result);
-        return result;
+    public boolean verifyTask(@PathVariable UUID id,
+                              @RequestBody GraphProjection graphProjection) throws FileNotFoundException, InterruptedException, ChangeSetPersister.NotFoundException {
+        TaskProjection taskProjection = taskRepository.getById(id);
+        return validator.verifyTask(taskProjection, graphProjection);
     }
 
     @PostMapping
-    public Task addNewTask(@RequestBody Task task) throws ChangeSetPersister.NotFoundException {
-        if (!taskRepo.findAllByName(task.getName()).isEmpty() ) {
+    public TaskProjection addNewTask(@RequestBody TaskProjection taskProjection) throws ChangeSetPersister.NotFoundException {
+        if (!taskRepository.findAllByName(taskProjection.getName()).isEmpty() ) {
             logger.error("Task already exist!!!");
             throw new TaskAlreadyExistsException();
         }
-        List<AlgAnswer> algAnswerList = task.getAlgAnswerList();
-        Graph graph = task.getGraph();
-        if (graph != null) {
-            List<Vertex> vertexes = graph.getVertexes();
-            for (Vertex vertex:
-                    graph.getVertexes()) {
-                for (Edge edge:
-                        vertex.getIncomingEdges()) {
-                    edge.setToVertex(vertex);
-                    edge.setFromVertex(vertexes.stream().filter(v -> v.getName().equals(edge.getFromV())).findFirst()
+        List<PluginAnswerProjection> pluginAnswers = taskProjection.getPluginAnswers();
+        GraphProjection graphProjection = taskProjection.getGraphProjection();
+        if (graphProjection != null) {
+            List<VertexProjection> vertexProjections = graphProjection.getVertexProjections();
+            for (VertexProjection vertexProjection :
+                    graphProjection.getVertexProjections()) {
+                for (EdgeProjection edgeProjection :
+                        vertexProjection.getIncomingEdgeProjections()) {
+                    edgeProjection.setToVertexProjection(vertexProjection);
+                    edgeProjection.setFromVertexProjection(vertexProjections.stream().filter(v -> v.getName().equals(edgeProjection.getFromV())).findFirst()
                             .orElseThrow(ChangeSetPersister.NotFoundException::new));
                 }
-                vertex.setGraph(graph);
+                vertexProjection.setGraphProjection(graphProjection);
             }
-            System.out.println(graph);
         }
 
-        for (AlgAnswer algAnswer : algAnswerList) {
-            algAnswer.getPlugin().getAlgAnswerList().add(algAnswer);
-            algAnswer.setTask(task);
+        for (PluginAnswerProjection pluginAnswerProjection : pluginAnswers) {
+            pluginAnswerProjection.getPluginProjection().getPluginAnswerProjections().add(pluginAnswerProjection);
+            pluginAnswerProjection.setTaskProjection(taskProjection);
         }
-        taskRepo.save(task);
-        logger.info(String.valueOf(task));
-        System.out.println(task.getGraph());
-        return task;
+        taskRepository.save(taskProjection);
+        logger.info(String.valueOf(taskProjection));
+        return taskProjection;
     }
 
     @PostMapping("/answers")
-    public List<Validator.PlgAns> getAnswers(@RequestBody Graph graph) throws ChangeSetPersister.NotFoundException {
-        Validator validator = new Validator(graph);
+    public List<Validator.PlgAns> getAnswers(@RequestBody GraphProjection graphProjection) throws ChangeSetPersister.NotFoundException {
 
-        return validator.findAnswersForPlugins(algorithmRepo.findAllByGraphType(graph.getGraphType()));
+        return validator
+                .findAnswersForPlugins(
+                        pluginRepository.findAllByGraphType(graphProjection.getGraphType()),
+                        graphProjection
+                );
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
-        Task task = taskRepo.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
-        taskRepo.delete(task);
+    public void deleteTask(@PathVariable UUID id) throws ChangeSetPersister.NotFoundException {
+        TaskProjection taskProjection = taskRepository
+                .findById(id)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        taskRepository.delete(taskProjection);
     }
 }

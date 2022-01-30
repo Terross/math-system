@@ -1,7 +1,9 @@
-package com.mathsystem.domain.task.graph.repo;
+package com.mathsystem.domain.task.graph.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GraphRepository extends JpaRepository<Graph, Long> {
+import java.util.UUID;
+
+public interface GraphRepository extends JpaRepository<GraphProjection, UUID> {
 }
 

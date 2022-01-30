@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/math_system
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 128KB
+      max-request-size: 128KB
+
+hostname: 31.134.176.179
+
+server:
+  error:
+    include-message: always
+
+plugin:
+  path :
+

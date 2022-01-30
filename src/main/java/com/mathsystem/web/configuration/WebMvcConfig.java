@@ -1,4 +1,4 @@
-package com.mathsystem.config;
+package com.mathsystem.web.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.ErrorPage;

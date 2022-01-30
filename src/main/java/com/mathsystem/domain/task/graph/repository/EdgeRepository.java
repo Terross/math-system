@@ -1,6 +1,6 @@
-package com.mathsystem.domain.task.graph.repo;
+package com.mathsystem.domain.task.graph.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EdgeRepository extends JpaRepository<Edge, Long> {
+public interface EdgeRepository extends JpaRepository<EdgeProjection, Long> {
 }

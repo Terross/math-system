@@ -1,4 +1,4 @@
-package com.mathsystem.plugin;
+package com.mathsystem.domain.plugin;
 
 public interface Plugin {
 }

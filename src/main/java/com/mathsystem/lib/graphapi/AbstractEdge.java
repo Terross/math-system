@@ -1,6 +1,7 @@
-package com.mathsystem.graphapi;
+package com.mathsystem.lib.graphapi;
 
-import com.mathsystem.domain.task.graph.repo.Color;
+
+import com.mathsystem.domain.task.graph.repository.Color;
 import lombok.Data;
 
 import java.util.List;
@@ -21,8 +22,6 @@ public abstract class AbstractEdge implements Comparable<AbstractEdge> {
     protected final Color color;
     /**Метка ребра*/
     protected final String label;
-    /**Имя ребра. Поле используется как индекс */
-    protected final String name;
 
     /**
      * Конструктор - создание нового объекта ребра с определенными значениями
@@ -32,22 +31,19 @@ public abstract class AbstractEdge implements Comparable<AbstractEdge> {
      * @param weight - вес ребра
      * @param color - цвет ребра
      * @param label - метка ребра
-     * @param name - имя ребра
      */
     public AbstractEdge(
             Vertex v,
             Vertex w,
             Integer weight,
             Color color,
-            String label,
-            String name
+            String label
     ) {
         this.v = v;
         this.w = w;
         this.weight = weight;
         this.color = color;
         this.label = label;
-        this.name = name;
     }
 
     /**

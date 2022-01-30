@@ -1,4 +1,4 @@
-package com.mathsystem.entity.task;
+package com.mathsystem.domain.plugin.repository;
 
 public enum PluginType {
     PROPERTY,

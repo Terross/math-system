@@ -1,8 +1,9 @@
-package com.mathsystem.graphapi.directed;
+package com.mathsystem.lib.graphapi.directed;
 
-import com.mathsystem.domain.task.graph.repo.Color;
-import com.mathsystem.graphapi.AbstractEdge;
-import com.mathsystem.graphapi.Vertex;
+
+import com.mathsystem.domain.task.graph.repository.Color;
+import com.mathsystem.lib.graphapi.AbstractEdge;
+import com.mathsystem.lib.graphapi.Vertex;
 
 import java.util.List;
 
@@ -19,17 +20,15 @@ public class DirectedEdge extends AbstractEdge {
      * @param weight - вес ребра
      * @param color - цвет ребра
      * @param label - метка ребра
-     * @param name - имя ребра
      */
     public DirectedEdge(
             Vertex v,
             Vertex w,
             Integer weight,
             Color color,
-            String label,
-            String name
+            String label
     ) {
-        super(v, w, weight, color, label, name);
+        super(v, w, weight, color, label);
     }
 
     public Vertex from() {
@@ -42,12 +41,12 @@ public class DirectedEdge extends AbstractEdge {
 
     @Override
     public String toString() {
-        return String.format("Edge %s = {" +
+        return String.format("Edge = {" +
                 "\n%s -> %s" +
                 "\nweight =  %d" +
                 "\ncolor = %s" +
                 "\nlabel = %s",
-                name, v.getName(), w.getName(), weight, color, label);
+                v.getName(), w.getName(), weight, color, label);
     }
 
 }

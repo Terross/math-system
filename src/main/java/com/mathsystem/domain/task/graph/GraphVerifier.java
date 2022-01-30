@@ -1,11 +1,12 @@
-package com.mathsystem.service;
+package com.mathsystem.domain.task.graph;
 
-import com.mathsystem.entity.task.PluginProjection;
-import com.mathsystem.graphapi.AbstractGraph;
-import com.mathsystem.plugin.GraphCharacteristic;
-import com.mathsystem.plugin.GraphProperty;
-import com.mathsystem.plugin.Plugin;
-import com.mathsystem.plugin.PluginFactory;
+
+import com.mathsystem.domain.plugin.GraphCharacteristic;
+import com.mathsystem.domain.plugin.GraphProperty;
+import com.mathsystem.domain.plugin.Plugin;
+import com.mathsystem.domain.plugin.PluginFactory;
+import com.mathsystem.domain.plugin.repository.PluginProjection;
+import com.mathsystem.lib.graphapi.AbstractGraph;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

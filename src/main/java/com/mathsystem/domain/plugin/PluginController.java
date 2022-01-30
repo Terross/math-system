@@ -1,17 +1,16 @@
-package com.mathsystem.controller;
+package com.mathsystem.domain.plugin;
 
-import com.mathsystem.domain.task.graph.repo.GraphType;
-import com.mathsystem.entity.task.PluginProjection;
-import com.mathsystem.entity.task.PluginType;
+
+import com.mathsystem.domain.plugin.repository.PluginProjection;
+import com.mathsystem.domain.plugin.repository.PluginRepository;
+import com.mathsystem.domain.plugin.repository.PluginType;
+import com.mathsystem.domain.task.graph.repository.GraphRepository;
+import com.mathsystem.domain.task.graph.repository.GraphType;
 import com.mathsystem.exceptions.*;
 
-import com.mathsystem.graphapi.AbstractGraph;
-import com.mathsystem.graphapi.GraphFactory;
-import com.mathsystem.plugin.GraphCharacteristic;
-import com.mathsystem.plugin.GraphProperty;
-import com.mathsystem.plugin.PluginFactory;
-import com.mathsystem.repo.AlgorithmRepo;
-import com.mathsystem.domain.task.graph.repo.GraphRepository;
+
+import com.mathsystem.lib.graphapi.AbstractGraph;
+import com.mathsystem.lib.graphapi.GraphFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.UUID;
 
-@RestController()
+@RestController
 @RequestMapping("plugin/api")
 public class PluginController {
-    private final AlgorithmRepo algorithmRepo;
+    private final PluginRepository pluginRepository;
     private final GraphRepository graphRepository;
     private final String defaultDirForPlugin =
             "/home/dmitry/IdeaProjects/math-system/plugins/";
@@ -35,8 +35,8 @@ public class PluginController {
     private final Logger logger = LoggerFactory.getLogger(PluginController.class);
 
     @Autowired
-    public PluginController(AlgorithmRepo algorithmRepo, GraphRepository graphRepository) {
-        this.algorithmRepo = algorithmRepo;
+    public PluginController(PluginRepository pluginRepository, GraphRepository graphRepository) {
+        this.pluginRepository = pluginRepository;
         this.graphRepository = graphRepository;
     }
 
@@ -57,11 +57,11 @@ public class PluginController {
                                             @RequestParam("graphType") GraphType graphType,
                                             @RequestParam("file") MultipartFile file)
             throws IOException, InterruptedException {
-        if (!algorithmRepo.findAlgorithmByFileName(file.getOriginalFilename()).isEmpty()) {
+        if (!pluginRepository.findAlgorithmByFileName(file.getOriginalFilename()).isEmpty()) {
             logger.error("Plugin already exist!!!");
             throw new PluginAlreadyExistsException();
         }
-        if (!algorithmRepo.findAlgorithmByName(name).isEmpty()) {
+        if (!pluginRepository.findAlgorithmByName(name).isEmpty()) {
             logger.error("Plugin already exist!!!");
             throw new PluginAlreadyExistsException();
         }
@@ -122,7 +122,7 @@ public class PluginController {
                         throw new PluginClassNotFoundException();
                     }
                 }
-                algorithmRepo.save(pluginProjection);
+                pluginRepository.save(pluginProjection);
             } else {
                 throw new FileAlreadyExistsException("File already exist!");
             }
@@ -130,20 +130,20 @@ public class PluginController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAlgorithm(@PathVariable Long id) {
-        PluginProjection pluginProjection = algorithmRepo.findById(id)
+    public void deleteAlgorithm(@PathVariable UUID id) {
+        PluginProjection pluginProjection = pluginRepository.findById(id)
                 .orElseThrow(PluginNotFoundException::new);
         deleteFileFromDisk(defaultDirForPlugin + pluginProjection.getFileName());
-        algorithmRepo.delete(pluginProjection);
+        pluginRepository.delete(pluginProjection);
     }
 
     @PutMapping("/{id}")
-    public PluginProjection updateAlgorithm(@PathVariable Long id,
+    public PluginProjection updateAlgorithm(@PathVariable UUID id,
                                             @RequestParam("description") String description,
                                             @RequestParam("name") String name,
                                             @RequestParam("file") MultipartFile file) {
 
-        PluginProjection pluginProjection = algorithmRepo.findById(id)
+        PluginProjection pluginProjection = pluginRepository.findById(id)
                 .orElseThrow(PluginNotFoundException::new);
         deleteFileFromDisk(defaultDirForPlugin + pluginProjection.getName() + ".jar");
 
@@ -153,7 +153,7 @@ public class PluginController {
             File newJarFile = new File(defaultDirForPlugin + name + ".jar" );
             if (newJarFile.createNewFile()) {
                 file.transferTo(newJarFile);
-                algorithmRepo.save(pluginProjection);
+                pluginRepository.save(pluginProjection);
             } else {
                 System.out.println("File exist!");
             }
@@ -176,7 +176,7 @@ public class PluginController {
     private void verifyPlugin(PluginProjection algorithm, String jarName) {
         int index = algorithm.getFileName().lastIndexOf('.');
         String name  = algorithm.getFileName().substring(0, index);
-        com.mathsystem.plugin.Plugin plugin =  PluginFactory.loadPlugin(name);
+        Plugin plugin =  PluginFactory.loadPlugin(name);
 
         if (algorithm.getPluginType() == PluginType.PROPERTY) {
             if (! (plugin instanceof GraphProperty)) {
@@ -195,7 +195,7 @@ public class PluginController {
         }
     }
 
-    private void runPluginForTest(PluginProjection algorithm, com.mathsystem.plugin.Plugin plugin, PluginType pluginType) {
+    private void runPluginForTest(PluginProjection algorithm, Plugin plugin, PluginType pluginType) {
         AbstractGraph abstractGraph = null;
 
             switch (algorithm.getGraphType()) {

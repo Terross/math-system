@@ -1,7 +1,7 @@
-package com.mathsystem.entity.task;
+package com.mathsystem.domain.plugin.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mathsystem.domain.task.graph.repo.GraphType;
+import com.mathsystem.domain.task.graph.repository.GraphType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -31,6 +31,6 @@ public class PluginProjection {
     private boolean isNative;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "plugin", cascade = CascadeType.ALL)
-    private List<PluginAnswer> pluginAnswers = new ArrayList<>();
+    @OneToMany(mappedBy = "pluginProjection", cascade = CascadeType.ALL)
+    private List<PluginAnswerProjection> pluginAnswerProjections = new ArrayList<>();
 }

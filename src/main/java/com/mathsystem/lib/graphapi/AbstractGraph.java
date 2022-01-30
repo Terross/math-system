@@ -1,4 +1,4 @@
-package com.mathsystem.graphapi;
+package com.mathsystem.lib.graphapi;
 
 import lombok.Data;
 import java.util.List;

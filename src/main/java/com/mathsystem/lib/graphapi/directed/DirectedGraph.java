@@ -1,9 +1,13 @@
-package com.mathsystem.graphapi.directed;
+package com.mathsystem.lib.graphapi.directed;
 
-import com.mathsystem.domain.task.graph.repo.Color;
-import com.mathsystem.domain.task.graph.repo.Edge;
-import com.mathsystem.graphapi.AbstractGraph;
-import com.mathsystem.graphapi.Vertex;
+import com.mathsystem.domain.task.graph.repository.Color;
+import com.mathsystem.domain.task.graph.repository.EdgeProjection;
+
+
+import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.lib.graphapi.AbstractGraph;
+
+import com.mathsystem.lib.graphapi.Vertex;
 import lombok.Data;
 
 import java.io.File;
@@ -22,19 +26,19 @@ public class DirectedGraph extends AbstractGraph {
      * Используется в контроллерах - не используется в плагинах
      * @param vertexCount - количество вершин
      * @param edgeCount - количество ребер
-     * @param edges - список ребер
+     * @param edgeProjections - список ребер
      * @param vertices - список вершин
      */
     public DirectedGraph(int vertexCount,
                          int edgeCount,
-                         List<Edge> edges,
-                         List<com.mathsystem.domain.task.graph.repo.Vertex> vertices) {
+                         List<EdgeProjection> edgeProjections,
+                         List<VertexProjection> vertices) {
         this.vertexCount = vertexCount;
         this.edgeCount = edgeCount;
         this.vertices = new ArrayList<>();
 
         for (int i = 0; i < vertexCount; i++) {
-            com.mathsystem.domain.task.graph.repo.Vertex v =  vertices.get(i);
+            VertexProjection v =  vertices.get(i);
             this.vertices.add(new Vertex(
                     Integer.parseInt(v.getName()),
                     v.getName(),
@@ -45,16 +49,15 @@ public class DirectedGraph extends AbstractGraph {
             ));
         }
 
-        for (Edge edge: edges) {
+        for (EdgeProjection edgeProjection : edgeProjections) {
             this.vertices
-                    .get(Integer.parseInt(edge.getFromVertex().getName()))
+                    .get(Integer.parseInt(edgeProjection.getFromVertexProjection().getName()))
                     .getEdgeList().add(new DirectedEdge(
-                            this.vertices.get(Integer.parseInt(edge.getFromV())),
-                            this.vertices.get(Integer.parseInt(edge.getToV())),
-                            edge.getWeight() == null ? 0 : edge.getWeight(),
-                            edge.getColor(),
-                            edge.getLabel(),
-                            edge.getName()
+                            this.vertices.get(Integer.parseInt(edgeProjection.getFromV())),
+                            this.vertices.get(Integer.parseInt(edgeProjection.getToV())),
+                            edgeProjection.getWeight() == null ? 0 : edgeProjection.getWeight(),
+                            edgeProjection.getColor(),
+                            edgeProjection.getLabel()
                     ));
         }
     }
@@ -99,7 +102,6 @@ public class DirectedGraph extends AbstractGraph {
                             w,
                             scanner.nextInt(),
                             Color.valueOf(scanner.next().toLowerCase()),
-                            scanner.next(),
                             scanner.next()
                     ));
         }

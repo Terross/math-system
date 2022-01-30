@@ -1,10 +1,12 @@
-package com.mathsystem.graphapi;
+package com.mathsystem.lib.graphapi;
 
-import com.mathsystem.domain.task.graph.repo.Edge;
-import com.mathsystem.domain.task.graph.repo.GraphType;
-import com.mathsystem.domain.task.graph.repo.Vertex;
-import com.mathsystem.graphapi.directed.DirectedGraph;
-import com.mathsystem.graphapi.undirected.UndirectedGraph;
+
+import com.mathsystem.domain.task.graph.repository.EdgeProjection;
+import com.mathsystem.domain.task.graph.repository.GraphType;
+import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.lib.graphapi.directed.DirectedGraph;
+import com.mathsystem.lib.graphapi.undirected.UndirectedGraph;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -17,16 +19,16 @@ public class GraphFactory {
      * Статическая функция создающая граф (используется в контроллеерах)
      * @param vertexCount - количество вершин в графе
      * @param edgeCount - количество ребер в графе
-     * @param edges - список ребер
+     * @param edgeProjections - список ребер
      * @param graphType - тип графа, который надо вернуть
      * @param vertices - список вершин
      * @return возвращает тип AbstractGraph
      */
     public static AbstractGraph createGraph(int vertexCount,
                                             int edgeCount,
-                                            List<Edge> edges,
+                                            List<EdgeProjection> edgeProjections,
                                             GraphType graphType,
-                                            List<Vertex> vertices) {
+                                            List<VertexProjection> vertices) {
         AbstractGraph abstractGraph = null;
 
         switch (graphType) {
@@ -34,14 +36,14 @@ public class GraphFactory {
                 abstractGraph = new DirectedGraph(
                         vertexCount,
                         edgeCount,
-                        edges,
+                        edgeProjections,
                         vertices);
                 break;
             case UNDIRECTED:
                 abstractGraph =  new UndirectedGraph(
                         vertexCount,
                         edgeCount,
-                        edges,
+                        edgeProjections,
                         vertices);
                 break;
         }

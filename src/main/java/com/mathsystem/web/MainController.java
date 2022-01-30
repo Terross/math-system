@@ -1,10 +1,10 @@
-package com.mathsystem.controller;
+package com.mathsystem.web;
 
-import com.mathsystem.entity.task.PluginProjection;
-import com.mathsystem.entity.task.Task;
-import com.mathsystem.repo.AlgorithmRepo;
-import com.mathsystem.domain.task.graph.repo.GraphRepository;
-import com.mathsystem.repo.TaskRepo;
+import com.mathsystem.domain.plugin.repository.PluginRepository;
+import com.mathsystem.domain.plugin.repository.PluginProjection;
+import com.mathsystem.domain.task.graph.repository.GraphRepository;
+import com.mathsystem.domain.task.repository.TaskProjection;
+import com.mathsystem.domain.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,25 +20,25 @@ import java.util.List;
 public class MainController {
 
     private final GraphRepository graphRepository;
-    private final AlgorithmRepo algorithmRepo;
-    private final TaskRepo taskRepo;
+    private final PluginRepository pluginRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public MainController(GraphRepository graphRepository, AlgorithmRepo algorithmRepo, TaskRepo taskRepo) {
+    public MainController(GraphRepository graphRepository, PluginRepository pluginRepository, TaskRepository taskRepository) {
         this.graphRepository = graphRepository;
-        this.algorithmRepo = algorithmRepo;
-        this.taskRepo = taskRepo;
+        this.pluginRepository = pluginRepository;
+        this.taskRepository = taskRepository;
     }
 
     @GetMapping
     public String main(Model model) throws FileNotFoundException {
-        List<PluginProjection> pluginProjections = algorithmRepo.findAll();
-        List<Task> tasks = taskRepo.findAll();
+        List<PluginProjection> pluginProjections = pluginRepository.findAll();
+        List<TaskProjection> taskProjections = taskRepository.findAll();
         HashMap<Object, Object> data = new HashMap<>();
 
         data.put("graph", null);
         data.put("algorithms", pluginProjections);
-        data.put("tasks", tasks);
+        data.put("tasks", taskProjections);
         model.addAttribute("frontendData", data);
         return "index";
     }

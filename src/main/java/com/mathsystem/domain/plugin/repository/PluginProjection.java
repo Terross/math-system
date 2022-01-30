@@ -1,0 +1,36 @@
+package com.mathsystem.entity.task;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mathsystem.domain.task.graph.repo.GraphType;
+import lombok.Data;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@Entity
+@ToString
+public class PluginProjection {
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    private String name;
+
+    private String description;
+
+    private PluginType pluginType;
+
+    private GraphType graphType;
+
+    private String fileName;
+
+    private boolean isNative;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "plugin", cascade = CascadeType.ALL)
+    private List<PluginAnswer> pluginAnswers = new ArrayList<>();
+}

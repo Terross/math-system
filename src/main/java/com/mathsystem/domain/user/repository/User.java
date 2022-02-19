@@ -1,7 +1,5 @@
 package com.mathsystem.domain.user.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,22 +7,29 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "system_user")
-@Data
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue
+    private UUID id;
 
-    @Column
-    private String login;
+    private String userName;
 
-    @Column
+    private String email;
+
     private String password;
+
+    private String userGroup;
+
+    private LocalDateTime created;
+
+    private LocalDateTime updated;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    private Role roleEntity;
+    private Role role;
 }
+

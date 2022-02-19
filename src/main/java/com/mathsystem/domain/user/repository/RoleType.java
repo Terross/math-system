@@ -1,2 +1,6 @@
-package com.mathsystem.domain.user.repository;public class RoleType {
+package com.mathsystem.domain.user.repository;
+
+public enum RoleType {
+    USER,
+    ADMIN
 }

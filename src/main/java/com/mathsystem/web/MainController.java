@@ -5,7 +5,9 @@ import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.task.graph.repository.GraphRepository;
 import com.mathsystem.domain.task.repository.TaskProjection;
 import com.mathsystem.domain.task.repository.TaskRepository;
+import com.mathsystem.domain.user.repository.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -34,7 +37,7 @@ public class MainController {
     public String main(Model model) throws FileNotFoundException {
         List<PluginProjection> pluginProjections = pluginRepository.findAll();
         List<TaskProjection> taskProjections = taskRepository.findAll();
-        HashMap<Object, Object> data = new HashMap<>();
+        Map<Object, Object> data = new HashMap<>();
 
         data.put("graph", null);
         data.put("algorithms", pluginProjections);

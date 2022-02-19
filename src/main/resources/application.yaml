@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   servlet:
     multipart:
@@ -18,6 +18,13 @@ hostname: 31.134.176.179
 server:
   error:
     include-message: always
+#  port: 8081
+
+jwt:
+  token:
+    secret: jwtappdemo
+    expired: 3600000
+
 
 plugin:
   path :

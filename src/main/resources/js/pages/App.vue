@@ -185,8 +185,17 @@
 import GraphEditor from "../components/cylc/graphEditor.vue";
 import TaskList from "./TaskList.vue";
 import taskConstructor from "./TaskConstructor.vue";
+import { mapState, mapGetters } from "vuex";
 export default {
   components: {TaskList, GraphEditor, taskConstructor},
+  computed: {
+    profile: {
+        ...mapState({get: 'profile'})
+    },
+    isAuth: {
+        ...mapGetters({get: 'profile/isAuth'})
+    }
+  },
   data() {
     return {
       tab: null,
@@ -196,6 +205,11 @@ export default {
       items: [
           'Сборник задач', 'Конструктор задач', 'Новые модули'
       ]
+    }
+  },
+  beforeMount() {
+    if (!this.isAuth) {
+      this.$router.replace('/auth/login')
     }
   },
   methods: {

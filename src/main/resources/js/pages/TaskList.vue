@@ -53,11 +53,6 @@ export default {
     TaskDescription,
     graphEditor
   },
-  // data() {
-  //   return {
-  //     tasks: null
-  //   }
-  // },
   computed : {
     tasks() {
       return this.$store.state.tasks.tasks

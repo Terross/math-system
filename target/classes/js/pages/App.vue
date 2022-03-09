@@ -101,7 +101,10 @@
         dark
         height="64px"
     >
-      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+          @click="drawer = true"
+          v-if="isAuth"
+      ></v-app-bar-nav-icon>
       <v-toolbar-title
       class="ma-4">Модуль графы</v-toolbar-title>
       <div v-if="$route.path === '/'">
@@ -117,12 +120,30 @@
 
       </v-spacer>
       <v-btn
+          v-if="this.isAuth"
           color="secondary"
           text
-          dark
           @click="dialog = true"
       >
         <v-icon>help_outline</v-icon>
+      </v-btn>
+      <v-btn
+          v-if="this.isAuth"
+          color="secondary"
+          text
+          dark
+          @click="showProfile"
+      >
+        <v-icon>account_circle</v-icon>
+      </v-btn>
+      <v-btn
+          v-if="this.isAuth"
+          color="secondary"
+          text
+          dark
+          @click="logOut"
+      >
+        <v-icon>logout</v-icon>
       </v-btn>
 
     </v-app-bar>
@@ -177,7 +198,6 @@
       <router-view></router-view>
     </v-main>
 
-
   </v-app>
 </template>
 
@@ -185,15 +205,15 @@
 import GraphEditor from "../components/cylc/graphEditor.vue";
 import TaskList from "./TaskList.vue";
 import taskConstructor from "./TaskConstructor.vue";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 export default {
   components: {TaskList, GraphEditor, taskConstructor},
   computed: {
     profile: {
         ...mapState({get: 'profile'})
     },
-    isAuth: {
-        ...mapGetters({get: 'profile/isAuth'})
+    isAuth() {
+      return this.profile.profile.authorization
     }
   },
   data() {
@@ -208,11 +228,16 @@ export default {
     }
   },
   beforeMount() {
-    if (!this.isAuth) {
+    console.log(this.profile.profile.authorization)
+    const currentpath = this.$router.history.current.path
+    if (!this.isAuth && currentpath !== '/auth/registration' && currentpath !== '/auth/login') {
       this.$router.replace('/auth/login')
     }
   },
   methods: {
+    ...mapMutations([
+      'profile/logout'
+    ]),
     showTaskConstructor() {
       this.$router.push('/')
     },
@@ -221,6 +246,13 @@ export default {
     },
     showPlugins() {
       this.$router.push('/plugins')
+    },
+    showProfile() {
+      this.$router.push('/profile')
+    },
+    logOut() {
+      this['profile/logout']()
+      this.$router.replace('/auth/login')
     }
   }
 }

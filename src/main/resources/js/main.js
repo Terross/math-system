@@ -17,8 +17,8 @@ const vuetify = new Vuetify({
     theme: {
         themes: {
             light: {
-                primary: colors.deepPurple,
-                secondary: colors.deepPurple.lighten4,
+                primary: colors.blue.lighten1,
+                secondary: colors.blue.lighten5,
                 accent: colors.green.darken3,
                 error: colors.red.darken3,
             }

@@ -1,10 +1,10 @@
 <template>
   <v-container fluid fill-height>
-    <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
+    <v-row  justify="center" align="center" >
+      <v-col align="center" cols="4">
         <v-card
             class="ma-auto"
-            max-width="344"
+            max-width="600"
             outlined
         >
           <v-toolbar dark color="primary">
@@ -14,7 +14,6 @@
             <v-form
                 ref="form"
                 v-model="valid"
-                lazy-validation
                 class="ma-auto"
             >
               <v-text-field
@@ -27,6 +26,7 @@
               <v-text-field
                   v-model="password"
                   label="Password"
+                  type="password"
                   required
               ></v-text-field>
             </v-form>
@@ -42,7 +42,7 @@
             </v-btn>
 
             <v-btn
-                color="secondary"
+                color="primary"
                 class="ma-auto"
                 @click="signUp"
             >
@@ -50,12 +50,16 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
+
   </v-container>
 </template>
 
 <script>
+import {HTTP} from "../axios/http-common";
+import {mapActions, mapGetters, mapMutations} from 'vuex'
+
 export default {
   name: "Login",
   data: () => ({
@@ -69,8 +73,23 @@ export default {
   }),
 
   methods: {
+    ...mapMutations([
+      'profile/authProfile'
+    ]),
     signIn () {
-      console.log("signIn")
+      const data = {
+        "email": this.email,
+        "password": this.password
+      }
+      HTTP
+          .post('auth/login', data)
+          .then(response => {
+            this['profile/authProfile'](response.data)
+            this.$router.replace("/profile")
+          })
+          .catch(e => {
+            console.log(e)
+          })
     },
     signUp () {
       this.$router.replace("/auth/registration")

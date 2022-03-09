@@ -9,6 +9,7 @@
     "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
+    "axios": "^0.26.0",
     "css-loader": "^6.2.0",
     "cytoscape": "^3.19.1",
     "cytoscape-cola": "^2.5.0",
@@ -24,7 +25,8 @@
     "vue-router": "^3.5.2",
     "vue-tippy": "v4",
     "vuetify": "^2.5.8",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

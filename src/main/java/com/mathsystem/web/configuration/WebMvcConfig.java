@@ -14,13 +14,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 //    @Value("${upload.path}")
 //    private String pluginPath;
-//
-//    @Bean
-//    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> webServerCustomizer() {
-//        return container -> {
-//            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/"));
-//        };
-//    }
 
-
+    @Bean
+    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> webServerCustomizer() {
+        return container -> {
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/"));
+        };
+    }
 }

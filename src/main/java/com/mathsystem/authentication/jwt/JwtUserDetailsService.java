@@ -1,6 +1,5 @@
 package com.mathsystem.authentication.jwt;
 
-import com.mathsystem.domain.user.UserService;
 import com.mathsystem.domain.user.repository.User;
 import com.mathsystem.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

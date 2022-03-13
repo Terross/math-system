@@ -106,7 +106,8 @@
           v-if="isAuth"
       ></v-app-bar-nav-icon>
       <v-toolbar-title
-      class="ma-4">Модуль графы</v-toolbar-title>
+            class="ma-4">
+        Модуль графы</v-toolbar-title>
       <div v-if="$route.path === '/'">
         Конструктор задач
       </div>
@@ -115,6 +116,9 @@
       </div>
       <div v-if="$route.path === '/plugins'">
         Плагины
+      </div>
+      <div v-if="$route.path === '/users'">
+        Пользователи
       </div>
       <v-spacer>
 
@@ -189,6 +193,15 @@
             </v-list-item-icon>
             <v-list-item-title>Модули</v-list-item-title>
           </v-list-item>
+
+          <v-list-item
+              :disabled="$route.path === '/users'"
+              @click="showUserList">
+            <v-list-item-icon>
+              <v-icon>person</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Пользователи</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -249,6 +262,9 @@ export default {
     },
     showProfile() {
       this.$router.push('/profile')
+    },
+    showUserList() {
+      this.$router.push('/users')
     },
     logOut() {
       this['profile/logout']()

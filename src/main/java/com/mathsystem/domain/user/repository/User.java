@@ -24,6 +24,8 @@ public class User {
 
     private String lastName;
 
+    private String patronymic;
+
 //    @Column(unique = true)
     private String email;
 

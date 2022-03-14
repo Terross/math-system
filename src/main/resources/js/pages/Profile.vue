@@ -22,6 +22,12 @@
                 <v-list-item-subtitle v-text="profile.lastName"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
+            <v-list-item v-if="profile.patronymic">
+              <v-list-item-content>
+                <v-list-item-title v-text="'Отчество'"></v-list-item-title>
+                <v-list-item-subtitle v-text="profile.patronymic"></v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title v-text="'Почта'"></v-list-item-title>
@@ -34,7 +40,7 @@
                 <v-list-item-subtitle v-text="profile.role"></v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item v-if="profile.group.length > 0">
+            <v-list-item v-if="profile.group">
               <v-list-item-content>
                 <v-list-item-title v-text="'Группа'"></v-list-item-title>
                 <v-list-item-subtitle v-text="profile.group"></v-list-item-subtitle>

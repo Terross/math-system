@@ -29,6 +29,12 @@
               >
               </v-text-field>
               <v-text-field
+                  label="Отчество"
+                  v-model="patronymic"
+                  required
+              >
+              </v-text-field>
+              <v-text-field
                   v-model="email"
                   :rules="emailRules"
                   label="E-mail"
@@ -88,6 +94,7 @@ export default {
     valid: true,
     firstName: '',
     lastName: '',
+    patronymic: '',
     email: '',
     userGroup: '',
     password: '',
@@ -129,6 +136,7 @@ export default {
       const data = {
         "firstName": this.firstName,
         "lastName": this.lastName,
+        "patronymic": this.patronymic,
         "email": this.email,
         "password": this.password,
         "userGroup": this.userGroup

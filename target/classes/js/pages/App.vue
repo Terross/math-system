@@ -205,8 +205,6 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-
-
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -241,7 +239,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.profile.profile.authorization)
     const currentpath = this.$router.history.current.path
     if (!this.isAuth && currentpath !== '/auth/registration' && currentpath !== '/auth/login') {
       this.$router.replace('/auth/login')

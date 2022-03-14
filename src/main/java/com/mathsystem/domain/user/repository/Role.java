@@ -8,10 +8,6 @@ import java.util.UUID;
 @Entity
 @Data
 public class Role {
-
     @Id
-    @GeneratedValue
-    private UUID id;
-
     private String name;
 }

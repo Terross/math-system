@@ -11,7 +11,7 @@
           {{item.role.name === "ROLE_USER" ? "USER" : "ADMIN"}}
         </span>
         <v-icon
-            v-if="currentRole === 'ROLE_ADMIN' && item.role.name === 'ROLE_USER'"
+            v-if="currentRole === 'ADMIN' && item.role.name === 'ROLE_USER'"
             small
             class="mr-2"
             @click="upToAdmin(item)"
@@ -51,7 +51,7 @@ export default {
       return this.$store.state.profile.profile.jwt
     },
     currentRole() {
-      return this.$store.state.profile.profile.role.name
+      return this.$store.state.profile.profile.role
     }
   },
 

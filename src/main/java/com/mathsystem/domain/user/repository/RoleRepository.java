@@ -5,16 +5,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
-import java.util.UUID;
 
-public interface RoleRepository extends JpaRepository<Role, UUID> {
+public interface RoleRepository extends JpaRepository<Role, String> {
 
     @Transactional
     @Modifying
     @Query(value = """
-        INSERT INTO role(id, name)
-        VALUES ('796fa019-7b59-4e7b-b5b2-24e395a4aceb', 'ROLE_USER'),
-               ('796fa019-7b59-4e7b-b5b2-24e395a4acec', 'ROLE_ADMIN')
+        INSERT INTO role(name)
+        VALUES ('ROLE_USER'),
+               ('ROLE_ADMIN')
         ON CONFLICT
         DO NOTHING
     """, nativeQuery = true)

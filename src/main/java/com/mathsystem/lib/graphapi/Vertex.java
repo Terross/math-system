@@ -1,6 +1,6 @@
 package com.mathsystem.lib.graphapi;
 
-import com.mathsystem.domain.task.graph.repository.Color;
+import com.mathsystem.domain.graph.repository.Color;
 import lombok.Data;
 
 import java.util.List;

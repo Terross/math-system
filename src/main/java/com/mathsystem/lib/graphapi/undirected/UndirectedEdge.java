@@ -1,6 +1,6 @@
 package com.mathsystem.lib.graphapi.undirected;
 
-import com.mathsystem.domain.task.graph.repository.Color;
+import com.mathsystem.domain.graph.repository.Color;
 import com.mathsystem.lib.graphapi.AbstractEdge;
 import com.mathsystem.lib.graphapi.Vertex;
 

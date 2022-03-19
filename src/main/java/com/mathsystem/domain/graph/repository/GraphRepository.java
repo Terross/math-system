@@ -1,4 +1,4 @@
-package com.mathsystem.domain.task.graph.repository;
+package com.mathsystem.domain.graph.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,10 +1,30 @@
 import tasksApi from "../api/tasks";
 
 const state = () => ({
-    tasks: frontendData.tasks
+    tasks: [],
+    currentTask : {
+        description: '',
+        name: '',
+        category: '',
+        plugins: [],
+        permission: {
+            draw: true,
+            color: true,
+            edit: true,
+            remove: true
+        },
+        graphDirect: true,
+        graphIsPresent: false,
+        graph: {
+            edgeCount: 0,
+            vertexCount: 0,
+            elements: []
+        }
+    }
 })
 
 const getters = {
+
     findTaskById: (state) => (id) => {
         return state.tasks.find(task => task.id.toString() === id.toString())
     },
@@ -45,6 +65,39 @@ const getters = {
 }
 
 const mutations = {
+    addPluginToCurrentTask(state, plugin) {
+        const index = state.currentTask.plugins.findIndex(item => item.plugin.id === plugin.plugin.id)
+        if (index > -1) {
+            state.currentTask.plugins[index] = plugin
+        } else {
+            state.currentTask.plugins = [
+                ...state.currentTask.plugins,
+                plugin
+            ]
+        }
+    },
+    removePluginFormCurrentTask(state, plugin) {
+        const removeIndex = state.currentTask.plugins.findIndex(item => item.plugin.id === plugin.plugin.id)
+
+        if (removeIndex > -1) {
+            state.currentTask.plugins = [
+                ...state.currentTask.plugins.slice(0, removeIndex),
+                ...state.currentTask.plugins.slice(removeIndex + 1)
+            ]
+        }
+    },
+    editCurrentTaskDescriptionMutation(state, description) {
+        state.currentTask.description = description
+    },
+    editCurrentTaskGraphEnableMutation(state, enable) {
+        state.currentTask.graphIsPresent = enable
+    },
+    editCurrentTaskGraphTypeMutation(state, direct) {
+        state.currentTask.graphDirect = direct
+    },
+    editCurrentTaskPermissionMutation(state, permission) {
+        state.currentTask.permission = permission
+    },
     addTaskMutation(state, task) {
         state.tasks =[
             ...state.tasks,
@@ -85,7 +138,6 @@ const actions = {
         } else {
             commit('addTaskMutation', data)
         }
-
     },
     async updateTaskAction({commit}, task) {
         const result = await tasksApi.update(task)

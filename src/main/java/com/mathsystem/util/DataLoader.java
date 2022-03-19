@@ -12,13 +12,16 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class DataLoader implements ApplicationRunner {
+public class DataLoader {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void run(ApplicationArguments args) {
+    public void initRole() {
         roleRepository.initRole();
+    }
+
+    public void initUsers() {
         userRepository.initUsers(LocalDateTime.now(), passwordEncoder.encode("pass"));
     }
 }

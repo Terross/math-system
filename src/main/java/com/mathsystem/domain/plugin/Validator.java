@@ -2,10 +2,10 @@ package com.mathsystem.domain.plugin;
 
 import com.mathsystem.domain.plugin.repository.PluginAnswerProjection;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
-import com.mathsystem.domain.task.graph.GraphVerifier;
-import com.mathsystem.domain.task.graph.repository.EdgeProjection;
-import com.mathsystem.domain.task.graph.repository.GraphProjection;
-import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.domain.graph.GraphVerifier;
+import com.mathsystem.domain.graph.repository.EdgeProjection;
+import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.graph.repository.VertexProjection;
 import com.mathsystem.domain.task.repository.TaskProjection;
 import com.mathsystem.lib.graphapi.AbstractGraph;
 import com.mathsystem.lib.graphapi.GraphFactory;

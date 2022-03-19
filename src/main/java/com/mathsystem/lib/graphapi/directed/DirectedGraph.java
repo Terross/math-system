@@ -1,10 +1,10 @@
 package com.mathsystem.lib.graphapi.directed;
 
-import com.mathsystem.domain.task.graph.repository.Color;
-import com.mathsystem.domain.task.graph.repository.EdgeProjection;
+import com.mathsystem.domain.graph.repository.Color;
+import com.mathsystem.domain.graph.repository.EdgeProjection;
 
 
-import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.domain.graph.repository.VertexProjection;
 import com.mathsystem.lib.graphapi.AbstractGraph;
 
 import com.mathsystem.lib.graphapi.Vertex;

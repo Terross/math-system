@@ -2,8 +2,8 @@ package com.mathsystem.domain.task.repository;
 
 
 import com.mathsystem.domain.plugin.repository.PluginAnswerProjection;
-import com.mathsystem.domain.task.graph.repository.GraphProjection;
-import com.mathsystem.domain.task.graph.repository.GraphType;
+import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.graph.repository.GraphType;
 import lombok.*;
 
 import javax.persistence.*;

@@ -1,4 +1,4 @@
-package com.mathsystem.domain.task.graph;
+package com.mathsystem.domain.graph;
 
 
 import com.mathsystem.domain.plugin.GraphCharacteristic;

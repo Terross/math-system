@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   servlet:
     multipart:
@@ -27,5 +27,8 @@ jwt:
 
 
 plugin:
-  path :
+  native:
+    path: "./src/main/java/com/mathsystem/domain/plugin/nativerealization"
+  path: "/home/dmitry/IdeaProjects/math-system/plugins"
+  test.path: "/home/dmitry/IdeaProjects/math-system/dg.txt"
 

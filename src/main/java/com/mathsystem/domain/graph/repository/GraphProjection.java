@@ -1,6 +1,5 @@
-package com.mathsystem.domain.task.graph.repository;
+package com.mathsystem.domain.graph.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mathsystem.domain.task.repository.TaskProjection;
 import lombok.Data;
 

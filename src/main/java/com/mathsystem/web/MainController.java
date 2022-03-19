@@ -2,12 +2,10 @@ package com.mathsystem.web;
 
 import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
-import com.mathsystem.domain.task.graph.repository.GraphRepository;
+import com.mathsystem.domain.graph.repository.GraphRepository;
 import com.mathsystem.domain.task.repository.TaskProjection;
 import com.mathsystem.domain.task.repository.TaskRepository;
-import com.mathsystem.domain.user.repository.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

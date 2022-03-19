@@ -1,6 +1,6 @@
 package com.mathsystem.domain.plugin.repository;
 
-import com.mathsystem.domain.task.graph.repository.GraphType;
+import com.mathsystem.domain.graph.repository.GraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

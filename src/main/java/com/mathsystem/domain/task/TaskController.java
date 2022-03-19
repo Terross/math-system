@@ -2,9 +2,9 @@ package com.mathsystem.domain.task;
 
 import com.mathsystem.domain.plugin.repository.PluginAnswerProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
-import com.mathsystem.domain.task.graph.repository.EdgeProjection;
-import com.mathsystem.domain.task.graph.repository.GraphProjection;
-import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.domain.graph.repository.EdgeProjection;
+import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.graph.repository.VertexProjection;
 import com.mathsystem.domain.task.repository.TaskProjection;
 import com.mathsystem.domain.task.repository.TaskRepository;
 import com.mathsystem.exceptions.TaskAlreadyExistsException;

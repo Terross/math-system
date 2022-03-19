@@ -1,52 +1,71 @@
 package com.mathsystem.domain.plugin;
 
 
+import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.domain.plugin.repository.PluginType;
-import com.mathsystem.domain.task.graph.repository.GraphRepository;
-import com.mathsystem.domain.task.graph.repository.GraphType;
+import com.mathsystem.domain.graph.repository.GraphRepository;
+import com.mathsystem.domain.graph.repository.GraphType;
 import com.mathsystem.exceptions.*;
-
-
 import com.mathsystem.lib.graphapi.AbstractGraph;
 import com.mathsystem.lib.graphapi.GraphFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.mathsystem.exceptions.ErrorCode.PLUGIN_ALREADY_EXIST;
+
+@Slf4j
 @RestController
-@RequestMapping("plugin/api")
+@RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class PluginController {
+    @Value("${plugin.path}")
+    private String defaultDirForPlugin;
+    @Value("${plugin.test.path}")
+    private String testGraphPath;
+
     private final PluginRepository pluginRepository;
     private final GraphRepository graphRepository;
-    private final String defaultDirForPlugin =
-            "/home/dmitry/IdeaProjects/math-system/plugins/";
-    private final String testGraphPath = "/home/dmitry/IdeaProjects/math-system/dg.txt";
-    private final Logger logger = LoggerFactory.getLogger(PluginController.class);
+    private final PluginService pluginService;
 
-    @Autowired
-    public PluginController(PluginRepository pluginRepository, GraphRepository graphRepository) {
-        this.pluginRepository = pluginRepository;
-        this.graphRepository = graphRepository;
+
+    @PostMapping("/all/plugin/native-plugin")
+    public ResponseEntity<?> saveNativePlugin(@RequestBody PluginProjection pluginProjection) {
+        return ResponseEntity.ok(pluginService.saveNativePlugin(pluginProjection));
     }
 
-    @ExceptionHandler(SomethingWrongInPluginException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> somethingWrongException(SomethingWrongInPluginException somethingWrongInPluginException) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .header("SomethingWrong")
-                .body(somethingWrongInPluginException.getMessage());
+    @GetMapping("/all/plugin/plugins")
+    public ResponseEntity<?> getAllPlugins() {
+        return ResponseEntity.ok(pluginService.getAllPugins());
+    }
+
+    @DeleteMapping("/all/plugin/plugin/{id}")
+    public ResponseEntity<?> deletePlugin(@PathVariable("id") UUID id) {
+        pluginService.deletePlugin(id);
+        return ResponseEntity.ok(id);
+    }
+
+    @PutMapping("/all/plugin/plugin/{id}")
+    public ResponseEntity<?> updatePlugin(@PathVariable("id") UUID id, @RequestBody PluginProjection pluginProjection) {
+        return ResponseEntity.ok(pluginService.updatePluginInfo(id, pluginProjection));
+    }
+
+    @PostMapping("/all/plugin/chech-plugin/{id}")
+    public ResponseEntity<?> checkPlugin(@PathVariable("id") UUID id, @RequestBody GraphProjection graphProjection) {
+        return ResponseEntity.ok(pluginService.checkPlugin(id, graphProjection));
     }
 
     //TO-DO: Переписать
@@ -58,20 +77,16 @@ public class PluginController {
                                             @RequestParam("file") MultipartFile file)
             throws IOException, InterruptedException {
         if (!pluginRepository.findAlgorithmByFileName(file.getOriginalFilename()).isEmpty()) {
-            logger.error("Plugin already exist!!!");
-            throw new PluginAlreadyExistsException();
+            throw new SqlConflictException(PLUGIN_ALREADY_EXIST.name(), PLUGIN_ALREADY_EXIST);
         }
         if (!pluginRepository.findAlgorithmByName(name).isEmpty()) {
-            logger.error("Plugin already exist!!!");
-            throw new PluginAlreadyExistsException();
+            throw new SqlConflictException(PLUGIN_ALREADY_EXIST.name(), PLUGIN_ALREADY_EXIST);
         }
         PluginProjection pluginProjection = null;
-        logger.info(file.getOriginalFilename());
 
             File pluginsDir = new File(defaultDirForPlugin);
             if (!pluginsDir.exists()) {
                 pluginsDir.mkdir();
-                logger.info(pluginsDir.getAbsolutePath() + " has created");
             }
             File newJarFile = new File(defaultDirForPlugin + file.getOriginalFilename() );
             if (newJarFile.createNewFile()) {
@@ -98,7 +113,6 @@ public class PluginController {
                 long start = System.currentTimeMillis();
                 while (verifyThread.isAlive()) {
                     if (System.currentTimeMillis() - start > 3000) {
-                        logger.error("time execute exception");
                         deleteFileFromDisk(defaultDirForPlugin + pluginProjection.getFileName());
                         throw new PluginTimeExecuteException();
                     }
@@ -167,9 +181,7 @@ public class PluginController {
         System.out.println();
         File file = new File(fileName);
         if (file.delete()) {
-            logger.info(file.getName() + " deleted");
         } else {
-            logger.error(file.getName() + " error");
         }
     }
 
@@ -180,14 +192,12 @@ public class PluginController {
 
         if (algorithm.getPluginType() == PluginType.PROPERTY) {
             if (! (plugin instanceof GraphProperty)) {
-                logger.error("Wrong class type");
                 throw new PluginCreatingException();
             } else {
                 runPluginForTest(algorithm, plugin, PluginType.PROPERTY);
             }
         } else {
             if (! (plugin instanceof GraphCharacteristic)) {
-                logger.error("Wrong class type");
                 throw new PluginCreatingException();
             } else {
                runPluginForTest(algorithm, plugin, PluginType.CHARACTERISTIC);

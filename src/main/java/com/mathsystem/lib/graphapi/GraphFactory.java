@@ -1,9 +1,9 @@
 package com.mathsystem.lib.graphapi;
 
 
-import com.mathsystem.domain.task.graph.repository.EdgeProjection;
-import com.mathsystem.domain.task.graph.repository.GraphType;
-import com.mathsystem.domain.task.graph.repository.VertexProjection;
+import com.mathsystem.domain.graph.repository.EdgeProjection;
+import com.mathsystem.domain.graph.repository.GraphType;
+import com.mathsystem.domain.graph.repository.VertexProjection;
 import com.mathsystem.lib.graphapi.directed.DirectedGraph;
 import com.mathsystem.lib.graphapi.undirected.UndirectedGraph;
 

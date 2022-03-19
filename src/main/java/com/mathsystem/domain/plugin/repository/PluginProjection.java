@@ -1,7 +1,7 @@
 package com.mathsystem.domain.plugin.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mathsystem.domain.task.graph.repository.GraphType;
+import com.mathsystem.domain.graph.repository.GraphType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -28,7 +28,9 @@ public class PluginProjection {
 
     private String fileName;
 
-    private boolean isNative;
+    private boolean nativeRealization;
+
+    private String authorEmail;
 
     @JsonIgnore
     @OneToMany(mappedBy = "pluginProjection", cascade = CascadeType.ALL)

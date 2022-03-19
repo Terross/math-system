@@ -1,4 +1,4 @@
-package com.mathsystem.domain.task.graph.repository;
+package com.mathsystem.domain.graph.repository;
 
 public enum Color {
     red,

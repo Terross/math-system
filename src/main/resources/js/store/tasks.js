@@ -1,4 +1,5 @@
 import tasksApi from "../api/tasks";
+import constructorGraph from "./constructorGraph";
 
 const state = () => ({
     tasks: [],
@@ -15,16 +16,29 @@ const state = () => ({
         },
         graphDirect: true,
         graphIsPresent: false,
-        graph: {
-            edgeCount: 0,
-            vertexCount: 0,
-            elements: []
-        }
+        graph: constructorGraph.state()
     }
 })
 
 const getters = {
-
+    generatedDescription: (state) => {
+        let text = 'Постройте ' + (state.currentTask.graphDirect ? 'ориентированный': 'неориентированный') +
+            ' удовлетворяющий следующим условиям:' + '\n'
+        state.currentTask.plugins.forEach(plugin => {
+            const pluginType = plugin.plugin.pluginType
+            switch (pluginType) {
+                case 'CHARACTERISTIC':
+                    text = text + plugin.plugin.description + ' ' + plugin.value + '\n'
+                    break
+                case 'PROPERTY':
+                    text = text + plugin.plugin.description + ' ' + plugin.value ? 'выполнено' : 'невыполнено' + '\n'
+                    break
+                default:
+                    break
+            }
+        })
+        return text
+    },
     findTaskById: (state) => (id) => {
         return state.tasks.find(task => task.id.toString() === id.toString())
     },

@@ -46,7 +46,6 @@
           </v-btn>
         </v-btn-toggle>
       </v-col>
-
       <v-col>
         <v-menu offset-y class = "mx-4">
           <template v-slot:activator="{ on, attrs }" >
@@ -71,7 +70,6 @@
                   id="zoom"
               >Zoom
                 <v-icon dark>center_focus_strong
-
                 </v-icon>
               </v-btn>
             </v-list-item>
@@ -142,9 +140,6 @@ import {saveAS} from 'file-saver'
 
 export default {
   name: "navigationGraph",
-  props: {
-    networkType: String
-  },
   data() {
     return {
       editType: this.$store.state.constructorGraph.editType
@@ -215,12 +210,6 @@ export default {
     },
     drawClick() {
       this['constructorGraph/changeEditTypeMutation']('draw')
-    },
-    directedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](true)
-    },
-    undirectedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](false)
     }
   }
 }

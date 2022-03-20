@@ -215,10 +215,9 @@
 <script>
 import GraphEditor from "../components/cylc/graphEditor.vue";
 import TaskList from "./TaskList.vue";
-import taskConstructor from "./TaskConstructor.vue";
 import { mapState, mapGetters, mapMutations } from "vuex";
 export default {
-  components: {TaskList, GraphEditor, taskConstructor},
+  components: {TaskList, GraphEditor},
   computed: {
     profile: {
         ...mapState({get: 'profile'})

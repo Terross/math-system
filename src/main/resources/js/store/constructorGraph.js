@@ -3,21 +3,10 @@ import {deleteEdge} from '../util/collections.js'
 
 const defaultState = {
     constructorGraph: [],
-    menu: false,
     edgeCount: 0,
     vertexCount: 0,
     editType: 'move', //'edit', 'remove', 'draw'
-    changeLabel: true,
-    direct: true,
-    selectedElement: null,
-    reg: false,
-    graphPresent: false,
-    permission: {
-        "draw" : true,
-        "edit" : true,
-        "color" : true,
-        "remove" : true
-    }
+    reg: false
 }
 
 const state = () => (defaultState)
@@ -125,22 +114,18 @@ const mutations = {
         state.constructorGraph[index].label = node.label
         state.constructorGraph[index].weight = node.weight
     },
-    updatePermissionMutation(state, newPermission) {
-        state.permission = newPermission
+    changeVertexCoordinateMutation(state, node) {
+        const index = state.constructorGraph.findIndex(
+            item => item.name.toString() === node.name.toString()
+        )
+        state.constructorGraph[index].xCoordinate = node.xCoordinate
+        state.constructorGraph[index].yCoordinate = node.yCoordinate
     },
     cleanGraphMutation(state) {
         state.constructorGraph = []
         state.edgeCount = 0
         state.vertexCount = 0
         state.editType = 'move'
-        state.changeLabel = true
-        state.direct = true
-        state.permission = {
-            "draw" : true,
-            "edit" : true,
-            "color" : true,
-            "remove" : true
-        }
     },
     initMutation(state, graphData) {
 
@@ -148,8 +133,6 @@ const mutations = {
         state.constructorGraph = graphData.vertexes
         state.edgeCount = graphData.edgeCount
         state.vertexCount = graphData.vertexCount
-        state.permission = graphData.permission
-        state.direct = graphData.direct
         for (let i = 0; i < state.constructorGraph.length; i++) {
             state.constructorGraph[i].index = state.constructorGraph[i].name
         }
@@ -162,6 +145,7 @@ const mutations = {
         state.vertexCount = state.vertexCount + 1
     },
     addEdgeMutation(state, edge) {
+        console.log(edge)
         const vertexSourceIndex = state.constructorGraph.findIndex(
             item => item.name === edge.fromV
         )
@@ -213,7 +197,6 @@ const mutations = {
         }
     },
     removeEdgeMutation(state, edge) {
-
         deleteEdge(state, edge)
     },
     updateEdgeColorMutation(state, edge) {
@@ -269,25 +252,9 @@ const mutations = {
     changeEditTypeMutation(state, newType) {
         state.editType = newType
     },
-    changeDirectTypeMutation(state, newType) {
-        state.direct = newType
-    },
-    selectedDataMutation(state, newData) {
-        state.selectedData = newData
-    },
     registrationMutation(state) {
         state.reg = true
     },
-    changeElementDataMutation(state, newData) {
-        state.elementData = newData
-    },
-    graphPresentMutation(state) {
-        state.graphPresent = !state.graphPresent
-    }
-
-}
-
-const actions = {
 
 }
 
@@ -295,6 +262,5 @@ export default {
     namespaced: true,
     state,
     getters,
-    actions,
     mutations
 }

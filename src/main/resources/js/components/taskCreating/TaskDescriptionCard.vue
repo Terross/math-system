@@ -1,12 +1,11 @@
 <template>
   <v-card>
     <v-card-title>Описание задачи</v-card-title>
-    <v-card-text style="white-space: pre-line">{{computedDescription}}</v-card-text>
+    <v-card-text style="white-space: pre-line">{{edit ? description : computedDescription}}</v-card-text>
     <v-card-actions>
       <v-btn color="primary"
              dark
-             small
-             @click="dialog = true">
+             @click="dialog=true">
         Изменить описание
       </v-btn>
     </v-card-actions>
@@ -21,7 +20,7 @@
         <v-card-text>
           <v-container>
             <v-textarea
-                :value="computedDescription"
+                :value="description"
                 v-model="description"
                 auto-grow
                 filled>
@@ -44,19 +43,22 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
+import {mapMutations, mapGetters} from "vuex";
 export default {
   name: "TaskDescriptionCard",
   data() {
     return {
       dialog: false,
-      description: ''
+      description: this['tasks/generatedDescription'](),
+      edit: false
     }
   },
   methods: {
     ...mapMutations(['tasks/editCurrentTaskDescriptionMutation']),
+    ...mapGetters(['tasks/generatedDescription']),
     editDescription() {
       this['tasks/editCurrentTaskDescriptionMutation'](this.description)
+      this.edit = true
       this.dialog = false
     }
   },
@@ -65,25 +67,12 @@ export default {
       return this.$store.state.tasks.currentTask
     },
     computedDescription() {
-      let text = 'Постройте ' + (this.currentTask.graphDirect ? 'ориентированный': 'неориентированный') +
-          ' удовлетворяющий следующим условиям:' + '\n'
-      this.currentTask.plugins.forEach(plugin => {
-        const pluginType = plugin.plugin.pluginType
-        switch (pluginType) {
-          case 'CHARACTERISTIC':
-            text = text + plugin.plugin.description + ' ' + plugin.value + '\n'
-            break
-          case 'PROPERTY':
-            text = text + plugin.plugin.description + ' ' + plugin.value ? 'выполнено' : 'невыполнено' + '\n'
-            break
-          default:
-            break
-        }
-      })
-      return text
+        return this['tasks/generatedDescription']()
     }
+  },
+  beforeMount() {
+    this['tasks/editCurrentTaskDescriptionMutation'](this.description)
   }
-
 }
 </script>
 

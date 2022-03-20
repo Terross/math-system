@@ -1,5 +1,4 @@
 <template>
-
   <v-card id="edit-panel">
     <v-row no-gutters>
       <v-col>
@@ -166,7 +165,7 @@ export default {
       return this.$store.state.constructorGraph
     },
     permission() {
-      return this.$store.state.constructorGraph.permission
+      return this.$store.state.tasks.currentTask.permission
     }
   },
   methods: {
@@ -229,7 +228,7 @@ export default {
 
 <style scoped>
 #edit-panel {
-  background-color: #673AB7;
+  background-color: #42A5F5;
   width: 100%;
 }
 </style>

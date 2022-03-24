@@ -1,5 +1,6 @@
 package com.mathsystem.domain.user.repository;
 
+import com.mathsystem.domain.task.repository.Task;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -40,5 +42,10 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> task;
+
+
 }
 

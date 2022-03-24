@@ -1,4 +1,4 @@
-package com.mathsystem.domain.graph.repository;
+package com.mathsystem.api.graph.model;
 
 public enum GraphType {
     DIRECTED,

@@ -110,9 +110,25 @@ export default {
         }],
     undirected: [
         {
-            selector: 'node[name]',
+            selector: 'node[label]',
             style: {
-                'content': 'data(name)',
+                'content': 'data(label)',
+            }
+        },
+        {
+            "selector": ".multiline-manual",
+            "style": {
+                "text-wrap": "wrap",
+                "text-valign": "center",
+                "text-halign": "left"
+            }
+        },
+        {
+            selector: 'edge[label]',
+            style: {
+                "text-wrap": "wrap",
+                "text-valign": "center",
+                'content': 'data(label)',
             }
         },
         {
@@ -125,13 +141,6 @@ export default {
             selector: 'edge',
             style: {
                 'curve-style': 'bezier',
-            }
-        },
-        {
-            selector: 'edge[weight]',
-            style: {
-                'curve-style': 'bezier',
-                'content': 'data(weight)',
             }
         },
         {

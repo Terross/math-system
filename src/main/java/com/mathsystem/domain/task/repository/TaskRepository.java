@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface TaskRepository extends JpaRepository<TaskProjection, UUID> {
-    public List<TaskProjection> findAllByName(String name);
+public interface TaskRepository extends JpaRepository<Task, UUID> {
+    public List<Task> findAllByName(String name);
 }

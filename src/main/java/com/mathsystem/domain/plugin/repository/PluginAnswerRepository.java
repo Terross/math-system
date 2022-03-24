@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface PluginAnswerRepository extends JpaRepository<PluginAnswerProjection, UUID> {
+public interface PluginAnswerRepository extends JpaRepository<PluginAnswer, UUID> {
 }

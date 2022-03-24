@@ -1,6 +1,11 @@
 package com.mathsystem.domain.plugin;
 
+import com.mathsystem.api.graph.mapper.GraphMapper;
+import com.mathsystem.api.graph.mapper.UndirectedGraphCreator;
+import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.graph.repository.GraphRepository;
+import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.exceptions.SqlConflictException;
@@ -16,6 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.google.common.base.CaseFormat.LOWER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_CAMEL;
+import static com.google.common.io.Files.getNameWithoutExtension;
 import static com.mathsystem.exceptions.ErrorCode.PLUGIN_ALREADY_EXIST;
 import static com.mathsystem.exceptions.ErrorCode.PLUGIN_NOT_FOUND;
 
@@ -26,6 +34,10 @@ public class PluginService {
     @Value("${plugin.native.path}")
     private String baseNativePluginPath;
     private final PluginRepository pluginRepository;
+    private final NativePluginService nativePluginService;
+    private final UndirectedGraphCreator undirectedGraphCreator;
+    private final GraphRepository graphRepository;
+    private final GraphMapper graphMapper;
 
     public PluginProjection saveNativePlugin(PluginProjection pluginProjection) {
         if (!pluginRepository.findAlgorithmByFileName(pluginProjection.getFileName()).isEmpty()) {
@@ -66,8 +78,13 @@ public class PluginService {
         return pluginRepository.save(plugin);
     }
 
-    public String checkPlugin(UUID id, GraphProjection graphProjection) {
-        System.out.println(graphProjection);
-        return null;
+    public String checkPlugin(UUID id, Graph graph) {
+        PluginProjection plugin = pluginRepository
+                .findById(id)
+                .orElseThrow(null);
+        String name = UPPER_CAMEL.to(LOWER_CAMEL, getNameWithoutExtension(plugin.getFileName()));
+        graphRepository.save(graphMapper.graphToGraphProjection(undirectedGraphCreator.createUndirectedConnections(graph)));
+        GraphProjection atak = graphRepository.findById(UUID.fromString("66ac13f5-4726-4c6d-b515-be06b09049e0")).orElseThrow();
+        return nativePluginService.runPlugin(name, graph);
     }
 }

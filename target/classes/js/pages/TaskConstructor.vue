@@ -24,6 +24,12 @@ export default {
     graphEditorVisible() {
       return this.$store.state.tasks.currentTask.graphIsPresent
     }
+  },
+  methods: {
+    ...mapMutations(['constructorGraph/cleanGraphMutation'])
+  },
+  beforeMount() {
+    this['constructorGraph/cleanGraphMutation']()
   }
 }
 </script>

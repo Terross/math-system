@@ -141,7 +141,6 @@ export default {
         "password": this.password,
         "userGroup": this.userGroup
       }
-    console.log(this.lastName)
       HTTP
           .post('auth/register', data)
           .then(response => {

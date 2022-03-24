@@ -1,38 +1,28 @@
 package com.mathsystem.domain.plugin.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mathsystem.domain.graph.repository.GraphType;
+import com.mathsystem.api.graph.model.GraphType;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
 @Entity
 @ToString
+@Table(name = "plugin")
 public class PluginProjection {
     @Id
     @GeneratedValue
     private UUID id;
-
     private String name;
-
     private String description;
-
     private PluginType pluginType;
-
     private GraphType graphType;
-
     private String fileName;
-
     private boolean nativeRealization;
-
     private String authorEmail;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "pluginProjection", cascade = CascadeType.ALL)
-    private List<PluginAnswerProjection> pluginAnswerProjections = new ArrayList<>();
 }

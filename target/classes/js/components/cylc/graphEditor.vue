@@ -1,11 +1,7 @@
 <template>
   <v-col>
-      <navigation-graph :networkType="networkType">
-      </navigation-graph>
-
-      <network :networkType="networkType"
-               :config-elements="configElements">
-      </network>
+      <navigation-graphProjection></navigation-graphProjection>
+      <network :config-elements="configElements"></network>
   </v-col>
 </template>
 

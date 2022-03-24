@@ -1,22 +1,10 @@
 export function deleteEdge(state, edge) {
-    console.log(edge)
-    const vertexSourceIndex = state.constructorGraph.findIndex(
-        item => item.name.toString() === edge.fromV.toString()
-    )
-    const vertexTargetIndex = state.constructorGraph.findIndex(
-        item => item.name.toString() === edge.toV.toString()
-    )
-    console.log(vertexTargetIndex)
-
+    const vertexSourceIndex = state.constructorGraph.findIndex(item => item.id === edge.fromV)
+    const vertexTargetIndex = state.constructorGraph.findIndex(item => item.id === edge.toV)
     const outArray = state.constructorGraph[vertexSourceIndex].outgoingEdges
     const inArray = state.constructorGraph[vertexTargetIndex].incomingEdges
-
-    const outArrayIndex = outArray.findIndex(
-        item => item.name.toString() === edge.name.toString()
-    )
-    const inArrayIndex = inArray.findIndex(
-        item => item.name.toString() === edge.name.toString()
-    )
+    const outArrayIndex = outArray.findIndex(item => item.id === edge.id)
+    const inArrayIndex = inArray.findIndex(item => item.id === edge.id)
 
     state.constructorGraph[vertexSourceIndex].outgoingEdges = [
         ...outArray.slice(0, outArrayIndex),

@@ -51,7 +51,7 @@
                 Изменить описание
               </v-btn>
               <v-switch
-                  v-model="graph"
+                  v-model="graphProjection"
                   label="Граф заранее построен"></v-switch>
             </v-col>
 
@@ -91,7 +91,7 @@
               >
                 <v-btn
                     :value="true"
-                    id="directed-type-graph"
+                    id="directed-type-graphProjection"
                 >
 
                   <v-icon>moving</v-icon>
@@ -99,7 +99,7 @@
 
                 <v-btn
                     :value="false"
-                    id="undirected-type-graph">
+                    id="undirected-type-graphProjection">
                   <v-icon>show_chart</v-icon>
                 </v-btn>
               </v-btn-toggle>
@@ -262,7 +262,7 @@ export default {
       taskCategory: '',
       added: false,
       addedError: false,
-      graph: this.$store.state.constructorGraph.graphPresent,
+      graphProjection: this.$store.state.constructorGraph.graphPresent,
       graphType: this.$store.state.constructorGraph.direct,
       permission: this.$store.state.constructorGraph.permission,
       valid: true,
@@ -272,7 +272,7 @@ export default {
     }
   },
   watch: {
-    graph() {
+    graphProjection() {
       this['constructorGraph/graphPresentMutation']()
       this['constructorGraph/cleanGraphMutation']()
       this.pluginResult = false
@@ -402,10 +402,10 @@ export default {
       console.log(algAnswerList)
 
 
-        let graph = null;
+        let graphProjection = null;
 
-        if (this.graph) {
-          graph = {
+        if (this.graphProjection) {
+          graphProjection = {
             "vertexCount" : this.graphData.vertexCount,
             "edgeCount" : this.graphData.edgeCount,
             "vertexes" : this.graphData.constructorGraph,
@@ -425,7 +425,7 @@ export default {
           "algAnswerList" : algAnswerList,
           "taskPermission" : taskPermission,
           "taskDescription": this.taskDescriptionText,
-          "graph" : graph,
+          "graphProjection" : graphProjection,
           "graphType" : this.$store.state.constructorGraph.direct ? "DIRECTED" : "UNDIRECTED"
         }
         this.$http.post('task', data).then(
@@ -443,14 +443,14 @@ export default {
     },
     findPluginResult() {
       this.pluginResult = true
-      const graph = {
+      const graphProjection = {
         "vertexCount": this.graphData.vertexCount,
         "edgeCount": this.graphData.edgeCount,
         "vertexes": this.graphData.constructorGraph,
         "graphType": this.$store.state.constructorGraph.direct ? "DIRECTED" : "UNDIRECTED"
       }
 
-      this.$http.post('/task/answers', graph).then(response => {
+      this.$http.post('/task/answers', graphProjection).then(response => {
         this['plugins/addAnswerMutation'](response.data)
       })
 

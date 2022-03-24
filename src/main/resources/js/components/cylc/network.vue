@@ -54,7 +54,7 @@
               id="saveNewData"
               color="primary"
               dark
-              @click="saveNewElementData(selectedElement.elementType, selectedElement.name)"
+              @click="saveNewElementData(selectedElement.elementType, selectedElement.id)"
           >
             Сохранить
           </v-btn>
@@ -69,7 +69,7 @@
       <v-card>
         <v-card-title>
           <span class="text-h5">{{ selectedElement === null ? '' :
-              (selectedElement.elementType === 'vertex' ? "Редактор вершин" : "Редактор ребер") }}</span>
+              (selectedElement.elementType === 'vertexProjectio' ? "Редактор вершин" : "Редактор ребер") }}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -104,6 +104,7 @@ import {mapActions, mapGetters, mapMutations} from 'vuex'
 import edgehandles from 'cytoscape-edgehandles'
 import cxtmenu from 'cytoscape-cxtmenu';
 import popper from 'cytoscape-popper';
+import { uuid } from 'vue-uuid';
 
 import 'cytoscape-context-menus/cytoscape-context-menus.css';
 import cola from 'cytoscape-cola'
@@ -116,7 +117,6 @@ export default {
   name: "network",
   data() {
     return {
-      edgeName: 0,
       menu: false,
       message: false,
       hints: true,
@@ -198,15 +198,15 @@ export default {
 
         this['constructorGraph/updateEdgeColorMutation'](
             {
-              "fromV": ele.data().find(item => item.id === source).name,
-              "toV": ele.data().find(item => item.id === target).name,
+              "fromV": ele.data().find(item => item.id === source).id,
+              "toV": ele.data().find(item => item.id === target).id,
               "color": color
             }
         )
       } else {
         this['constructorGraph/updateNodeColorMutation'](
             {
-              "name" : ele.data().name,
+              "name" : ele.data().id,
               "color": color
             }
         )
@@ -239,14 +239,13 @@ export default {
 
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
         this['constructorGraph/addEdgeMutation']({
-          "name":  this.edgeName,
+          "id" : addedEdge.data().id,
           "color" : 'gray',
-          "fromV" : sourceNode.data().name,
-          "toV" : targetNode.data().name,
+          "fromV" : sourceNode.data().id,
+          "toV" : targetNode.data().id,
           "weight" : null,
           "label": null
         })
-        this.edgeName++
       });
 
       document.getElementById('layouts').addEventListener('click', function () {
@@ -301,7 +300,6 @@ export default {
           this.addNode(event)
           break
         case 'move':
-          this.showDetails(event)
           break
         case 'remove':
           this.removeElem(event)
@@ -309,38 +307,6 @@ export default {
         case 'edit':
           this.editElem(event)
           break
-        case 'details':
-          this.showDetails(event)
-          break;
-      }
-    },
-    showDetails(event) {
-      console.log(123)
-      let {target} = event
-      let {cy} = event
-      if (event.target !== event.cy) {
-        if (target.group().toString() === 'nodes') {
-          this.selectedElement.weight =
-              this.$store.getters["constructorGraph/findVertexById"](target.data().name).weight
-          this.selectedElement.label =
-              this.$store.getters["constructorGraph/findVertexById"](target.data().name).label
-          this.selectedElement.name = target.data().name
-          this.selectedElement.elementType = "vertex"
-          this.info = true
-        } else {
-          if (target.group().toString() === 'edges') {
-
-            this.selectedElement.weight =
-                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).weight
-            this.selectedElement.label =
-                this.$store.getters["constructorGraph/findEdgeById"](target.data().name).label
-            this.selectedElement.elementType = "edge"
-            this.selectedElement.name = target.data().name
-            this.selectedElement.edge = target
-            this.selectedElement.target = target
-            this.info = true
-          }
-        }
       }
     },
     editElem(event) {
@@ -349,20 +315,20 @@ export default {
       if (event.target !== event.cy) {
         if (target.group().toString() === 'nodes') {
           this.selectedElement.weight =
-              this["constructorGraph/findVertexById"](target.data().name).weight
+              this["constructorGraph/findVertexById"](target.data().id).weight
           this.selectedElement.label =
-              this["constructorGraph/findVertexById"](target.data().name).label
-          this.selectedElement.name = target.data().name
+              this["constructorGraph/findVertexById"](target.data().id).label
+          this.selectedElement.id = target.data().id
           this.selectedElement.elementType = "vertex"
           this.dialog = true
         } else {
           if (target.group().toString() === 'edges') {
             this.selectedElement.weight =
-                this["constructorGraph/findEdgeById"](target.data().name).weight
+                this["constructorGraph/findEdgeById"](target.data().id).weight
             this.selectedElement.label =
-                this["constructorGraph/findEdgeById"](target.data().name).label
+                this["constructorGraph/findEdgeById"](target.data().id).label
             this.selectedElement.elementType = "edge"
-            this.selectedElement.name = target.data().name
+            this.selectedElement.name = target.data().id
             this.selectedElement.target = target
             this.dialog = true
           }
@@ -373,33 +339,31 @@ export default {
     dragOverEvent(event) {
       if (event.target !== event.cy && event.target.group().toString() === 'nodes') {
         this['constructorGraph/changeVertexCoordinateMutation']({
-          name: event.target.data().name,
-          xCoordinate: event.position.x,
-          yCoordinate: event.position.y
+          "id": event.target.data().id,
+          "xCoordinate": event.position.x,
+          "yCoordinate": event.position.y
         })
       }
-
     },
     addNode(event) {
       let {position} = event
+      const uuid4 = uuid.v4()
       if (event.target === event.cy) {
-        const newName = this.$store.getters["constructorGraph/nextVertexName"]
-        const newIndex = this.$store.getters["constructorGraph/nextVertexIndex"]
         event.cy.add({
           group: 'nodes',
           data: {
-            name: newName,
+            id: uuid4,
             color: 'gray'
           },
           classes: 'multiline-manual',
           position: {x: position.x, y: position.y}
         })
+
         this['constructorGraph/addNodeMutation'](
             {
+              "id": uuid4,
               "xCoordinate": position.x,
               "yCoordinate": position.y,
-              "index": newIndex,
-              "name": newName,
               "color": 'gray',
               "weight": null,
               "label": null,
@@ -420,43 +384,35 @@ export default {
           let ver = []
           cy.nodes().map(item => ver.push(item.data()))
           this['constructorGraph/removeEdgeMutation']({
-            "name" : target.data().name,
-            "fromV" : ver.find(item => item.id === sourceV).name,
-            "toV" : ver.find(item => item.id === targetV).name
+            "name" : target.data().id,
+            "fromV" : ver.find(item => item.id === sourceV).id,
+            "toV" : ver.find(item => item.id === targetV).id
           })
         } else {
-          let index = target.data().name
-          for (let i = 0; i < cy.nodes().length; i++) {
-            let node = cy.nodes()[i]
-            if (node.data().name > index) {
-              node.data('name', node.data().name - 1)
-            }
-          }
           this['constructorGraph/removeNodeMutation']({
-            "name" : target.data().name
+            "id" : target.data().id
           })
         }
       }
     },
-    saveNewElementData(elementType, name) {
+    saveNewElementData(elementType, id) {
       if (!isNaN(Number(this.selectedElement.weight))) {
         if (elementType === 'edge') {
           this['constructorGraph/changeEdgeData']({
-            "name" : name,
+            "id" : id,
             "label" : this.selectedElement.label,
             "weight" : this.selectedElement.weight
           })
         } else {
           if (elementType === 'vertex')  {
             this['constructorGraph/changeVertexData']({
-              "name" : name,
+              "id" : id,
               "label" : this.selectedElement.label,
               "weight" : this.selectedElement.weight
             })
           }
         }
         this.selectedElement.elem.data('label', this.selectedElement.weight + '\n' + this.selectedElement.label)
-
         this.dialog = false
       }
     },

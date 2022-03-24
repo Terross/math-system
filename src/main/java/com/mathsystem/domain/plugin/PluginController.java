@@ -1,15 +1,14 @@
 package com.mathsystem.domain.plugin;
 
 
+import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.graph.repository.GraphRepository;
+import com.mathsystem.api.graph.model.GraphType;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.domain.plugin.repository.PluginType;
-import com.mathsystem.domain.graph.repository.GraphRepository;
-import com.mathsystem.domain.graph.repository.GraphType;
 import com.mathsystem.exceptions.*;
-import com.mathsystem.lib.graphapi.AbstractGraph;
-import com.mathsystem.lib.graphapi.GraphFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -37,10 +34,10 @@ public class PluginController {
     @Value("${plugin.test.path}")
     private String testGraphPath;
 
+//    final GraphMapper graphMapper;
     private final PluginRepository pluginRepository;
     private final GraphRepository graphRepository;
     private final PluginService pluginService;
-
 
     @PostMapping("/all/plugin/native-plugin")
     public ResponseEntity<?> saveNativePlugin(@RequestBody PluginProjection pluginProjection) {
@@ -64,8 +61,8 @@ public class PluginController {
     }
 
     @PostMapping("/all/plugin/chech-plugin/{id}")
-    public ResponseEntity<?> checkPlugin(@PathVariable("id") UUID id, @RequestBody GraphProjection graphProjection) {
-        return ResponseEntity.ok(pluginService.checkPlugin(id, graphProjection));
+    public ResponseEntity<?> checkPlugin(@PathVariable("id") UUID id, @RequestBody Graph graph) {
+        return ResponseEntity.ok(pluginService.checkPlugin(id, graph));
     }
 
     //TO-DO: Переписать
@@ -206,30 +203,30 @@ public class PluginController {
     }
 
     private void runPluginForTest(PluginProjection algorithm, Plugin plugin, PluginType pluginType) {
-        AbstractGraph abstractGraph = null;
-
-            switch (algorithm.getGraphType()) {
-                case DIRECTED:
-                    abstractGraph = GraphFactory.loadDirectedGraphFromFile(new File(testGraphPath));
-                    break;
-                case UNDIRECTED:
-                    abstractGraph = GraphFactory.loadUndirectedGraphFromFile(new File(testGraphPath));
-                    break;
-            }
-        try {
-            switch (pluginType) {
-                case CHARACTERISTIC:
-                    ((GraphCharacteristic) plugin).execute(abstractGraph);
-                    break;
-                case PROPERTY:
-                    ((GraphProperty) plugin).execute(abstractGraph);
-                    break;
-            }
-        } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            throw new SomethingWrongInPluginException(sw.toString());
-        }
+//        AbstractGraph abstractGraph = null;
+//
+//            switch (algorithm.getGraphType()) {
+//                case DIRECTED:
+//                    abstractGraph = GraphFactory.loadDirectedGraphFromFile(new File(testGraphPath));
+//                    break;
+//                case UNDIRECTED:
+//                    abstractGraph = GraphFactory.loadUndirectedGraphFromFile(new File(testGraphPath));
+//                    break;
+//            }
+//        try {
+//            switch (pluginType) {
+//                case CHARACTERISTIC:
+//                    ((GraphCharacteristic) plugin).execute(abstractGraph);
+//                    break;
+//                case PROPERTY:
+//                    ((GraphProperty) plugin).execute(abstractGraph);
+//                    break;
+//            }
+//        } catch (Exception e) {
+//            StringWriter sw = new StringWriter();
+//            e.printStackTrace(new PrintWriter(sw));
+//            throw new SomethingWrongInPluginException(sw.toString());
+//        }
 
     }
 }

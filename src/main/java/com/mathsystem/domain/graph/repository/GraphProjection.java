@@ -1,54 +1,31 @@
 package com.mathsystem.domain.graph.repository;
 
-import com.mathsystem.domain.task.repository.TaskProjection;
+import com.mathsystem.api.graph.model.GraphType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GraphProjection {
 
     @Id
     @GeneratedValue
-    private Long id;
-
-    private GraphType graphType;
-
+    private UUID id;
+    private GraphType directType;
     private int vertexCount;
-
     private int edgeCount;
 
-    @OneToMany(mappedBy = "graphProjection", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VertexProjection> vertexProjections;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "graph_id")
+    private List<VertexProjection> vertexProjectionList;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "task_id")
-    private TaskProjection taskProjection;
-
-    public void addVertex(VertexProjection vertexProjection) {
-        vertexCount++;
-        vertexProjection.setGraphProjection(this);
-        vertexProjections.add(vertexProjection);
-    }
-
-    public void addEdge(EdgeProjection edgeProjection, VertexProjection from, VertexProjection to) {
-        edgeCount++;
-        edgeProjection.setToVertexProjection(to);
-        edgeProjection.setFromVertexProjection(from);
-        from.addOutgoingEdge(edgeProjection);
-        to.addIncomingEdge(edgeProjection);
-    }
-
-    @Override
-    public String toString() {
-        return "Graph{" +
-                "id=" + id +
-                ", vertexCount=" + vertexCount +
-                ", edgeCount=" + edgeCount +
-                ", vertexes=" + vertexProjections +
-                //", task=" + task +
-                '}';
-    }
 }

@@ -1,11 +1,11 @@
 package com.mathsystem.domain.plugin.nativerealization;
 
+import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.domain.plugin.GraphCharacteristic;
-import com.mathsystem.lib.graphapi.AbstractGraph;
 
 public class EdgeAndVertexCount implements GraphCharacteristic {
     @Override
-    public Integer execute(AbstractGraph graph) {
+    public Integer execute(Graph graph) {
         return graph.getEdgeCount() + graph.getVertexCount();
     }
 }

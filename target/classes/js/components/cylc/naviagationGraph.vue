@@ -46,7 +46,6 @@
           </v-btn>
         </v-btn-toggle>
       </v-col>
-
       <v-col>
         <v-menu offset-y class = "mx-4">
           <template v-slot:activator="{ on, attrs }" >
@@ -71,7 +70,6 @@
                   id="zoom"
               >Zoom
                 <v-icon dark>center_focus_strong
-
                 </v-icon>
               </v-btn>
             </v-list-item>
@@ -126,7 +124,7 @@
         <v-btn text
                color="secondary"
                dark
-               id="download-graph"
+               id="download-graphProjection"
                class="ma-2"
                @click="saveFile">
           Скачать граф файлом
@@ -142,9 +140,6 @@ import {saveAS} from 'file-saver'
 
 export default {
   name: "navigationGraph",
-  props: {
-    networkType: String
-  },
   data() {
     return {
       editType: this.$store.state.constructorGraph.editType
@@ -176,33 +171,33 @@ export default {
     async saveFile() {
       let file = this.graphInfo.vertexCount
       file = file + ' ' + this.graphInfo.edgeCount +'\n'
-      let vertexList = this.graphInfo.constructorGraph
-      for (let i = 0; i < vertexList.length; i++) {
+      let vertexProjectionList = this.graphInfo.constructorGraph
+      for (let i = 0; i < vertexProjectionList.length; i++) {
         file =
             file +
-            vertexList[i].name + ' ' +
-            vertexList[i].color + ' ' +
-            vertexList[i].weight + ' ' +
-            (vertexList[i].label === '' ? 'null' : vertexList[i].label) + '\n'
+            vertexProjectionList[i].name + ' ' +
+            vertexProjectionList[i].color + ' ' +
+            vertexProjectionList[i].weight + ' ' +
+            (vertexProjectionList[i].label === '' ? 'null' : vertexProjectionList[i].label) + '\n'
       }
 
-      for (let i = 0; i < vertexList.length;i++) {
-        for (let j = 0; j < vertexList[i].outgoingEdges.length; j++) {
-          let edge = vertexList[i].outgoingEdges[j]
-          let fromVertex = vertexList.filter(item => item.name.toString() === edge.fromV.toString())[0]
-          let toVertex = vertexList.filter(item => item.name.toString() === edge.toV.toString())[0]
+      for (let i = 0; i < vertexProjectionList.length;i++) {
+        for (let j = 0; j < vertexProjectionList[i].outgoingEdges.length; j++) {
+          let edgeProjection = vertexProjectionList[i].outgoingEdges[j]
+          let fromVertex = vertexProjectionList.filter(item => item.name.toString() === edgeProjection.fromV.toString())[0]
+          let toVertex = vertexProjectionList.filter(item => item.name.toString() === edgeProjection.toV.toString())[0]
           file =
               file +
               fromVertex.name +  ' ' +
               toVertex.name + ' ' +
-              edge.weight + ' ' +
-              edge.color + ' ' +
-              (edge.label === '' ? 'null' : edge.label)  + ' ' +
-              edge.name + '\n'
+              edgeProjection.weight + ' ' +
+              edgeProjection.color + ' ' +
+              (edgeProjection.label === '' ? 'null' : edgeProjection.label)  + ' ' +
+              edgeProjection.name + '\n'
         }
       }
       var blob = new Blob([file], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, "graph.txt");
+      saveAs(blob, "graphProjection.txt");
     },
     moveClick() {
       this['constructorGraph/changeEditTypeMutation']('move')
@@ -215,12 +210,6 @@ export default {
     },
     drawClick() {
       this['constructorGraph/changeEditTypeMutation']('draw')
-    },
-    directedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](true)
-    },
-    undirectedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](false)
     }
   }
 }

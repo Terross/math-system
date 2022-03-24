@@ -1,6 +1,6 @@
 package com.mathsystem.domain.plugin.repository;
 
-import com.mathsystem.domain.task.repository.TaskProjection;
+import com.mathsystem.domain.task.repository.Task;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @Entity
 @RequiredArgsConstructor
-public class PluginAnswerProjection {
+public class PluginAnswer {
 
     @Id
     @GeneratedValue
@@ -22,7 +22,7 @@ public class PluginAnswerProjection {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private TaskProjection taskProjection;
+    private Task task;
 
     private PluginType pluginType;
 

@@ -1,12 +1,12 @@
 package com.mathsystem.domain.plugin;
 
 
-import com.mathsystem.lib.graphapi.AbstractGraph;
+import com.mathsystem.api.graph.model.Graph;
 
 /**
  * Интерфейс характеристики графа.
  * Требуется реализовать, если ваше цель - создать характеристику
  */
 public interface GraphCharacteristic extends Plugin {
-    Integer execute(AbstractGraph graph);
+    Integer execute(Graph graph);
 }

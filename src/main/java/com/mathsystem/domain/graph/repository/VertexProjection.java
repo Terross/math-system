@@ -1,21 +1,25 @@
 package com.mathsystem.domain.graph.repository;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mathsystem.api.graph.model.Color;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
-@Entity
 @Data
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "vertex")
 public class VertexProjection {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
-
-    private String name;
+    @GeneratedValue
+    private UUID id;
 
     private Color color;
 
@@ -23,34 +27,16 @@ public class VertexProjection {
 
     private String label;
 
-    @OneToMany(mappedBy = "fromVertexProjection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Integer xCoordinate;
+
+    private Integer yCoordinate;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "from_v")
     private List<EdgeProjection> outgoingEdgeProjections;
 
-    @OneToMany(mappedBy = "toVertexProjection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "to_v")
     private List<EdgeProjection> incomingEdgeProjections;
 
-    @ManyToOne
-    @JoinColumn(name = "graph_id")
-    @JsonIgnore
-    private GraphProjection graphProjection;
-
-    public void addOutgoingEdge(EdgeProjection edgeProjection) {
-        outgoingEdgeProjections.add(edgeProjection);
-    }
-
-    public void addIncomingEdge(EdgeProjection edgeProjection) {
-        incomingEdgeProjections.add(edgeProjection);
-    }
-
-    @Override
-    public String toString() {
-        return "Vertex{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", outgoingEdges=" + outgoingEdgeProjections +
-                ", incomingEdges=" + incomingEdgeProjections +
-                //", graph=" + graph.getId() +
-                '}';
-    }
 }

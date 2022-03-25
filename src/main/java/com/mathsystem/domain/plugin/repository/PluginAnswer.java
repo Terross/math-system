@@ -1,6 +1,6 @@
 package com.mathsystem.domain.plugin.repository;
 
-import com.mathsystem.domain.task.repository.Task;
+import com.mathsystem.domain.task.repository.TaskProjection;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -22,9 +22,9 @@ public class PluginAnswer {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private Task task;
+    private TaskProjection taskProjection;
 
     private PluginType pluginType;
 
-    private String answer;
+    private String value;
 }

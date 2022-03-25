@@ -18,6 +18,7 @@ com/mathsystem/exceptions/UserAlreadyExistsException.class
 com/mathsystem/domain/user/UserFilterRequest.class
 com/mathsystem/domain/user/repository/UserRepository.class
 com/mathsystem/api/graph/mapper/UndirectedGraphCreator.class
+META-INF/spring.components
 com/mathsystem/authentication/jwt/JwtTokenProvider.class
 com/mathsystem/domain/plugin/PluginFactory.class
 com/mathsystem/domain/user/repository/Role.class
@@ -45,7 +46,9 @@ com/mathsystem/domain/graph/repository/GraphProjection$GraphProjectionBuilder.cl
 com/mathsystem/domain/graph/repository/VertexProjection.class
 com/mathsystem/web/MainController.class
 com/mathsystem/domain/plugin/repository/PluginProjection.class
+com/mathsystem/api/graph/mapper/EdgeMapper.class
 com/mathsystem/domain/graph/VertexToStringSerializer.class
+com/mathsystem/api/graph/mapper/EdgeMapperImpl.class
 com/mathsystem/domain/plugin/GraphProperty.class
 com/mathsystem/authentication/jwt/JwtTokenFilter.class
 com/mathsystem/domain/plugin/Plugin.class

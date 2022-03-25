@@ -65,19 +65,29 @@ export default {
     }
   },
   watch: {
+    taskName: 'changeTaskName',
+    taskCategory: 'changeTaskCategory',
     graph: 'changeGraphEnable',
     graphType: 'changeGraphType'
   },
   methods: {
     ...mapMutations([
-      'tasks/editCurrentTaskGraphEnableMutation',
-      'tasks/editCurrentTaskGraphTypeMutation'
+        'tasks/editCurrentTaskGraphEnableMutation',
+        'tasks/editCurrentTaskGraphTypeMutation',
+        'tasks/editCurrentTaskNameMutation',
+        'tasks/editCurrentTaskCategoryMutation'
     ]),
     changeGraphEnable() {
       this['tasks/editCurrentTaskGraphEnableMutation'](this.graph)
     },
     changeGraphType() {
       this['tasks/editCurrentTaskGraphTypeMutation'](this.graphType)
+    },
+    changeTaskName() {
+      this['tasks/editCurrentTaskNameMutation'](this.taskName)
+    },
+    changeTaskCategory() {
+      this['tasks/editCurrentTaskCategoryMutation'](this.taskCategory)
     }
   }
 }

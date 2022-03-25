@@ -6,7 +6,7 @@
 <!--  <v-container fluid>-->
 <!--    <v-row>-->
 <!--      <v-col style="padding-bottom: 24px">-->
-<!--        <graphProjection-editor ></graphProjection-editor>-->
+<!--        <graph-editor ></graph-editor>-->
 <!--      </v-col>-->
 <!--      <v-col>-->
 <!--        <v-row>-->
@@ -83,13 +83,13 @@ export default {
   name: "changeTask",
   data() {
     return {
-      graphProjection: null,
+      graph: null,
       taskData: this.task,
       graphVertexies: null,
       graphEdges: [],
       answer: false,
       result: "wrong"
-      //graphExist: this.task.graphProjection !== null
+      //graphExist: this.task.graph !== null
     }
   },
   components: {
@@ -103,13 +103,13 @@ export default {
   },
   methods: {
     verify() {
-      const graphProjection = {
+      const graph = {
         "vertexCount" : this.graphVertexies.length,
-        "edgeCount" : this.graphEdges.length + (this.task.graphProjection !== null ? this.task.graphProjection.edgeCount : 0),
+        "edgeCount" : this.graphEdges.length + (this.task.graph !== null ? this.task.graph.edgeCount : 0),
         "vertexes" : this.graphVertexies
       }
-      console.log(graphProjection)
-      this.$http.post(`/task/verifyTask/${this.$route.params.id}`, graphProjection).then(response => {
+      console.log(graph)
+      this.$http.post(`/task/verifyTask/${this.$route.params.id}`, graph).then(response => {
         this.answer = true
         console.log(response.data)
         this.result = response.data ? 'right' : 'wrong'
@@ -118,7 +118,7 @@ export default {
 
   },
   mounted() {
-    this.graphVertexies = this.task.graphProjection !== null ? this.task.graphProjection.vertexes : []
+    this.graphVertexies = this.task.graph !== null ? this.task.graph.vertexes : []
   }
 }
 

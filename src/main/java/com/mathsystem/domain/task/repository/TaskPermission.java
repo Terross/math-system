@@ -20,7 +20,7 @@ public class TaskPermission {
 
     @JsonIgnore
     @OneToOne(mappedBy = "taskPermission")
-    private Task task;
+    private TaskProjection taskProjection;
 
     private boolean edit;
 

@@ -103,6 +103,12 @@ const mutations = {
     editCurrentTaskDescriptionMutation(state, description) {
         state.currentTask.description = description
     },
+    editCurrentTaskNameMutation(state, name) {
+        state.currentTask.name = name;
+    },
+    editCurrentTaskCategoryMutation(state, category) {
+        state.currentTask.category = category
+    },
     editCurrentTaskGraphEnableMutation(state, enable) {
         state.currentTask.graphIsPresent = enable
     },

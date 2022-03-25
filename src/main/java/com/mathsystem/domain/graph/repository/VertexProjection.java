@@ -33,10 +33,10 @@ public class VertexProjection {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "from_v")
-    private List<EdgeProjection> outgoingEdgeProjections;
+    private List<EdgeProjection> outgoingEdges;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "to_v")
-    private List<EdgeProjection> incomingEdgeProjections;
+    private List<EdgeProjection> incomingEdges;
 
 }

@@ -1,6 +1,6 @@
 package com.mathsystem.domain.user.repository;
 
-import com.mathsystem.domain.task.repository.Task;
+import com.mathsystem.domain.task.repository.TaskProjection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +44,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> task;
+    private List<TaskProjection> taskProjection;
 
 
 }

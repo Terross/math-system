@@ -2,8 +2,8 @@
   <v-container fluid>
       <v-row>
         <v-col>
-          <graphProjection-editor :config-elements="graphProjection">
-          </graphProjection-editor>
+          <graph-editor :config-elements="graph">
+          </graph-editor>
         </v-col>
         <v-col>
           <v-container>
@@ -93,7 +93,7 @@ export default {
       let id = this.$route.params.id
       return this.$store.getters["tasks/findTaskById"](id)
     },
-    graphProjection() {
+    graph() {
       let id = this.$route.params.id
       return this.$store.getters["constructorGraph/cytoscapeConfigElements"]
     },
@@ -116,14 +116,14 @@ export default {
     }),
     verify() {
       const graphData = this.$store.state.constructorGraph
-      const graphProjection = {
+      const graph = {
         "vertexCount" : graphData.vertexCount,
         "edgeCount" : graphData.edgeCount,
         "vertexes" : graphData.constructorGraph,
         "graphType" : this.$store.state.constructorGraph.direct ? "DIRECTED" : "UNDIRECTED"
       }
 
-      this.$http.post(`/task/verifyTask/${this.$route.params.id}`, graphProjection).then(response => {
+      this.$http.post(`/task/verifyTask/${this.$route.params.id}`, graph).then(response => {
         let answer = response.data
 
         if (answer) {
@@ -138,16 +138,16 @@ export default {
     }
   },
   beforeMount() {
-    const graphProjection = this.task.graphProjection
+    const graph = this.task.graph
     const permission = this.task.taskPermission
-    console.log(graphProjection)
-    const graphData = graphProjection !== null
+    console.log(graph)
+    const graphData = graph !== null
         ? {
-          'edgeCount' : graphProjection.edgeCount,
-          'vertexCount': graphProjection.vertexCount,
-          'vertexes' : graphProjection.vertexes,
+          'edgeCount' : graph.edgeCount,
+          'vertexCount': graph.vertexCount,
+          'vertexes' : graph.vertexes,
           'permission' : permission,
-          'direct' : graphProjection.graphType === 'DIRECTED'
+          'direct' : graph.graphType === 'DIRECTED'
         }
         : {
           'edgeCount' : 0,

@@ -25,6 +25,7 @@
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/user/AuthenticationController.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/authentication/jwt/JwtTokenProvider.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/user/UserController.java
+/home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/api/graph/mapper/EdgeMapper.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/plugin/GraphCharacteristic.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/api/graph/mapper/UndirectedGraphCreator.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/plugin/PluginController.java

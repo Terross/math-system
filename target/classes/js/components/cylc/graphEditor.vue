@@ -1,6 +1,6 @@
 <template>
   <v-col>
-      <navigation-graphProjection></navigation-graphProjection>
+      <navigation-graph></navigation-graph>
       <network :config-elements="configElements"></network>
   </v-col>
 </template>

@@ -163,6 +163,8 @@ const mutations = {
     },
     updateNodeColorMutation(state, node) {
         const index = state.constructorGraph.findIndex(item => item.id === node.id)
+        console.log(index)
+        console.log(node)
         state.constructorGraph[index].color = node.color
     },
     changeEditTypeMutation(state, newType) {

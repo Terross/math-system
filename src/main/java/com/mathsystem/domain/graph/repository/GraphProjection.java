@@ -26,6 +26,6 @@ public class GraphProjection {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "graph_id")
-    private List<VertexProjection> vertexProjectionList;
+    private List<VertexProjection> vertexList;
 
 }

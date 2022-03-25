@@ -20,7 +20,7 @@ public class TaskDecision {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
-    private Task task;
+    private TaskProjection taskProjection;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

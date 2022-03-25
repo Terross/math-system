@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @Entity
 @ToString
-public class Task {
+public class TaskProjection {
 
     @Id
     @GeneratedValue
@@ -34,7 +34,7 @@ public class Task {
     @Column(name = "task_description", length = 10000000)
     private String taskDescription;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "taskProjection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PluginAnswer> pluginAnswers;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

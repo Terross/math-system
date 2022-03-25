@@ -58,6 +58,7 @@ import TaskDescriptionCard from "./TaskDescriptionCard.vue";
 import {mapActions, mapMutations} from "vuex";
 import TaskDataCard from "./TaskDataCard.vue";
 import TaskPermissionCard from "./TaskPermissionCard.vue";
+import {HTTP} from "../../axios/http-common";
 
 export default {
   name: "MainTaskEditor",
@@ -66,13 +67,47 @@ export default {
     return {
     }
   },
+  computed: {
+    task() {
+      return this.$store.state.tasks.currentTask
+    },
+    token() {
+      return this.$store.state.profile.profile.jwt
+    }
+  },
   methods: {
     ...mapMutations([
         'tasks/editCurrentTaskGraphEnableMutation',
         'tasks/editCurrentTaskGraphTypeMutation'
     ]),
     saveTask() {
-      console.log('save')
+      const data = {
+        "category": this.task.category,
+        "name": this.task.name,
+        "graphType": this.task.graphDirect ? "DIRECTED" : "UNDIRECTED",
+        "taskDescription": this.task.description,
+        "graph" : {
+          "vertexCount" : this.task.graph.vertexCount,
+          "edgeCount" : this.task.graph.edgeCount,
+          "vertexList" : this.task.graph.constructorGraph,
+          "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
+        },
+        "taskPermission": this.task.permission,
+        "pluginAnswers": this.task.plugins
+      }
+      console.log(data)
+      HTTP
+          .post('/all/task/task', data, {
+            headers: {
+              'Authorization' : "Bearer " + this.token
+            }
+          })
+          .then(response => {
+            console.log(response.data)
+          })
+          .catch(e => {
+            console.log(e)
+          })
     }
   }
 }

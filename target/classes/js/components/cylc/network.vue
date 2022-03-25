@@ -17,7 +17,7 @@
       <v-card>
         <v-card-title>
           <span class="text-h5">{{ selectedElement === null ? '' :
-              (selectedElement.elementType === 'vertexProjection' ? "Редактор вершин" : "Редактор ребер") }}</span>
+              (selectedElement.elementType === 'vertex' ? "Редактор вершин" : "Редактор ребер") }}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -69,7 +69,7 @@
       <v-card>
         <v-card-title>
           <span class="text-h5">{{ selectedElement === null ? '' :
-              (selectedElement.elementType === 'vertexProjection' ? "Редактор вершин" : "Редактор ребер") }}</span>
+              (selectedElement.elementType === 'vertexProjectio' ? "Редактор вершин" : "Редактор ребер") }}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -195,18 +195,17 @@ export default {
         ele.style('target-arrow-color', color)
         const source = ele.data().source
         const target = ele.data().target
-
         this['constructorGraph/updateEdgeColorMutation'](
             {
-              "fromV": ele.data().find(item => item.id === source).id,
-              "toV": ele.data().find(item => item.id === target).id,
+              "fromV": source,
+              "toV": target,
               "color": color
             }
         )
       } else {
         this['constructorGraph/updateNodeColorMutation'](
             {
-              "name" : ele.data().id,
+              "id" : ele.data().id,
               "color": color
             }
         )
@@ -224,7 +223,7 @@ export default {
       if (this.currentTask.permission.color) {
         cy.cxtmenu({
           menuRadius: function(ele){ return 75; },
-          selector: 'node, edgeProjection',
+          selector: 'node, edge',
           outsideMenuCancel: 10,
           commands: colorDisk(this),
           activeFillColor: 'rgba(103,58,183,0.25)'
@@ -237,9 +236,9 @@ export default {
         cy.style().fromJson(undirectedStyle).update()
       }
 
-      cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdgeProjection) => {
+      cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
         this['constructorGraph/addEdgeMutation']({
-          "id" : addedEdgeProjection.data().id,
+          "id" : addedEdge.data().id,
           "color" : 'gray',
           "fromV" : sourceNode.data().id,
           "toV" : targetNode.data().id,
@@ -285,11 +284,11 @@ export default {
           eh.disableDrawMode()
         })
       }
-      if (document.querySelector('#directed-type-graphProjection') != null) {
-        document.querySelector('#directed-type-graphProjection').addEventListener('click', function() {
+      if (document.querySelector('#directed-type-graph') != null) {
+        document.querySelector('#directed-type-graph').addEventListener('click', function() {
           cy.style().fromJson(directedStyle).update()
         })
-        document.querySelector('#undirected-type-graphProjection').addEventListener('click', function() {
+        document.querySelector('#undirected-type-graph').addEventListener('click', function() {
           cy.style().fromJson(undirectedStyle).update()
         })
       }
@@ -319,7 +318,7 @@ export default {
           this.selectedElement.label =
               this["constructorGraph/findVertexById"](target.data().id).label
           this.selectedElement.id = target.data().id
-          this.selectedElement.elementType = "vertexProjection"
+          this.selectedElement.elementType = "vertex"
           this.dialog = true
         } else {
           if (target.group().toString() === 'edges') {
@@ -327,7 +326,7 @@ export default {
                 this["constructorGraph/findEdgeById"](target.data().id).weight
             this.selectedElement.label =
                 this["constructorGraph/findEdgeById"](target.data().id).label
-            this.selectedElement.elementType = "edgeProjection"
+            this.selectedElement.elementType = "edge"
             this.selectedElement.name = target.data().id
             this.selectedElement.target = target
             this.dialog = true
@@ -397,14 +396,14 @@ export default {
     },
     saveNewElementData(elementType, id) {
       if (!isNaN(Number(this.selectedElement.weight))) {
-        if (elementType === 'edgeProjection') {
+        if (elementType === 'edge') {
           this['constructorGraph/changeEdgeData']({
             "id" : id,
             "label" : this.selectedElement.label,
             "weight" : this.selectedElement.weight
           })
         } else {
-          if (elementType === 'vertexProjection')  {
+          if (elementType === 'vertex')  {
             this['constructorGraph/changeVertexData']({
               "id" : id,
               "label" : this.selectedElement.label,

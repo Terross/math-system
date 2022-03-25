@@ -27,5 +27,9 @@ public class EdgeProjection {
 
     private String label;
 
+    private UUID fromV;
+
+    private UUID toV;
+
 }
 

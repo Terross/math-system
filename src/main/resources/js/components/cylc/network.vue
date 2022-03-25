@@ -195,18 +195,17 @@ export default {
         ele.style('target-arrow-color', color)
         const source = ele.data().source
         const target = ele.data().target
-
         this['constructorGraph/updateEdgeColorMutation'](
             {
-              "fromV": ele.data().find(item => item.id === source).id,
-              "toV": ele.data().find(item => item.id === target).id,
+              "fromV": source,
+              "toV": target,
               "color": color
             }
         )
       } else {
         this['constructorGraph/updateNodeColorMutation'](
             {
-              "name" : ele.data().id,
+              "id" : ele.data().id,
               "color": color
             }
         )

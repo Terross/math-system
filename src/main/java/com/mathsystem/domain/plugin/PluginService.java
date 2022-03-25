@@ -83,8 +83,6 @@ public class PluginService {
                 .findById(id)
                 .orElseThrow(null);
         String name = UPPER_CAMEL.to(LOWER_CAMEL, getNameWithoutExtension(plugin.getFileName()));
-        graphRepository.save(graphMapper.graphToGraphProjection(undirectedGraphCreator.createUndirectedConnections(graph)));
-        GraphProjection atak = graphRepository.findById(UUID.fromString("66ac13f5-4726-4c6d-b515-be06b09049e0")).orElseThrow();
         return nativePluginService.runPlugin(name, graph);
     }
 }

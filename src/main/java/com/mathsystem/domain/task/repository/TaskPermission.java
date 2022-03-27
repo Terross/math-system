@@ -1,6 +1,5 @@
 package com.mathsystem.domain.task.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,10 +16,6 @@ public class TaskPermission {
     @Id
     @GeneratedValue
     private UUID id;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "taskPermission")
-    private TaskProjection taskProjection;
 
     private boolean edit;
 

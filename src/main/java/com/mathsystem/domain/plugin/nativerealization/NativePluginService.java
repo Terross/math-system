@@ -1,9 +1,9 @@
 package com.mathsystem.domain.plugin.nativerealization;
 
 import com.mathsystem.api.graph.model.Graph;
-import com.mathsystem.domain.plugin.GraphCharacteristic;
-import com.mathsystem.domain.plugin.GraphProperty;
-import com.mathsystem.domain.plugin.Plugin;
+import com.mathsystem.domain.plugin.plugintype.GraphCharacteristic;
+import com.mathsystem.domain.plugin.plugintype.GraphProperty;
+import com.mathsystem.domain.plugin.plugintype.Plugin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

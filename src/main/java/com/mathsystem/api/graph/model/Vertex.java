@@ -1,8 +1,7 @@
 package com.mathsystem.api.graph.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mathsystem.api.graph.model.Color;
-import com.mathsystem.api.graph.model.Edge;
+import com.mathsystem.domain.graph.repository.Color;
 import lombok.Data;
 
 import java.util.List;

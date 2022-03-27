@@ -69,9 +69,6 @@ export default {
     computedDescription() {
         return this['tasks/generatedDescription']()
     }
-  },
-  beforeMount() {
-    this['tasks/editCurrentTaskDescriptionMutation'](this.description)
   }
 }
 </script>

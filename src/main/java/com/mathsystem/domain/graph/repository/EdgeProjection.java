@@ -1,11 +1,11 @@
 package com.mathsystem.domain.graph.repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mathsystem.api.graph.model.Color;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -13,12 +13,12 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "edge")
 public class EdgeProjection {
 
     @Id
     @GeneratedValue
-    private UUID pk;
-
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
 
     private Color color;
@@ -30,6 +30,5 @@ public class EdgeProjection {
     private UUID fromV;
 
     private UUID toV;
-
 }
 

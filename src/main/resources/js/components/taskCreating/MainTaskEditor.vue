@@ -55,7 +55,7 @@
 
 <script>
 import TaskDescriptionCard from "./TaskDescriptionCard.vue";
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapMutations, mapGetters} from "vuex";
 import TaskDataCard from "./TaskDataCard.vue";
 import TaskPermissionCard from "./TaskPermissionCard.vue";
 import {HTTP} from "../../axios/http-common";
@@ -73,27 +73,51 @@ export default {
     },
     token() {
       return this.$store.state.profile.profile.jwt
+    },
+    author() {
+      return this.$store.state.profile.profile
     }
+
   },
   methods: {
     ...mapMutations([
         'tasks/editCurrentTaskGraphEnableMutation',
         'tasks/editCurrentTaskGraphTypeMutation'
     ]),
+    ...mapGetters(['tasks/generatedDescription']),
     saveTask() {
+      const description = this.task.description ? this.task.description : this['tasks/generatedDescription']()
+      const vertexList = this.task.graph.constructorGraph.map(item => {
+        return {
+          color: item.color,
+          id: item.id,
+          label: item.label,
+          weight: item.weight,
+          xCoordinate: item.xCoordinate,
+          yCoordinate: item.yCoordinate
+        }
+      })
+      const edgeList = []
+      this.task.graph.constructorGraph.forEach(vertex => {
+        vertex.outgoingEdges.forEach(edge => {
+          edgeList.push(edge)
+        })
+      })
       const data = {
         "category": this.task.category,
         "name": this.task.name,
+        "authorEmail": this.author.email,
         "graphType": this.task.graphDirect ? "DIRECTED" : "UNDIRECTED",
-        "taskDescription": this.task.description,
+        "taskDescription": description,
         "graph" : {
           "vertexCount" : this.task.graph.vertexCount,
           "edgeCount" : this.task.graph.edgeCount,
-          "vertexList" : this.task.graph.constructorGraph,
+          "vertexList" : vertexList,
+          "edgeList": edgeList,
           "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
         },
         "taskPermission": this.task.permission,
-        "pluginAnswers": this.task.plugins
+        "pluginValues": this.task.plugins
       }
       console.log(data)
       HTTP

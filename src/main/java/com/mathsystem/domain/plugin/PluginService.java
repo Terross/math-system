@@ -1,9 +1,7 @@
 package com.mathsystem.domain.plugin;
 
-import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.api.graph.mapper.UndirectedGraphCreator;
 import com.mathsystem.api.graph.model.Graph;
-import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.graph.repository.GraphRepository;
 import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
@@ -37,7 +35,6 @@ public class PluginService {
     private final NativePluginService nativePluginService;
     private final UndirectedGraphCreator undirectedGraphCreator;
     private final GraphRepository graphRepository;
-    private final GraphMapper graphMapper;
 
     public PluginProjection saveNativePlugin(PluginProjection pluginProjection) {
         if (!pluginRepository.findAlgorithmByFileName(pluginProjection.getFileName()).isEmpty()) {

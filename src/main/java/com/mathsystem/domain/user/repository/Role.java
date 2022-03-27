@@ -1,13 +1,10 @@
 package com.mathsystem.domain.user.repository;
 
-import lombok.Data;
+public enum Role {
+    ROLE_USER("ROLE_USER"),
+    ROLE_ADMIN("ROLE_ADMIN");
 
-import javax.persistence.*;
-import java.util.UUID;
+    Role(String role) {
 
-@Entity
-@Data
-public class Role {
-    @Id
-    private String name;
+    }
 }

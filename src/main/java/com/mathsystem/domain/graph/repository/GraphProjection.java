@@ -1,6 +1,5 @@
 package com.mathsystem.domain.graph.repository;
 
-import com.mathsystem.api.graph.model.GraphType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "graph")
 public class GraphProjection {
 
     @Id
@@ -28,4 +28,7 @@ public class GraphProjection {
     @JoinColumn(name = "graph_id")
     private List<VertexProjection> vertexList;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "graph_id")
+    private List<EdgeProjection> edgeList;
 }

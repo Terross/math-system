@@ -1,5 +1,6 @@
 package com.mathsystem.api.graph.model;
 
+import com.mathsystem.domain.graph.repository.Color;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

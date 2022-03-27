@@ -12,7 +12,6 @@ public class StartupInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        dataLoader.initRole();
         dataLoader.initUsers();
     }
 }

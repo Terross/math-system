@@ -1,6 +1,6 @@
 package com.mathsystem.domain.plugin.repository;
 
-import com.mathsystem.api.graph.model.GraphType;
+import com.mathsystem.domain.graph.repository.GraphType;
 import lombok.Data;
 import lombok.ToString;
 

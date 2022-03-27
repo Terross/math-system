@@ -1,11 +1,10 @@
 package com.mathsystem.domain.user;
 
+import com.mathsystem.domain.user.repository.Role;
 import com.mathsystem.authentication.dto.AuthRequest;
 import com.mathsystem.authentication.dto.AuthResponse;
 import com.mathsystem.authentication.dto.RegistrationRequest;
 import com.mathsystem.authentication.jwt.JwtTokenProvider;
-import com.mathsystem.domain.user.repository.Role;
-import com.mathsystem.domain.user.repository.RoleRepository;
 import com.mathsystem.domain.user.repository.User;
 import com.mathsystem.domain.user.repository.UserRepository;
 import com.mathsystem.exceptions.SqlConflictException;
@@ -13,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
+import static com.mathsystem.domain.user.repository.Role.ROLE_USER;
 import static com.mathsystem.exceptions.ErrorCode.USER_ALREADY_EXIST;
 
 @Service
@@ -23,7 +20,6 @@ import static com.mathsystem.exceptions.ErrorCode.USER_ALREADY_EXIST;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtProvider;
 
@@ -35,8 +31,6 @@ public class AuthService {
         user.setPatronymic(request.patronymic());
         user.setEmail(request.email());
         user.setUserGroup(request.userGroup());
-        user.setCreated(LocalDateTime.now());
-        user.setUpdated(LocalDateTime.now());
         this.saveUser(user);
         String token = jwtProvider.generateToken(user.getEmail());
         return new AuthResponse(user, token);
@@ -50,8 +44,7 @@ public class AuthService {
 
     public User saveUser(User user) {
         try {
-            Role userRole = roleRepository.findByName("ROLE_USER");
-            user.setRole(userRole);
+            user.setRole(ROLE_USER);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } catch (Exception e) {
@@ -71,11 +64,5 @@ public class AuthService {
             }
         }
         return null;
-    }
-
-    public User findUserById(UUID id) {
-        return userRepository
-                .findById(id)
-                .orElseThrow(IllegalArgumentException::new);
     }
 }

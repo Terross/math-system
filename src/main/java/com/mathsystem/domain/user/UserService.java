@@ -1,6 +1,6 @@
 package com.mathsystem.domain.user;
 
-import com.mathsystem.domain.user.repository.RoleRepository;
+import com.mathsystem.domain.user.repository.Role;
 import com.mathsystem.domain.user.repository.User;
 import com.mathsystem.domain.user.repository.UserRepository;
 import com.mathsystem.exceptions.ErrorCode;
@@ -9,8 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.mathsystem.domain.user.repository.Role.ROLE_ADMIN;
 
 @Slf4j
 @Service
@@ -18,7 +19,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,7 +40,6 @@ public class UserService {
 
     public User updateUser(User user, String email) {
         User repoUser = userRepository.findByEmail(email);
-        repoUser.setUpdated(LocalDateTime.now());
         repoUser.setFirstName(user.getFirstName());
         repoUser.setLastName(user.getLastName());
         repoUser.setPatronymic(user.getPatronymic());
@@ -51,8 +50,7 @@ public class UserService {
 
     public User upUserToAdmin(String email) {
         User repoUser = userRepository.findByEmail(email);
-        repoUser.setRole(roleRepository.findByName("ROLE_ADMIN"));
-        repoUser.setUpdated(LocalDateTime.now());
+        repoUser.setRole(ROLE_ADMIN);
         return userRepository.save(repoUser);
     }
 

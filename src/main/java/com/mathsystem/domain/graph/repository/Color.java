@@ -1,4 +1,4 @@
-package com.mathsystem.api.graph.model;
+package com.mathsystem.domain.graph.repository;
 
 public enum Color {
     red,

@@ -1,5 +1,6 @@
 package com.mathsystem.domain.plugin;
 
+import com.mathsystem.domain.plugin.plugintype.Plugin;
 import com.mathsystem.exceptions.PluginClassNotFoundException;
 import com.mathsystem.exceptions.PluginNotFoundException;
 import org.slf4j.Logger;

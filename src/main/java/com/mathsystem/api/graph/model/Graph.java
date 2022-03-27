@@ -1,9 +1,9 @@
 package com.mathsystem.api.graph.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mathsystem.domain.graph.repository.GraphType;
 import lombok.Data;
 
-import javax.persistence.JoinColumn;
 import java.util.List;
 
 @Data

@@ -1,4 +1,4 @@
-package com.mathsystem.domain.plugin;
+package com.mathsystem.domain.plugin.plugintype;
 
 
 import com.mathsystem.api.graph.model.Graph;

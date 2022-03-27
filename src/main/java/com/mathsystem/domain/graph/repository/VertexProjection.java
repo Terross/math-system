@@ -1,13 +1,15 @@
 package com.mathsystem.domain.graph.repository;
 
-import com.mathsystem.api.graph.model.Color;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
@@ -17,8 +19,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "vertex")
 public class VertexProjection {
+
     @Id
     @GeneratedValue
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
 
     private Color color;
@@ -27,16 +31,9 @@ public class VertexProjection {
 
     private String label;
 
+    @JsonProperty("xCoordinate")
     private Integer xCoordinate;
 
+    @JsonProperty("yCoordinate")
     private Integer yCoordinate;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "from_v")
-    private List<EdgeProjection> outgoingEdges;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "to_v")
-    private List<EdgeProjection> incomingEdges;
-
 }

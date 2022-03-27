@@ -1,6 +1,6 @@
 package com.mathsystem.domain.task;
 
-import com.mathsystem.api.task.model.Task;
+import com.mathsystem.domain.task.repository.Task;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class TaskController {
 
     @PostMapping("/all/task/task")
     public ResponseEntity<?> saveNewTask(@RequestBody Task task) {
-        return ResponseEntity.ok(taskService.saveNativePlugin(task));
+        return ResponseEntity.ok(taskService.saveNewTask(task));
     }
 //    private final Validator validator;
 

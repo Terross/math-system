@@ -32,3 +32,7 @@ build/
 .vscode/
 
 /src/main/resources/static/js
+./target
+
+/node_modules
+/target

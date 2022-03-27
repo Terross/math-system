@@ -1,10 +1,44 @@
 import tasksApi from "../api/tasks";
+import currentGraph from "./currentGraph";
 
 const state = () => ({
-    tasks: frontendData.tasks
+    tasks: frontendData.tasks,
+    currentTask : {
+        description: '',
+        name: '',
+        category: '',
+        plugins: [],
+        permission: {
+            draw: true,
+            color: true,
+            edit: true,
+            remove: true
+        },
+        graphDirect: true,
+        graphIsPresent: false,
+        graph: currentGraph.state()
+    }
 })
 
 const getters = {
+    generatedDescription: (state) => {
+        let text = 'Постройте ' + (state.currentTask.graphDirect ? 'ориентированный': 'неориентированный') +
+            ' удовлетворяющий следующим условиям:' + '\n'
+        state.currentTask.plugins.forEach(plugin => {
+            const pluginType = plugin.plugin.pluginType
+            switch (pluginType) {
+                case 'CHARACTERISTIC':
+                    text = text + plugin.plugin.description + ' ' + plugin.value + '\n'
+                    break
+                case 'PROPERTY':
+                    text = text + plugin.plugin.description + ' ' + plugin.value ? 'выполнено' : 'невыполнено' + '\n'
+                    break
+                default:
+                    break
+            }
+        })
+        return text
+    },
     findTaskById: (state) => (id) => {
         return state.tasks.find(task => task.id.toString() === id.toString())
     },
@@ -45,6 +79,45 @@ const getters = {
 }
 
 const mutations = {
+    addPluginToCurrentTask(state, plugin) {
+        const index = state.currentTask.plugins.findIndex(item => item.plugin.id === plugin.plugin.id)
+        if (index > -1) {
+            state.currentTask.plugins[index] = plugin
+        } else {
+            state.currentTask.plugins = [
+                ...state.currentTask.plugins,
+                plugin
+            ]
+        }
+    },
+    removePluginFormCurrentTask(state, plugin) {
+        const removeIndex = state.currentTask.plugins.findIndex(item => item.plugin.id === plugin.plugin.id)
+
+        if (removeIndex > -1) {
+            state.currentTask.plugins = [
+                ...state.currentTask.plugins.slice(0, removeIndex),
+                ...state.currentTask.plugins.slice(removeIndex + 1)
+            ]
+        }
+    },
+    editCurrentTaskDescriptionMutation(state, description) {
+        state.currentTask.description = description
+    },
+    editCurrentTaskNameMutation(state, name) {
+        state.currentTask.name = name;
+    },
+    editCurrentTaskCategoryMutation(state, category) {
+        state.currentTask.category = category
+    },
+    editCurrentTaskGraphEnableMutation(state, enable) {
+        state.currentTask.graphIsPresent = enable
+    },
+    editCurrentTaskGraphTypeMutation(state, direct) {
+        state.currentTask.graphDirect = direct
+    },
+    editCurrentTaskPermissionMutation(state, permission) {
+        state.currentTask.permission = permission
+    },
     addTaskMutation(state, task) {
         state.tasks =[
             ...state.tasks,
@@ -63,6 +136,32 @@ const mutations = {
     },
     updateTaskMutation(state, task) {
 
+    },
+    cleanCurrentTaskMutation(state) {
+        state.currentTask = {
+            description: '',
+            name: '',
+            category: '',
+            plugins: [],
+            permission: {
+                draw: true,
+                color: true,
+                edit: true,
+                remove: true
+            },
+            graphDirect: true,
+            graphIsPresent: false,
+            graph: currentGraph.state()
+        }
+    },
+    initCurrentTaskMutation(state, task) {
+        state.currentTask.description = task.taskDescription
+        state.currentTask.name = task.name
+        state.currentTask.category = task.category
+        state.currentTask.plugins = task.pluginValues
+        state.currentTask.permission = task.taskPermission
+        state.currentTask.graphDirect = task.graphType === "DIRECTED"
+        state.currentTask.graphIsPresent = task.graphIsPresent
     }
 }
 
@@ -85,7 +184,6 @@ const actions = {
         } else {
             commit('addTaskMutation', data)
         }
-
     },
     async updateTaskAction({commit}, task) {
         const result = await tasksApi.update(task)

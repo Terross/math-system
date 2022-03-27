@@ -1,5 +1,4 @@
 <template>
-
   <v-card id="edit-panel">
     <v-row no-gutters>
       <v-col>
@@ -47,7 +46,6 @@
           </v-btn>
         </v-btn-toggle>
       </v-col>
-
       <v-col>
         <v-menu offset-y class = "mx-4">
           <template v-slot:activator="{ on, attrs }" >
@@ -72,7 +70,6 @@
                   id="zoom"
               >Zoom
                 <v-icon dark>center_focus_strong
-
                 </v-icon>
               </v-btn>
             </v-list-item>
@@ -143,41 +140,38 @@ import {saveAS} from 'file-saver'
 
 export default {
   name: "navigationGraph",
-  props: {
-    networkType: String
-  },
   data() {
     return {
-      editType: this.$store.state.constructorGraph.editType
+      editType: this.$store.state.currentGraph.editType
     }
   },
 
   computed: {
     changeColor() {
-      return this.$store.state.constructorGraph.changeColor
+      return this.$store.state.currentGraph.changeColor
     },
     changeLabel() {
-      return  this.$store.state.constructorGraph.changeLabel
+      return  this.$store.state.currentGraph.changeLabel
     },
     direct() {
-      return this.$store.state.constructorGraph.direct
+      return this.$store.state.currentGraph.direct
     },
     graphInfo() {
-      return this.$store.state.constructorGraph
+      return this.$store.state.currentGraph
     },
     permission() {
-      return this.$store.state.constructorGraph.permission
+      return this.$store.state.tasks.currentTask.permission
     }
   },
   methods: {
     ...mapMutations([
-        'constructorGraph/changeEditTypeMutation',
-        'constructorGraph/changeDirectTypeMutation'
+        'currentGraph/changeEditTypeMutation',
+        'currentGraph/changeDirectTypeMutation'
     ]),
     async saveFile() {
       let file = this.graphInfo.vertexCount
       file = file + ' ' + this.graphInfo.edgeCount +'\n'
-      let vertexList = this.graphInfo.constructorGraph
+      let vertexList = this.graphInfo.currentGraph
       for (let i = 0; i < vertexList.length; i++) {
         file =
             file +
@@ -206,22 +200,16 @@ export default {
       saveAs(blob, "graph.txt");
     },
     moveClick() {
-      this['constructorGraph/changeEditTypeMutation']('move')
+      this['currentGraph/changeEditTypeMutation']('move')
     },
     editClick() {
-      this['constructorGraph/changeEditTypeMutation']('edit')
+      this['currentGraph/changeEditTypeMutation']('edit')
     },
     removeClick() {
-      this['constructorGraph/changeEditTypeMutation']('remove')
+      this['currentGraph/changeEditTypeMutation']('remove')
     },
     drawClick() {
-      this['constructorGraph/changeEditTypeMutation']('draw')
-    },
-    directedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](true)
-    },
-    undirectedTypeClick() {
-      this['constructorGraph/changeDirectTypeMutation'](false)
+      this['currentGraph/changeEditTypeMutation']('draw')
     }
   }
 }
@@ -229,7 +217,7 @@ export default {
 
 <style scoped>
 #edit-panel {
-  background-color: #673AB7;
+  background-color: #42A5F5;
   width: 100%;
 }
 </style>

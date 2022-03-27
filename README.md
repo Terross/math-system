@@ -32,7 +32,7 @@
 2. В файле **pom.xml** добавляем в зависимости библиотеку для работы с графами. Есть два 
     способа это сделать
    * Загрузить библиотеку в качестве jar файла, где вместо 
-     **path-to-jar** следует указать путь к jar файлу **graph-lib.jar**, 
+     **path-to-jar** следует указать путь к jar файлу **graphProjection-lib.jar**, 
      который можно скачать из этого репозитория.
       ```maven
      <dependencies>
@@ -84,8 +84,8 @@
            List<Vertex> vertices = abstractGraph.getVertices();
            List<AbstractEdge> answer = new ArrayList<>();
            for (int i = 0; i < abstractGraph.getVertexCount(); i++) {
-            Vertex vertex = vertices.get(i);
-               for (AbstractEdge abstractEdge: vertex.getEdgeList()) {
+            Vertex vertexProjection = vertices.get(i);
+               for (AbstractEdge abstractEdge: vertexProjection.getEdgeList()) {
                    if (abstractEdge.getColor() == Color.red) {
                        answer.add(abstractEdge);
                    }
@@ -197,13 +197,13 @@ public class DirectedGraph extends AbstractGraph {
      * Используется в контроллерах - не используется в плагинах
      * @param vertexCount - количество вершин
      * @param edgeCount - количество ребер
-     * @param edges - список ребер
+     * @param edgeProjections - список ребер
      * @param vertices - список вершин
      */
     public DirectedGraph(int vertexCount,
                          int edgeCount,
-                         List<Edge> edges,
-                         List<com.mathsystem.entity.graph.Vertex> vertices) {
+                         List<Edge> edgeProjections,
+                         List<com.mathsystem.entity.graphProjection.Vertex> vertices) {
         ...
     }
 
@@ -237,7 +237,7 @@ public class DirectedGraph extends AbstractGraph {
 GraphSquare graphSquare = new GraphSquare();
 System.out.println(graphSquare.
 execute(GraphFactory.loadUndirectedGraphFromFile(
-new File("/home/dmitry/Downloads/graph.txt"))));
+new File("/home/dmitry/Downloads/graphProjection.txt"))));
 ```
 
 **Класс вершины Vertex**. Имеет поля, которые задают вершину - индекс, имя (совпадает с
@@ -366,11 +366,11 @@ public abstract class AbstractEdge implements Comparable<AbstractEdge> {
         return v;
     }
 
-    public Vertex other(Vertex vertex) {
-        if (vertex.getName().equals(v.getName())) {
+    public Vertex other(Vertex vertexProjection) {
+        if (vertexProjection.getName().equals(v.getName())) {
             return w;
         } else {
-            if (vertex.getName().equals(w.getName())) {
+            if (vertexProjection.getName().equals(w.getName())) {
                 return v;
             } else {
                 throw new RuntimeException("Недопустимое ребро");

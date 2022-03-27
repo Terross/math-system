@@ -1,17 +1,22 @@
 <template>
   <v-container>
-    <v-col>
-      <v-card
-          class="mx-auto"
-      >
-        <v-card-text class="ma-2">
-          <p class="text-h4 text--primary">
-            Загрузите плагин
-          </p>
-          <div class="text--primary">
-            Загрузите jar файл.
-            Описание плагина должно описывать то, как плагин будет выглядет в задаче.
-          </div>
+    <NativePluginForm
+        :dialog="dialog"
+        v-on:close-dialog="dialog=false"
+    />
+      <v-row>
+        <v-col>
+          <v-card
+              class="ma-auto"
+          >
+            <v-card-text class="ma-2">
+              <p class="text-h4 text--primary">
+                Загрузите плагин
+              </p>
+              <div class="text--primary">
+                Загрузите jar файл.
+                Описание плагина должно описывать то, как плагин будет выглядет в задаче.
+              </div>
               <v-form
                   ref = "form"
                   class="ma-2"
@@ -41,7 +46,7 @@
                         required
                     ></v-select>
                     <v-select
-                        :items="['Ориентированный', 'Неориентированный']"
+                        :items="['Ориентированный', 'Неориентированный', 'Любой']"
                         label="Тип графа"
                         v-model="graphType"
                         :rules="[v => !!v || 'Требуется тип графа']"
@@ -78,41 +83,54 @@
                   </v-file-input>
                 </v-row>
               </v-form>
-        <plugin-alerts
-            :alert-type="alertType"
-            :plugin-name="jarName"
-            :java-error="javaError"/>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-              color="primary"
-              class="mx-4 mb-4"
-              @click="addPlugin()"
-              dark>
-            Добавить плагин
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    <v-col
-        v-for="(plugin, i) in plugins"
-        :key="i"
-        cols="12"
-        v-if="plugins.length > 0">
-      <PluginCard :plugin="plugin"/>
-    </v-col>
+              <plugin-alerts
+                  :alert-type="alertType"
+                  :plugin-name="jarName"
+                  :java-error="javaError"/>
+            </v-card-text>
+            <v-card-actions>
+              <v-row justify="start">
+                <v-btn
+                    color="primary"
+                    class="mx-4 mb-4"
+                    @click="addPlugin()"
+                    dark>
+                  Добавить плагин
+                </v-btn>
+                <v-btn
+                    color="primary"
+                    class="mx-4 mb-4"
+                    @click="addNativePlugin()"
+                    dark>
+                  Добавить нативный плагин
+                </v-btn>
+              </v-row>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="start">
+        <v-col
+            v-for="(plugin, i) in plugins"
+            :key="i"
+            v-if="plugins.length > 0">
+          <PluginCard :plugin="plugin"/>
+        </v-col>
+      </v-row>
   </v-container>
 </template>
 
 <script>
+import {HTTP} from "../../axios/http-common";
 import store from "../../store/store";
-import {mapActions, mapMutations} from "vuex";
+import { mapMutations } from "vuex";
 import PluginAlerts from "./PluginAlerts.vue";
 import PluginCard from "./PluginCard.vue";
+import NativePluginForm from "./NativePluginForm.vue";
 
 export default {
   name: "PluginList",
-  components: {PluginCard, PluginAlerts},
+  components: {NativePluginForm, PluginCard, PluginAlerts},
   data() {
     return {
       values: [],
@@ -125,17 +143,26 @@ export default {
       valid: true,
       alertType: '',
       javaError: '',
-      jarName: ''
+      jarName: '',
+      dialog: false
     }
   },
   computed: {
     plugins() {
-      return store.state.plugins.plugins
+      return this.$store.state.plugins.plugins
+    },
+    token() {
+      return this.$store.state.profile.profile.jwt
+    },
+    currentRole() {
+      return this.$store.state.profile.profile.role
     }
   },
   methods: {
-    ...mapActions(['plugins/addPluginAction']),
     ...mapMutations(['plugins/addPluginMutation', 'plugins/removePluginMutation']),
+    addNativePlugin() {
+      this.dialog = true
+    },
     addPlugin() {
       if (this.$refs.form.validate()) {
         let file = this.files

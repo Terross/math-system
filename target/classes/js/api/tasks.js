@@ -1,5 +1,5 @@
 import Vue from "vue";
-
+import {HTTP} from "../axios/http-common";
 const tasks = Vue.resource('/task{/id}')
 
 export default {

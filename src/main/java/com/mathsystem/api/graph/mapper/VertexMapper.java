@@ -3,17 +3,28 @@ package com.mathsystem.api.graph.mapper;
 import com.mathsystem.api.graph.model.Vertex;
 import com.mathsystem.domain.graph.repository.VertexProjection;
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-@Mapper(componentModel = "spring")
-public interface VertexMapper {
+@Component
+public class VertexMapper {
 
-    Vertex vertexProjectionToVertex(VertexProjection vertexProjection);
-
-    VertexProjection vertexToVertexProjection(Vertex vertex);
-
-    List<Vertex> vertexProjectionListToVertexList(List<VertexProjection> vertexProjectionList);
-
-    List<VertexProjection> vertexListToVertexProjectionList(List<Vertex> vertexList);
+    Map<UUID, Vertex> vertexProjectionListToVertexMap(List<VertexProjection> vertexProjectionList) {
+        Map<UUID, Vertex> result = new HashMap<>();
+        vertexProjectionList.forEach(vertexProjection -> result
+                .put(vertexProjection.getId(),
+                        Vertex
+                                .builder()
+                                .color(vertexProjection.getColor())
+                                .label(vertexProjection.getLabel())
+                                .weight(vertexProjection.getWeight())
+                                .xCoordinate(vertexProjection.getXCoordinate())
+                                .yCoordinate(vertexProjection.getYCoordinate())
+                                .build()));
+        return result;
+    }
 }

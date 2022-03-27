@@ -126,7 +126,7 @@ export default {
         "label" : '',
         "weight" : ''
       },
-      reg: this.$store.state.constructorGraph.reg,
+      reg: this.$store.state.currentGraph.reg,
       directedStyle: graphStyle.directed,
       undirectedStyle: graphStyle.undirected
     }
@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     editType() {
-      return this.$store.state.constructorGraph.editType
+      return this.$store.state.currentGraph.editType
     },
     direct() {
       return this.currentTask.graphDirect
@@ -145,7 +145,7 @@ export default {
     config() {
       return {
         layout: {
-          name: 'circle'
+          name: 'preset'
         },
         wheelSensitivity: 0.5,
         elements: this.configElements
@@ -155,28 +155,28 @@ export default {
       return this.$store.state.tasks.currentTask
     },
     graphInfo() {
-      return this.$store.state.constructorGraph
+      return this.$store.state.currentGraph
     }
   },
   methods: {
     ...mapMutations([
-        'constructorGraph/registrationMutation',
-        'constructorGraph/addNodeMutation',
-        'constructorGraph/addEdgeMutation',
-        'constructorGraph/removeEdgeMutation',
-        'constructorGraph/removeNodeMutation',
-        'constructorGraph/updateEdgeColorMutation',
-        'constructorGraph/updateEdgeWeightMutation',
-        'constructorGraph/updateNodeColorMutation',
-        'constructorGraph/changeEdgeData',
-        'constructorGraph/changeVertexData',
-        'constructorGraph/changeVertexCoordinateMutation'
+        'currentGraph/registrationMutation',
+        'currentGraph/addNodeMutation',
+        'currentGraph/addEdgeMutation',
+        'currentGraph/removeEdgeMutation',
+        'currentGraph/removeNodeMutation',
+        'currentGraph/updateEdgeColorMutation',
+        'currentGraph/updateEdgeWeightMutation',
+        'currentGraph/updateNodeColorMutation',
+        'currentGraph/changeEdgeData',
+        'currentGraph/changeVertexData',
+        'currentGraph/changeVertexCoordinateMutation'
     ]),
     ...mapGetters([
         'tasks/findGraphDataByTaskId',
         'tasks/findTaskById',
-        'constructorGraph/findEdgeById',
-        'constructorGraph/findVertexById'
+        'currentGraph/findEdgeById',
+        'currentGraph/findVertexById'
     ]),
     preConfig(cytoscape) {
       if (!this.reg) {
@@ -185,7 +185,7 @@ export default {
         cytoscape.use(dagre)
         cytoscape.use(cxtmenu)
         cytoscape.use(popper)
-        this['constructorGraph/registrationMutation']()
+        this['currentGraph/registrationMutation']()
       }
     },
     changeElemColor(ele, color) {
@@ -195,7 +195,7 @@ export default {
         ele.style('target-arrow-color', color)
         const source = ele.data().source
         const target = ele.data().target
-        this['constructorGraph/updateEdgeColorMutation'](
+        this['currentGraph/updateEdgeColorMutation'](
             {
               "fromV": source,
               "toV": target,
@@ -203,7 +203,7 @@ export default {
             }
         )
       } else {
-        this['constructorGraph/updateNodeColorMutation'](
+        this['currentGraph/updateNodeColorMutation'](
             {
               "id" : ele.data().id,
               "color": color
@@ -237,7 +237,7 @@ export default {
       }
 
       cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
-        this['constructorGraph/addEdgeMutation']({
+        this['currentGraph/addEdgeMutation']({
           "id" : addedEdge.data().id,
           "color" : 'gray',
           "fromV" : sourceNode.data().id,
@@ -314,18 +314,18 @@ export default {
       if (event.target !== event.cy) {
         if (target.group().toString() === 'nodes') {
           this.selectedElement.weight =
-              this["constructorGraph/findVertexById"](target.data().id).weight
+              this["currentGraph/findVertexById"](target.data().id).weight
           this.selectedElement.label =
-              this["constructorGraph/findVertexById"](target.data().id).label
+              this["currentGraph/findVertexById"](target.data().id).label
           this.selectedElement.id = target.data().id
           this.selectedElement.elementType = "vertex"
           this.dialog = true
         } else {
           if (target.group().toString() === 'edges') {
             this.selectedElement.weight =
-                this["constructorGraph/findEdgeById"](target.data().id).weight
+                this["currentGraph/findEdgeById"](target.data().id).weight
             this.selectedElement.label =
-                this["constructorGraph/findEdgeById"](target.data().id).label
+                this["currentGraph/findEdgeById"](target.data().id).label
             this.selectedElement.elementType = "edge"
             this.selectedElement.name = target.data().id
             this.selectedElement.target = target
@@ -337,7 +337,7 @@ export default {
     },
     dragOverEvent(event) {
       if (event.target !== event.cy && event.target.group().toString() === 'nodes') {
-        this['constructorGraph/changeVertexCoordinateMutation']({
+        this['currentGraph/changeVertexCoordinateMutation']({
           "id": event.target.data().id,
           "xCoordinate": event.position.x,
           "yCoordinate": event.position.y
@@ -358,7 +358,7 @@ export default {
           position: {x: position.x, y: position.y}
         })
 
-        this['constructorGraph/addNodeMutation'](
+        this['currentGraph/addNodeMutation'](
             {
               "id": uuid4,
               "xCoordinate": position.x,
@@ -382,13 +382,13 @@ export default {
           const targetV = target.data().target
           let ver = []
           cy.nodes().map(item => ver.push(item.data()))
-          this['constructorGraph/removeEdgeMutation']({
+          this['currentGraph/removeEdgeMutation']({
             "name" : target.data().id,
             "fromV" : ver.find(item => item.id === sourceV).id,
             "toV" : ver.find(item => item.id === targetV).id
           })
         } else {
-          this['constructorGraph/removeNodeMutation']({
+          this['currentGraph/removeNodeMutation']({
             "id" : target.data().id
           })
         }
@@ -397,14 +397,14 @@ export default {
     saveNewElementData(elementType, id) {
       if (!isNaN(Number(this.selectedElement.weight))) {
         if (elementType === 'edge') {
-          this['constructorGraph/changeEdgeData']({
+          this['currentGraph/changeEdgeData']({
             "id" : id,
             "label" : this.selectedElement.label,
             "weight" : this.selectedElement.weight
           })
         } else {
           if (elementType === 'vertex')  {
-            this['constructorGraph/changeVertexData']({
+            this['currentGraph/changeVertexData']({
               "id" : id,
               "label" : this.selectedElement.label,
               "weight" : this.selectedElement.weight

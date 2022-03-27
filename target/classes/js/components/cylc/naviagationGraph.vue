@@ -142,22 +142,22 @@ export default {
   name: "navigationGraph",
   data() {
     return {
-      editType: this.$store.state.constructorGraph.editType
+      editType: this.$store.state.currentGraph.editType
     }
   },
 
   computed: {
     changeColor() {
-      return this.$store.state.constructorGraph.changeColor
+      return this.$store.state.currentGraph.changeColor
     },
     changeLabel() {
-      return  this.$store.state.constructorGraph.changeLabel
+      return  this.$store.state.currentGraph.changeLabel
     },
     direct() {
-      return this.$store.state.constructorGraph.direct
+      return this.$store.state.currentGraph.direct
     },
     graphInfo() {
-      return this.$store.state.constructorGraph
+      return this.$store.state.currentGraph
     },
     permission() {
       return this.$store.state.tasks.currentTask.permission
@@ -165,13 +165,13 @@ export default {
   },
   methods: {
     ...mapMutations([
-        'constructorGraph/changeEditTypeMutation',
-        'constructorGraph/changeDirectTypeMutation'
+        'currentGraph/changeEditTypeMutation',
+        'currentGraph/changeDirectTypeMutation'
     ]),
     async saveFile() {
       let file = this.graphInfo.vertexCount
       file = file + ' ' + this.graphInfo.edgeCount +'\n'
-      let vertexList = this.graphInfo.constructorGraph
+      let vertexList = this.graphInfo.currentGraph
       for (let i = 0; i < vertexList.length; i++) {
         file =
             file +
@@ -200,16 +200,16 @@ export default {
       saveAs(blob, "graph.txt");
     },
     moveClick() {
-      this['constructorGraph/changeEditTypeMutation']('move')
+      this['currentGraph/changeEditTypeMutation']('move')
     },
     editClick() {
-      this['constructorGraph/changeEditTypeMutation']('edit')
+      this['currentGraph/changeEditTypeMutation']('edit')
     },
     removeClick() {
-      this['constructorGraph/changeEditTypeMutation']('remove')
+      this['currentGraph/changeEditTypeMutation']('remove')
     },
     drawClick() {
-      this['constructorGraph/changeEditTypeMutation']('draw')
+      this['currentGraph/changeEditTypeMutation']('draw')
     }
   }
 }

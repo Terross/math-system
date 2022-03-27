@@ -1,9 +1,9 @@
 package com.mathsystem.domain.plugin;
 
-import com.mathsystem.api.graph.mapper.UndirectedGraphCreator;
+import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.api.graph.model.Graph;
+import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.graph.repository.GraphRepository;
-import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.exceptions.SqlConflictException;
@@ -32,15 +32,16 @@ public class PluginService {
     @Value("${plugin.native.path}")
     private String baseNativePluginPath;
     private final PluginRepository pluginRepository;
-    private final NativePluginService nativePluginService;
-    private final UndirectedGraphCreator undirectedGraphCreator;
+    private final PluginRunner nativePluginService;
     private final GraphRepository graphRepository;
+    private final GraphMapper graphMapper;
+    private final PluginRunner externalPluginService;
+
 
     public PluginProjection saveNativePlugin(PluginProjection pluginProjection) {
         if (!pluginRepository.findAlgorithmByFileName(pluginProjection.getFileName()).isEmpty()) {
             throw new SqlConflictException(PLUGIN_ALREADY_EXIST.name(), PLUGIN_ALREADY_EXIST);
         }
-
 
         if (!getNativeFileNames().contains(pluginProjection.getFileName())) {
             throw new SqlNotFoundException(PLUGIN_NOT_FOUND.name(), PLUGIN_NOT_FOUND);
@@ -60,7 +61,6 @@ public class PluginService {
                 .toList();
     }
 
-
     public void deletePlugin(UUID id) {
         PluginProjection pluginProjection = pluginRepository.getById(id);
 //        if (!pluginProjection.isNativeRealization()) {
@@ -75,11 +75,15 @@ public class PluginService {
         return pluginRepository.save(plugin);
     }
 
-    public String checkPlugin(UUID id, Graph graph) {
+    public String checkPlugin(UUID id, GraphProjection graphProjection) {
         PluginProjection plugin = pluginRepository
                 .findById(id)
                 .orElseThrow(null);
+
         String name = UPPER_CAMEL.to(LOWER_CAMEL, getNameWithoutExtension(plugin.getFileName()));
-        return nativePluginService.runPlugin(name, graph);
+        Graph graph = graphMapper.graphProjectionToGraph(graphProjection);
+        return plugin.isNativeRealization()
+                ? nativePluginService.runPlugin(name, graph)
+                : externalPluginService.runPlugin(name, graph);
     }
 }

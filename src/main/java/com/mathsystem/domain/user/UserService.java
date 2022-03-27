@@ -1,6 +1,5 @@
 package com.mathsystem.domain.user;
 
-import com.mathsystem.domain.user.repository.Role;
 import com.mathsystem.domain.user.repository.User;
 import com.mathsystem.domain.user.repository.UserRepository;
 import com.mathsystem.exceptions.ErrorCode;

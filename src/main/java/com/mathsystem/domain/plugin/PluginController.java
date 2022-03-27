@@ -1,7 +1,9 @@
 package com.mathsystem.domain.plugin;
 
 
+import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.api.graph.model.Graph;
+import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.graph.repository.GraphRepository;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.plugin.repository.PluginRepository;
@@ -26,6 +28,7 @@ public class PluginController {
     private final PluginRepository pluginRepository;
     private final GraphRepository graphRepository;
     private final PluginService pluginService;
+    private final GraphMapper graphMapper;
 
     @PostMapping("/all/plugin/native-plugin")
     public ResponseEntity<?> saveNativePlugin(@RequestBody PluginProjection pluginProjection) {
@@ -49,8 +52,8 @@ public class PluginController {
     }
 
     @PostMapping("/all/plugin/chech-plugin/{id}")
-    public ResponseEntity<?> checkPlugin(@PathVariable("id") UUID id, @RequestBody Graph graph) {
-        return ResponseEntity.ok(pluginService.checkPlugin(id, graph));
+    public ResponseEntity<?> checkPlugin(@PathVariable("id") UUID id, @RequestBody GraphProjection graphProjection) {
+        return ResponseEntity.ok(pluginService.checkPlugin(id, graphProjection));
     }
 
 //    //TO-DO: Переписать

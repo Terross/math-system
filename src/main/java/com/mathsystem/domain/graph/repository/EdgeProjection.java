@@ -14,12 +14,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "edge")
+@EqualsAndHashCode(exclude = "graph")
+@IdClass(EdgeProjection.EdgePK.class)
 public class EdgeProjection {
 
     @Id
-    @GeneratedValue
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
+
+    @Id
+    @JsonIgnore
+    private UUID graph;
 
     private Color color;
 
@@ -30,5 +34,11 @@ public class EdgeProjection {
     private UUID fromV;
 
     private UUID toV;
+
+    @Data
+    public static class EdgePK implements Serializable {
+        private UUID id;
+        private UUID graph;
+    }
 }
 

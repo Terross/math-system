@@ -14,8 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Edge {
 
-    private UUID id;
-
     private UUID fromV;
 
     private UUID toV;

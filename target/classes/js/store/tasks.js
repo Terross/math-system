@@ -1,8 +1,8 @@
 import tasksApi from "../api/tasks";
-import constructorGraph from "./constructorGraph";
+import currentGraph from "./currentGraph";
 
 const state = () => ({
-    tasks: [],
+    tasks: frontendData.tasks,
     currentTask : {
         description: '',
         name: '',
@@ -16,7 +16,7 @@ const state = () => ({
         },
         graphDirect: true,
         graphIsPresent: false,
-        graph: constructorGraph.state()
+        graph: currentGraph.state()
     }
 })
 
@@ -136,6 +136,32 @@ const mutations = {
     },
     updateTaskMutation(state, task) {
 
+    },
+    cleanCurrentTaskMutation(state) {
+        state.currentTask = {
+            description: '',
+            name: '',
+            category: '',
+            plugins: [],
+            permission: {
+                draw: true,
+                color: true,
+                edit: true,
+                remove: true
+            },
+            graphDirect: true,
+            graphIsPresent: false,
+            graph: currentGraph.state()
+        }
+    },
+    initCurrentTaskMutation(state, task) {
+        state.currentTask.description = task.taskDescription
+        state.currentTask.name = task.name
+        state.currentTask.category = task.category
+        state.currentTask.plugins = task.pluginValues
+        state.currentTask.permission = task.taskPermission
+        state.currentTask.graphDirect = task.graphType === "DIRECTED"
+        state.currentTask.graphIsPresent = task.graphIsPresent
     }
 }
 

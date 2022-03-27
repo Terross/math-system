@@ -2,7 +2,7 @@ import Vue from "vue"
 import Vuex from "vuex"
 import plugins from "./plugins";
 import tasks from "./tasks";
-import constructorGraph from "./constructorGraph";
+import currentGraph from "./currentGraph.js";
 import profile from "./profile.js";
 import createPersistedState from "vuex-persistedstate";
 
@@ -16,6 +16,6 @@ export default new Vuex.Store({
         profile: profile,
         plugins: plugins,
         tasks: tasks,
-        constructorGraph: constructorGraph
+        currentGraph: currentGraph
     }
 })

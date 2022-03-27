@@ -30,6 +30,8 @@ public class Task {
 
     private String authorEmail;
 
+    private Boolean graphIsPresent;
+
     @Column(name = "task_description", length = 10000000)
     private String taskDescription;
 

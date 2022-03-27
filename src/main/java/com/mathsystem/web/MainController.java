@@ -5,6 +5,7 @@ import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.graph.repository.GraphRepository;
 import com.mathsystem.domain.task.repository.Task;
 import com.mathsystem.domain.task.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,18 +19,12 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class MainController {
 
     private final GraphRepository graphRepository;
     private final PluginRepository pluginRepository;
     private final TaskRepository taskRepository;
-
-    @Autowired
-    public MainController(GraphRepository graphRepository, PluginRepository pluginRepository, TaskRepository taskRepository) {
-        this.graphRepository = graphRepository;
-        this.pluginRepository = pluginRepository;
-        this.taskRepository = taskRepository;
-    }
 
     @GetMapping
     public String main(Model model) throws FileNotFoundException {

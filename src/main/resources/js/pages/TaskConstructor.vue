@@ -26,10 +26,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['constructorGraph/cleanGraphMutation'])
+    ...mapMutations([
+      'currentGraph/cleanGraphMutation',
+      'tasks/cleanCurrentTaskMutation'])
   },
   beforeMount() {
-    this['constructorGraph/cleanGraphMutation']()
+    this['tasks/cleanCurrentTaskMutation']()
+    this['currentGraph/cleanGraphMutation']()
   }
 }
 </script>

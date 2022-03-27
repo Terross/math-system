@@ -18,17 +18,20 @@ import java.util.UUID;
 public class GraphProjection {
 
     @Id
-    @GeneratedValue
     private UUID id;
     private GraphType directType;
     private int vertexCount;
     private int edgeCount;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "graph_id")
+    @OneToMany(mappedBy = "graph", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VertexProjection> vertexList;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "graph_id")
+    @OneToMany(mappedBy = "graph", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EdgeProjection> edgeList;
+
+    public void prepareToSave() {
+        id = UUID.randomUUID();
+        vertexList.forEach(vertex -> vertex.setGraph(id));
+        edgeList.forEach(edge -> edge.setGraph(id));
+    }
 }

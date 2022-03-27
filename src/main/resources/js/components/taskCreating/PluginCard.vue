@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     graph() {
-      return this.$store.state.constructorGraph
+      return this.$store.state.currentGraph
     },
     task() {
       return this.$store.state.tasks.currentTask
@@ -74,7 +74,8 @@ export default {
       const data = {
         "vertexCount" : this.graph.vertexCount,
         "edgeCount" : this.graph.edgeCount,
-        "vertexList" : this.graph.constructorGraph,
+        "vertexList" : this.graph.vertexList,
+        "edgeList": this.graph.edgeList,
         "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
       }
       console.log(data)
@@ -85,7 +86,6 @@ export default {
             }
           })
           .then(response => {
-            console.log(response.data)
             this.result = response.data
           })
           .catch(e => {

@@ -1,24 +1,36 @@
 package com.mathsystem.domain.task;
 
 import com.mathsystem.domain.task.repository.Task;
+import com.mathsystem.domain.task.rest.SolutionRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TaskController {
+
     private final TaskService taskService;
+    private final DecisionService decisionService;
 
     @PostMapping("/all/task/task")
     public ResponseEntity<?> saveNewTask(@RequestBody Task task) {
         return ResponseEntity.ok(taskService.saveNewTask(task));
+    }
+
+    @GetMapping("/all/task/all-tasks")
+    public ResponseEntity<?> getAllTasks() {
+        return ResponseEntity.ok(taskService.findAllTasks());
+    }
+
+    @PostMapping("/all/task/solution/{id}")
+    public ResponseEntity<?> checkSolution(@PathVariable("id") UUID id, @RequestBody SolutionRequest solutionRequest) {
+        return ResponseEntity.ok(decisionService.checkSolution(solutionRequest, id));
     }
 //    private final Validator validator;
 

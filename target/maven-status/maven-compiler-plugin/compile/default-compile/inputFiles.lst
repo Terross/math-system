@@ -32,6 +32,7 @@
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/plugin/nativerealization/EdgeAndVertexCount.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/util/DataLoader.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/exceptions/PluginAlreadyExistsException.java
+/home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/plugin/repository/PluginValue.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/graph/GraphVerifier.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/plugin/repository/PluginRepository.java
 /home/dmitry/IdeaProjects/math-system/src/main/java/com/mathsystem/domain/graph/repository/EdgeProjection.java

@@ -76,33 +76,20 @@ export default {
     },
     author() {
       return this.$store.state.profile.profile
+    },
+    graph() {
+      return this.task.graph
     }
-
   },
   methods: {
     ...mapMutations([
         'tasks/editCurrentTaskGraphEnableMutation',
-        'tasks/editCurrentTaskGraphTypeMutation'
+        'tasks/editCurrentTaskGraphTypeMutation',
+        'tasks/addTaskMutation'
     ]),
     ...mapGetters(['tasks/generatedDescription']),
     saveTask() {
       const description = this.task.description ? this.task.description : this['tasks/generatedDescription']()
-      const vertexList = this.task.graph.constructorGraph.map(item => {
-        return {
-          color: item.color,
-          id: item.id,
-          label: item.label,
-          weight: item.weight,
-          xCoordinate: item.xCoordinate,
-          yCoordinate: item.yCoordinate
-        }
-      })
-      const edgeList = []
-      this.task.graph.constructorGraph.forEach(vertex => {
-        vertex.outgoingEdges.forEach(edge => {
-          edgeList.push(edge)
-        })
-      })
       const data = {
         "category": this.task.category,
         "name": this.task.name,
@@ -110,14 +97,15 @@ export default {
         "graphType": this.task.graphDirect ? "DIRECTED" : "UNDIRECTED",
         "taskDescription": description,
         "graph" : {
-          "vertexCount" : this.task.graph.vertexCount,
-          "edgeCount" : this.task.graph.edgeCount,
-          "vertexList" : vertexList,
-          "edgeList": edgeList,
+          "vertexCount" : this.graph.vertexCount,
+          "edgeCount" : this.graph.edgeCount,
+          "vertexList" : this.graph.vertexList,
+          "edgeList": this.graph.edgeList,
           "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
         },
         "taskPermission": this.task.permission,
-        "pluginValues": this.task.plugins
+        "pluginValues": this.task.plugins,
+        "graphIsPresent": this.task.graphIsPresent
       }
       console.log(data)
       HTTP
@@ -127,7 +115,7 @@ export default {
             }
           })
           .then(response => {
-            console.log(response.data)
+            this['tasks/addTaskMutation'](response.data)
           })
           .catch(e => {
             console.log(e)

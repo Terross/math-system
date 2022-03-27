@@ -1,15 +1,11 @@
 package com.mathsystem.domain.graph.repository;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -17,13 +13,17 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "graph")
 @Table(name = "vertex")
+@IdClass(VertexProjection.VertexPK.class)
 public class VertexProjection {
 
     @Id
-    @GeneratedValue
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
+
+    @Id
+    @JsonIgnore
+    private UUID graph;
 
     private Color color;
 
@@ -36,4 +36,10 @@ public class VertexProjection {
 
     @JsonProperty("yCoordinate")
     private Integer yCoordinate;
+
+    @Data
+    public static class VertexPK implements Serializable {
+        private UUID id;
+        private UUID graph;
+    }
 }

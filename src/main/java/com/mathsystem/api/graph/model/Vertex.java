@@ -1,16 +1,16 @@
 package com.mathsystem.api.graph.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mathsystem.domain.graph.repository.Color;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
-import java.util.UUID;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Vertex {
-
-    private UUID id;
 
     private Color color;
 
@@ -18,13 +18,7 @@ public class Vertex {
 
     private String label;
 
-    @JsonProperty("xCoordinate")
     private Integer xCoordinate;
 
-    @JsonProperty("yCoordinate")
     private Integer yCoordinate;
-
-    private List<Edge> outgoingEdges;
-
-    private List<Edge> incomingEdges;
 }

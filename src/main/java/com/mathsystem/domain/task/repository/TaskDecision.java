@@ -2,7 +2,10 @@ package com.mathsystem.domain.task.repository;
 
 import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.user.repository.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +13,9 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskDecision {
 
     @Id
@@ -29,5 +35,7 @@ public class TaskDecision {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "graph_id")
     private GraphProjection graphProjection;
+
+    private Boolean isRight;
 
 }

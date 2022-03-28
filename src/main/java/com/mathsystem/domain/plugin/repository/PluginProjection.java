@@ -1,8 +1,7 @@
 package com.mathsystem.domain.plugin.repository;
 
 import com.mathsystem.domain.graph.repository.GraphType;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +13,9 @@ import java.util.UUID;
 @Entity
 @ToString
 @Table(name = "plugin")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PluginProjection {
     @Id
     @GeneratedValue

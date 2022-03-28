@@ -156,6 +156,9 @@ export default {
     },
     currentRole() {
       return this.$store.state.profile.profile.role
+    },
+    author() {
+      return this.$store.state.profile.profile.email
     }
   },
   methods: {
@@ -167,43 +170,54 @@ export default {
       if (this.$refs.form.validate()) {
         let file = this.files
         if (file.size > 131000) {
-          console.log(123)
           this.alertType = 'errorSize'
         } else {
-
           let formData = new FormData();
+          console.log(file)
           formData.append("file", file)
-          this.jarName = file.name
-          console.log(file.size)
           formData.append("name", this.pluginName)
           formData.append("description", this.pluginDescription)
-          formData.append("algType", this.pluginType === 'Характеристика'
+          formData.append("pluginType", this.pluginType === 'Характеристика'
               ? 'CHARACTERISTIC' : 'PROPERTY')
           formData.append("graphType", this.graphType === 'Ориентированный'
               ? 'DIRECTED' : 'UNDIRECTED')
+          formData.append("author", this.author)
 
-          this.$http.post('/plugin/api', formData).then(response => {
-            this['plugins/addPluginMutation'](response.data)
-            this.alertType = 'success'
-          }, err => {
-            if (err.data === null) {
-              this.alertType = 'somethingWrong'
-              this.javaError = err.bodyText
-            } else {
-              if (err.data.message === 'PluginAlreadyExists') {
-                this.alertType = 'errorExist'
+          console.log(formData)
+
+          HTTP
+            .post('/all/plugin/external-plugin', formData, {
+              headers: {
+                'Authorization' : "Bearer " + this.token
               }
-              if (err.data.message === 'Wrong jar file') {
-                this.alertType = 'errorInterface'
-              }
-              if (err.data.message === 'Class wasnt found in jar') {
-                this.alertType = 'errorJar'
-              }
-              if (err.data.message === 'The plugin takes too long to execute') {
-                this.alertType = 'errorTime'
-              }
-            }
-          })
+            })
+            .then(response => {
+              console.log(response.data)
+            }).catch(err => {
+              console.log(err)
+            })
+          // this.$http.post(, formData).then(response => {
+          //   this['plugins/addPluginMutation'](response.data)
+          //   this.alertType = 'success'
+          // }, err => {
+          //   if (err.data === null) {
+          //     this.alertType = 'somethingWrong'
+          //     this.javaError = err.bodyText
+          //   } else {
+          //     if (err.data.message === 'PluginAlreadyExists') {
+          //       this.alertType = 'errorExist'
+          //     }
+          //     if (err.data.message === 'Wrong jar file') {
+          //       this.alertType = 'errorInterface'
+          //     }
+          //     if (err.data.message === 'Class wasnt found in jar') {
+          //       this.alertType = 'errorJar'
+          //     }
+          //     if (err.data.message === 'The plugin takes too long to execute') {
+          //       this.alertType = 'errorTime'
+          //     }
+          //   }
+          // })
         }
 
       }

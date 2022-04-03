@@ -32,6 +32,12 @@ public class TaskController {
     public ResponseEntity<?> checkSolution(@PathVariable("id") UUID id, @RequestBody SolutionRequest solutionRequest) {
         return ResponseEntity.ok(decisionService.checkSolution(solutionRequest, id));
     }
+
+    @DeleteMapping("/all/task/{id}")
+    public void deleteTask(@PathVariable UUID id) {
+        taskService.deleteTask(id);
+    }
+
 //    private final Validator validator;
 
 //    @PostMapping("/all/task/task")
@@ -85,11 +91,5 @@ public class TaskController {
 //                );
 //    }
 //
-//    @DeleteMapping("/{id}")
-//    public void deleteTask(@PathVariable UUID id) throws ChangeSetPersister.NotFoundException {
-//        TaskProjection taskProjection = taskRepository
-//                .findById(id)
-//                .orElseThrow(ChangeSetPersister.NotFoundException::new);
-//        taskRepository.delete(taskProjection);
-//    }
+
 }

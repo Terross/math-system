@@ -12,16 +12,25 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = {
-            SqlConflictException.class,
-            SqlNotFoundException.class
-    })
-    public ResponseEntity<?> handleDataConflictException(SqlConflictException exception, WebRequest request) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<?> handleBusinessException(BusinessException exception, WebRequest request) {
         log.error(exception.getMessage());
-        log.error("With code - %s".formatted(exception.getErrorCode().toString()));
+        log.error("With code - %s".formatted(exception.getErrorCode().name()));
         return handleExceptionInternal(
                 exception,
-                new ErrorResponseBody(exception.getMessage(), exception.getErrorCode().toString()),
+                new ErrorResponseBody(exception.getMessage(), exception.getErrorCode().name()),
+                new HttpHeaders(),
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                request);
+    }
+
+    @ExceptionHandler(DataException.class)
+    public ResponseEntity<?> handleDataException(DataException exception, WebRequest request) {
+        log.error(exception.getMessage());
+        log.error("With code - %s".formatted(exception.getErrorCode().name()));
+        return handleExceptionInternal(
+                exception,
+                new ErrorResponseBody(exception.getMessage(), exception.getErrorCode().name()),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
                 request);

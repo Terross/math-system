@@ -84,8 +84,8 @@ export default {
         "description": this.pluginDescription
       }
       console.log(data)
-      HTTP
-          .put(`all/plugin/plugin/${this.plugin.id}`, data,{
+      this.$http
+          .put(`/api/v1/all/plugin/plugin/${this.plugin.id}`, data,{
             headers: {
               'Authorization' : "Bearer " + this.token
             }

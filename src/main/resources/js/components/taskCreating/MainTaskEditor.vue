@@ -108,9 +108,10 @@ export default {
         "graphIsPresent": this.task.graphIsPresent
       }
       console.log(data)
-      HTTP
-          .post('/all/task/task', data, {
+      this.$http
+          .post('/api/v1/all/task/task', data, {
             headers: {
+
               'Authorization' : "Bearer " + this.token
             }
           })

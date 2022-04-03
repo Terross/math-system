@@ -93,8 +93,8 @@ export default {
         "email" : this.email
       }
 
-      HTTP
-          .post(`all/task/solution/${this.$route.params.id}`, data,{
+      this.$http
+          .post(`/api/v1/all/task/solution/${this.$route.params.id}`, data,{
             headers: {
               'Authorization' : "Bearer " + this.token
             }

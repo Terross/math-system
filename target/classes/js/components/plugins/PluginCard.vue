@@ -1,48 +1,41 @@
 <template>
-    <v-card
-        class="mx-auto"
-    >
-      <EditPluginInfo :dialog="dialog"
-                      :plugin="plugin"
-                      v-on:close-dialog="dialog=false"></EditPluginInfo>
-      <v-card-title>
-        {{plugin.name}}
-      </v-card-title>
-      <v-card-subtitle>
-        {{'Имя файла: ' + plugin.fileName}}
-        <v-icon>done</v-icon>
-      </v-card-subtitle>
-      <v-card-text class="mx-2">
-        <p class="text-h7 text--primary">
-          {{plugin.pluginType === 'CHARACTERISTIC' ?  'Характеристика' : 'Свойство'}}
-          {{plugin.graphType === 'DIRECTED'  ?  'для ориентированного графа' :
-            plugin.graphType === 'UNDIRECTED'?  'для неориентированного графа': 'для любого графа'}}
-        </p>
-        <div class="text--primary">
-          {{plugin.description}}
-        </div>
-      </v-card-text>
-      <v-card-actions>
-        <v-row justify="start">
-          <v-btn
-              color="primary"
-              @click="editPlugin(plugin.id)"
-              class="ma-4"
-          >
-            Изменить
-          </v-btn>
-          <v-btn
-              v-if="currentEmail===plugin.authorEmail || currentRole==='ADMIN'"
-              color="error"
-              @click="removePlugin(plugin.id)"
-              class="ma-4"
-              dark>
-            Удалить
-          </v-btn>
-        </v-row>
+  <v-card
+      class="mx-auto"
+  >
+    <EditPluginInfo :dialog="dialog"
+                    :plugin="plugin"
+                    v-on:close-dialog="dialog=false"></EditPluginInfo>
+    <v-card-title>
+      {{plugin.name}}
+    </v-card-title>
+    <v-card-subtitle>
+      {{'Имя файла: ' + plugin.fileName}}
+      <v-icon v-if="plugin.nativeRealization">done</v-icon>
+    </v-card-subtitle>
+    <v-card-text class="mx-2">
+      <p class="text-h7 text--primary">
+        {{plugin.pluginType === 'CHARACTERISTIC' ?  'Характеристика' : 'Свойство'}}
+        {{plugin.graphType === 'DIRECTED'  ?  'для ориентированного графа' :
+          plugin.graphType === 'UNDIRECTED'?  'для неориентированного графа': 'для любого графа'}}
+      </p>
+      <div class="text--primary">
+        {{plugin.description}}
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-row justify="start">
+        <v-btn
+            v-if="currentEmail===plugin.authorEmail || currentRole==='ADMIN'"
+            color="error"
+            @click="removePlugin(plugin.id)"
+            class="ma-4"
+            dark>
+          Удалить
+        </v-btn>
+      </v-row>
 
-      </v-card-actions>
-    </v-card>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -77,8 +70,8 @@ export default {
       this.dialog = true
     },
     removePlugin(id) {
-      HTTP
-          .delete(`all/plugin/plugin/${id}`, {
+      this.$http
+          .delete(`/api/v1/all/plugin/plugin/${id}`, {
             headers: {
               'Authorization' : "Bearer " + this.token
             }

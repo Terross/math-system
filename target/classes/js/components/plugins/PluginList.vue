@@ -36,15 +36,6 @@
                         :rules="[v => !!v || 'Требуется описание плагина']"
                         required
                     ></v-text-field>
-                  </v-col>
-                  <v-col>
-                    <v-select
-                        :items="['Свойство', 'Характеристика']"
-                        label="Тип плагина"
-                        v-model="pluginType"
-                        :rules="[v => !!v || 'Требуется тип плагина']"
-                        required
-                    ></v-select>
                     <v-select
                         :items="['Ориентированный', 'Неориентированный', 'Любой']"
                         label="Тип графа"
@@ -53,6 +44,7 @@
                         required
                     ></v-select>
                   </v-col>
+
                 </v-row>
                 <v-row>
                   <v-file-input
@@ -85,26 +77,38 @@
               </v-form>
               <plugin-alerts
                   :alert-type="alertType"
-                  :plugin-name="jarName"
-                  :java-error="javaError"/>
+                  :alert-message="alertMessage"/>
             </v-card-text>
             <v-card-actions>
-              <v-row justify="start">
-                <v-btn
-                    color="primary"
-                    class="mx-4 mb-4"
-                    @click="addPlugin()"
-                    dark>
-                  Добавить плагин
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    class="mx-4 mb-4"
-                    @click="addNativePlugin()"
-                    dark>
-                  Добавить нативный плагин
-                </v-btn>
-              </v-row>
+              <v-col>
+                <v-row justify="start">
+                  <v-btn
+                      color="primary"
+                      @click="addPlugin()"
+                      class="ma-4"
+                      dark>
+                    Добавить плагин
+                  </v-btn>
+                  <v-btn
+                      v-if="author==='dima38091@gmail.com'"
+                      color="primary"
+                      class="ma-4"
+
+                      @click="addNativePlugin()"
+                      dark>
+                    Добавить нативный плагин
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-text-field
+                      v-model="searchField"
+                      label="Поиск по имени плагина"
+                      class="ma-4"
+
+                  ></v-text-field>
+                </v-row>
+
+              </v-col>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -114,7 +118,7 @@
             v-for="(plugin, i) in plugins"
             :key="i"
             v-if="plugins.length > 0">
-          <PluginCard :plugin="plugin"/>
+          <PluginCard :plugin="plugin" v-if="plugin.name.includes(searchField) || searchField.length === 0 "/>
         </v-col>
       </v-row>
   </v-container>
@@ -122,7 +126,6 @@
 
 <script>
 import {HTTP} from "../../axios/http-common";
-import store from "../../store/store";
 import { mapMutations } from "vuex";
 import PluginAlerts from "./PluginAlerts.vue";
 import PluginCard from "./PluginCard.vue";
@@ -142,9 +145,11 @@ export default {
       files: [],
       valid: true,
       alertType: '',
-      javaError: '',
+      alertMessage: '',
       jarName: '',
-      dialog: false
+      dialog: false,
+      searchField: '',
+      searchMode: false
     }
   },
   computed: {
@@ -170,57 +175,60 @@ export default {
       if (this.$refs.form.validate()) {
         let file = this.files
         if (file.size > 131000) {
-          this.alertType = 'errorSize'
+          this.alertType = 'error'
+          this.alertMessage = 'Файл не должен превышать 128кб'
         } else {
+          const gt = this.graphType === 'Ориентированный' ? "DIRECTED" :
+              this.graphType === "Неориентированный" ? "UNDIRECTED": "COMMON"
           let formData = new FormData();
-          console.log(file)
           formData.append("file", file)
           formData.append("name", this.pluginName)
           formData.append("description", this.pluginDescription)
           formData.append("pluginType", this.pluginType === 'Характеристика'
               ? 'CHARACTERISTIC' : 'PROPERTY')
-          formData.append("graphType", this.graphType === 'Ориентированный'
-              ? 'DIRECTED' : 'UNDIRECTED')
+          formData.append("graphType", gt)
           formData.append("author", this.author)
 
           console.log(formData)
 
-          HTTP
-            .post('/all/plugin/external-plugin', formData, {
+          this.$http
+            .post('/api/v1/all/plugin/external-plugin', formData, {
               headers: {
                 'Authorization' : "Bearer " + this.token
               }
             })
             .then(response => {
-              console.log(response.data)
+              this['plugins/addPluginMutation'](response.data)
+              this.alertMessage = 'Плагин успешно загружен'
+              this.alertType = 'success'
             }).catch(err => {
-              console.log(err)
+              this.alertType = 'error'
+              const data = err.response.data
+              switch (data.code) {
+                case "PLUGIN_INTERNAL_ERROR":
+                  this.alertMessage = data.message
+                  break
+                case "PLUGIN_ALREADY_EXIST":
+                  this.alertMessage = 'Плагин уже существует'
+                  break
+                case "PLUGIN_JAR_ALREADY_EXIST":
+                  this.alertMessage = 'Jar уже существует'
+                  break
+                case "PLUGIN_JAR_NOT_FOUND":
+                  this.alertMessage = 'Jar не найдет'
+                  break
+                case "PLUGIN_TIME_LIMIT":
+                  this.alertMessage = 'Тест по времени не пройдет'
+                  break
+                case "PLUGIN_CLASS_NOT_FOUND":
+                  break
+              }
             })
-          // this.$http.post(, formData).then(response => {
-          //   this['plugins/addPluginMutation'](response.data)
-          //   this.alertType = 'success'
-          // }, err => {
-          //   if (err.data === null) {
-          //     this.alertType = 'somethingWrong'
-          //     this.javaError = err.bodyText
-          //   } else {
-          //     if (err.data.message === 'PluginAlreadyExists') {
-          //       this.alertType = 'errorExist'
-          //     }
-          //     if (err.data.message === 'Wrong jar file') {
-          //       this.alertType = 'errorInterface'
-          //     }
-          //     if (err.data.message === 'Class wasnt found in jar') {
-          //       this.alertType = 'errorJar'
-          //     }
-          //     if (err.data.message === 'The plugin takes too long to execute') {
-          //       this.alertType = 'errorTime'
-          //     }
-          //   }
-          // })
         }
-
       }
+    },
+    search() {
+
     }
   }
 }

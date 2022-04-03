@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class SqlNotFoundException extends RuntimeException {
-    private final String message;
+public class DataException extends RuntimeException {
     private final ErrorCode errorCode;
+    private final String message;
 }

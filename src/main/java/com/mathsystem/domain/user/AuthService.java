@@ -1,13 +1,12 @@
 package com.mathsystem.domain.user;
 
-import com.mathsystem.domain.user.repository.Role;
 import com.mathsystem.authentication.dto.AuthRequest;
 import com.mathsystem.authentication.dto.AuthResponse;
 import com.mathsystem.authentication.dto.RegistrationRequest;
 import com.mathsystem.authentication.jwt.JwtTokenProvider;
 import com.mathsystem.domain.user.repository.User;
 import com.mathsystem.domain.user.repository.UserRepository;
-import com.mathsystem.exceptions.SqlConflictException;
+import com.mathsystem.exceptions.DataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,7 @@ public class AuthService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } catch (Exception e) {
-            throw new SqlConflictException(e.getMessage(), USER_ALREADY_EXIST);
+            throw new DataException(USER_ALREADY_EXIST, e.getMessage());
         }
     }
 

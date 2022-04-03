@@ -12,34 +12,45 @@
         <v-card-text>
           <v-container>
             <v-col>
-              <v-text-field
-                  v-model="pluginName"
-                  label="Название плагина"
-                  required
-              ></v-text-field>
-              <v-text-field
-                  v-model="pluginDescription"
-                  label="Описание плагина"
-                  required
-              ></v-text-field>
-              <v-text-field
-                  v-model="pluginFileName"
-                  label="Название файла"
-                  hint="С типом файла .java"
-                  required
-              ></v-text-field>
-              <v-select
-                  v-model="pluginType"
-                  :items="['Свойство', 'Характеристика']"
-                  label="Тип плагина"
-                  required
-              ></v-select>
-              <v-select
-                  v-model="graphType"
-                  :items="['Ориентированный', 'Неориентированный', 'Любой']"
-                  label="Тип графа"
-                  required
-              ></v-select>
+              <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+              >
+                <v-text-field
+                    v-model="pluginName"
+                    label="Название плагина"
+                    :rules="[v => !!v || 'Требуется название плагина']"
+                    required
+                ></v-text-field>
+                <v-text-field
+                    v-model="pluginDescription"
+                    :rules="[v => !!v || 'Требуется название плагина']"
+                    label="Описание плагина"
+                    required
+                ></v-text-field>
+                <v-text-field
+                    v-model="pluginFileName"
+                    :rules="[v => !!v || 'Требуется название плагина']"
+                    label="Название файла"
+                    hint="С типом файла .java"
+                    required
+                ></v-text-field>
+                <v-select
+                    v-model="pluginType"
+                    :rules="[v => !!v || 'Требуется название плагина']"
+                    :items="['Свойство', 'Характеристика']"
+                    label="Тип плагина"
+                    required
+                ></v-select>
+                <v-select
+                    v-model="graphType"
+                    :rules="[v => !!v || 'Требуется название плагина']"
+                    :items="['Ориентированный', 'Неориентированный', 'Любой']"
+                    label="Тип графа"
+                    required
+                ></v-select>
+              </v-form>
             </v-col>
           </v-container>
         </v-card-text>
@@ -51,6 +62,7 @@
             Закрыть
           </v-btn>
           <v-btn
+              :disabled="!valid"
               color="primary"
               @click="savePlugin"
           >
@@ -73,6 +85,7 @@ export default {
   },
   data() {
     return {
+      valid: true,
       isOpen: this.dialog,
       pluginName: '',
       pluginDescription: '',
@@ -113,8 +126,8 @@ export default {
         "nativeRealization": true,
         "authorEmail": this.$store.state.profile.profile.email
       }
-      HTTP
-          .post('all/plugin/native-plugin', data, {
+      this.$http
+          .post('/api/v1/all/plugin/native-plugin', data, {
             headers: {
               'Authorization' : "Bearer " + this.token
             }

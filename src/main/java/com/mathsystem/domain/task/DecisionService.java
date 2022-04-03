@@ -2,6 +2,7 @@ package com.mathsystem.domain.task;
 
 import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.api.graph.model.Graph;
+import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.task.repository.Task;
@@ -53,10 +54,12 @@ public class DecisionService {
 
     private void savePluginDecision(SolutionRequest solutionRequest, Task task, Boolean isRight) {
         User user = userRepository.findByEmail(solutionRequest.getEmail());
+        GraphProjection graph = solutionRequest.getGraphProjection();
+        graph.prepareToSave();
         TaskDecision taskDecision = TaskDecision.builder()
                 .task(task)
                 .created(LocalDateTime.now())
-                .graphProjection(solutionRequest.getGraphProjection())
+                .graphProjection(graph)
                 .user(user)
                 .isRight(isRight)
                 .build();

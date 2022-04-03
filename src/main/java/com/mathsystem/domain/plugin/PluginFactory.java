@@ -1,8 +1,7 @@
 package com.mathsystem.domain.plugin;
 
 import com.mathsystem.domain.plugin.plugintype.Plugin;
-import com.mathsystem.exceptions.PluginClassNotFoundException;
-import com.mathsystem.exceptions.PluginNotFoundException;
+import com.mathsystem.exceptions.BusinessException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import static com.mathsystem.exceptions.ErrorCode.PLUGIN_CLASS_NOT_FOUND;
+import static com.mathsystem.exceptions.ErrorCode.PLUGIN_JAR_NOT_FOUND;
 
 /**
  * Клас фабрики для создания графов
@@ -30,6 +32,7 @@ public class PluginFactory {
      */
     public Plugin loadPlugin(String pluginName) {
         File jarPlugin = new File(pluginPath + pluginName + ".jar");
+        log.info("%s jar file".formatted(jarPlugin.getAbsolutePath()));
         return  loadPluginFromFile(jarPlugin, pluginName);
     }
 
@@ -46,7 +49,7 @@ public class PluginFactory {
             log.info(jarPlugin.getAbsolutePath() + " was found");
         } else {
             log.error(jarPlugin.getAbsolutePath() + " was found");
-            throw new PluginNotFoundException();
+            throw new BusinessException(PLUGIN_JAR_NOT_FOUND, PLUGIN_JAR_NOT_FOUND.name());
         }
 
         try {
@@ -61,7 +64,7 @@ public class PluginFactory {
 
         } catch (Exception classNotFoundException) {
             if (classNotFoundException instanceof ClassNotFoundException) {
-                throw new PluginClassNotFoundException();
+                throw new BusinessException(PLUGIN_CLASS_NOT_FOUND, PLUGIN_CLASS_NOT_FOUND.name());
             }
         }
 

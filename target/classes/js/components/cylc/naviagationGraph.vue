@@ -147,14 +147,8 @@ export default {
   },
 
   computed: {
-    changeColor() {
-      return this.$store.state.currentGraph.changeColor
-    },
-    changeLabel() {
-      return  this.$store.state.currentGraph.changeLabel
-    },
     direct() {
-      return this.$store.state.currentGraph.direct
+      return this.$store.state.tasks.currentTask.graphDirect
     },
     graphInfo() {
       return this.$store.state.currentGraph
@@ -169,34 +163,23 @@ export default {
         'currentGraph/changeDirectTypeMutation'
     ]),
     async saveFile() {
-      let file = this.graphInfo.vertexCount
+      let file = this.direct? "DIRECTED": "UNDIRECTED"
+      file = file + ' ' + this.graphInfo.vertexCount + '\n'
       file = file + ' ' + this.graphInfo.edgeCount +'\n'
-      let vertexList = this.graphInfo.currentGraph
-      for (let i = 0; i < vertexList.length; i++) {
-        file =
-            file +
-            vertexList[i].name + ' ' +
-            vertexList[i].color + ' ' +
-            vertexList[i].weight + ' ' +
-            (vertexList[i].label === '' ? 'null' : vertexList[i].label) + '\n'
-      }
+      const vertexList = this.graphInfo.vertexList
+      const edgeList = this.graphInfo.edgeList
 
-      for (let i = 0; i < vertexList.length;i++) {
-        for (let j = 0; j < vertexList[i].outgoingEdges.length; j++) {
-          let edge = vertexList[i].outgoingEdges[j]
-          let fromVertex = vertexList.filter(item => item.name.toString() === edge.fromV.toString())[0]
-          let toVertex = vertexList.filter(item => item.name.toString() === edge.toV.toString())[0]
-          file =
-              file +
-              fromVertex.name +  ' ' +
-              toVertex.name + ' ' +
-              edge.weight + ' ' +
-              edge.color + ' ' +
-              (edge.label === '' ? 'null' : edge.label)  + ' ' +
-              edge.name + '\n'
-        }
-      }
-      var blob = new Blob([file], {type: "text/plain;charset=utf-8"});
+      vertexList.forEach(vertex => {
+        file = file + vertex.id + ' ' + vertex.color + ' ' + vertex.weight + ' ' +
+            vertex.label + ' ' + vertex.xCoordinate + ' ' + vertex.yCoordinate + '\n'
+      })
+
+      edgeList.forEach(edge => {
+        file = file + edge.fromV + ' ' + edge.toV + ' ' + edge.color + ' ' +
+            edge.weight + ' ' + edge.label + ' ' + '\n'
+      })
+
+      const blob = new Blob([file], {type: "text/plain;charset=utf-8"});
       saveAs(blob, "graph.txt");
     },
     moveClick() {

@@ -1,12 +1,19 @@
 package com.mathsystem.exceptions;
 
 public enum ErrorCode {
-    USER_ALREADY_EXIST("0", "userAlreadyExist"),
-    USER_NOT_FOUND("1", "userNotFound"),
-    PLUGIN_ALREADY_EXIST("2", "pluginAlreadyExist"),
-    PLUGIN_NOT_FOUND("3", "pluginNotFound"),
+    USER_ALREADY_EXIST,
+    USER_NOT_FOUND,
 
-    NOT_ENOUGH_RIGHT("4", "notEnoughRight");
+    PLUGIN_ALREADY_EXIST,
+    PLUGIN_NOT_FOUND,
+    PLUGIN_JAR_ALREADY_EXIST,
+    PLUGIN_JAR_NOT_FOUND,
+    PLUGIN_TIME_LIMIT,
+    PLUGIN_CLASS_NOT_FOUND,
+    PLUGIN_INTERNAL_ERROR,
 
-    ErrorCode(String code, String name) {}
+    TASK_NOT_FOUND,
+
+
+    NOT_ENOUGH_RIGHT;
 }

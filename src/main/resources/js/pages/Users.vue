@@ -58,8 +58,8 @@ export default {
   methods: {
     initialize () {
       console.log(this.token)
-      HTTP
-          .get('all/allUsers', {
+      this.$http
+          .get('/api/v1/all/allUsers', {
             headers: {
               'Authorization' : "Bearer " + this.token
             }
@@ -76,8 +76,8 @@ export default {
       console.log(this.token)
 
       this.users.find(item => user.email === item.email).role.name = '123'
-      HTTP
-          .put(`admin/user/up/${user.email}`, '',{
+      this.$http
+          .put(`/api/v1/admin/user/up/${user.email}`, '',{
             headers: {
               'Authorization' : "Bearer " + this.token
             }

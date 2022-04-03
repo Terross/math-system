@@ -81,8 +81,9 @@ export default {
         "email": this.email,
         "password": this.password
       }
-      HTTP
-          .post('auth/login', data)
+      console.log(data)
+      this.$http
+          .post('/api/v1/auth/login', data)
           .then(response => {
             this['profile/authProfile'](response.data)
             this.$router.replace("/profile")

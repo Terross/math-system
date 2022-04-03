@@ -21,7 +21,7 @@
       <v-btn
           v-if="currentRole === 'ADMIN' || currentEmail === task.authorEmail"
           color="error"
-          @click="removeTask(task.id)"
+          @click="removeTask"
           class="ma-2"
           dark>
         Удалить задачу
@@ -31,6 +31,9 @@
 </template>
 
 <script>
+import {HTTP} from "../../axios/http-common";
+import {mapActions, mapMutations} from "vuex";
+
 export default {
   name: "TaskCard",
   props: {
@@ -48,14 +51,23 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['tasks/removeTaskMutation']),
     solveTask(id) {
       this.$router.push({ path: `/task/${id}` })
     },
     updateTask(i) {
       this.$router.push({path : `/changeTask/${i}`})
     },
-    removeTask(id) {
-      this['tasks/removeTaskAction'](this.tasks.filter(item => item.id === id)[0])
+    removeTask() {
+      this.$http
+          .delete(`/api/v1/all/task/${this.task.id}`, {
+            headers: {
+              'Authorization' : "Bearer " + this.token
+            }
+          })
+          .then(response => {
+            this['tasks/removeTaskMutation'](this.task)
+          })
     }
   }
 }

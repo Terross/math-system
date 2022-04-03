@@ -1,87 +1,23 @@
 <template>
   <v-row>
     <v-col cols="4">
-      <v-card class="ma-4">
-        <v-card-title >
-          Профиль пользователя
-        </v-card-title>
-        <v-card-subtitle>
-          {{profile.email}}
-        </v-card-subtitle>
-        <v-card-text>
-          <v-list three-line>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title v-text="'Имя'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.firstName"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title v-text="'Фамилия'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.lastName"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="profile.patronymic">
-              <v-list-item-content>
-                <v-list-item-title v-text="'Отчество'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.patronymic"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title v-text="'Почта'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.email"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title v-text="'Роль'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.role"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item v-if="profile.group">
-              <v-list-item-content>
-                <v-list-item-title v-text="'Группа'"></v-list-item-title>
-                <v-list-item-subtitle v-text="profile.group"></v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-              color="primary"
-              class="ma-auto"
-              @click="update"
-          >
-            Изменить
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <user-info></user-info>
+    </v-col>
+    <v-col>
+      <task-history-card></task-history-card>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import {mapState, mapGetters, mapMutations} from 'vuex'
+import UserInfo from "../components/profile/UserInfo.vue";
+import TaskHistoryCard from "../components/profile/TaskHistoryCard.vue";
 
 export default {
   name: "Profile",
+  components: {TaskHistoryCard, UserInfo},
   data: () => ({
-  }),
-  computed: {
-    profileVuex: {
-      ...mapState({get: 'profile'})
-    },
-    profile() {
-      return this.profileVuex.profile
-    }
-  },
-  methods: {
-    update() {
-      console.log("update")
-    }
-  }
+  })
 }
 </script>
 

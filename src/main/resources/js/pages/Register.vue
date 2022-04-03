@@ -141,8 +141,8 @@ export default {
         "password": this.password,
         "userGroup": this.userGroup
       }
-      HTTP
-          .post('auth/register', data)
+      this.$http
+          .post('/api/v1/auth/register', data)
           .then(response => {
             this['profile/authProfile'](response.data)
             this.$router.push("/profile")

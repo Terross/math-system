@@ -1,11 +1,38 @@
 <template>
 <v-container>
-  <v-col
-      v-for="(task, i) in tasks"
-      :key="i"
-      cols="12">
-    <task-card :task="task"></task-card>
-  </v-col>
+  <v-row>
+    <v-col>
+      <v-card>
+        <v-card-title>Фильтрация задач</v-card-title>
+        <v-card-actions>
+          <v-row>
+            <v-text-field
+                v-model="nameFilter"
+                label="Поиск по имени задачи"
+                class="ma-4"
+
+            ></v-text-field>
+            <v-text-field
+                v-model="categoryFilter"
+                label="Поиск по имени плагина"
+                class="ma-4"
+
+            ></v-text-field>
+          </v-row>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+
+  </v-row>
+  <v-row justify="start">
+    <v-col
+        v-for="(task, i) in tasks"
+        :key="i">
+      <task-card :task="task" v-if="(task.name.includes(nameFilter) || nameFilter.length === 0) &&
+                                  (task.category.includes(categoryFilter) || categoryFilter.length === 0)"></task-card>
+    </v-col>
+  </v-row>
+
 </v-container>
 </template>
 
@@ -20,6 +47,12 @@ export default {
     TaskCard,
     TaskDescription,
     graphEditor
+  },
+  data() {
+    return {
+      nameFilter: '',
+      categoryFilter: ''
+    }
   },
   computed : {
     tasks() {

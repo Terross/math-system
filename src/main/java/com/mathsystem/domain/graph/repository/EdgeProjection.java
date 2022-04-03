@@ -19,6 +19,7 @@ import java.util.UUID;
 public class EdgeProjection {
 
     @Id
+    @GeneratedValue
     private UUID id;
 
     @Id

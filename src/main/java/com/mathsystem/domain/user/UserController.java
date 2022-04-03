@@ -17,6 +17,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
+    @GetMapping("/all/user/task-history/{email}")
+    public ResponseEntity<?> getUserTaskHistory(@PathVariable(name = "email") String email) {
+        return ResponseEntity.ok(userService.getUserTaskHistory(email));
+    }
+
     @PostMapping("/all/filterUsers")
     public ResponseEntity<?> getFilteredUsers(@RequestBody UserFilterRequest userFilterRequest) {
         return ResponseEntity.ok(userService.getFilteredUsers(userFilterRequest));

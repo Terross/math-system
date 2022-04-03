@@ -12,7 +12,6 @@ public class ExternalPluginService implements PluginRunner{
 
     private final PluginFactory pluginFactory;
 
-
     @Override
     public String runPlugin(String name, Graph graph) {
         return switch (pluginFactory.loadPlugin(name)) {

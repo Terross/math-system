@@ -79,8 +79,8 @@ export default {
         "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
       }
       console.log(data)
-      HTTP
-          .post(`/all/plugin/chech-plugin/${this.plugin.id}`, data, {
+      this.$http
+          .post(`/api/v1/all/plugin/chech-plugin/${this.plugin.id}`, data, {
             headers: {
               'Authorization' : "Bearer " + this.token
             }

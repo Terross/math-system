@@ -29,6 +29,6 @@ jwt:
 plugin:
   native:
     path: "./src/main/java/com/mathsystem/domain/plugin/nativerealization"
-  path: "/home/dmitry/IdeaProjects/math-system/plugins"
-  test.path: "/home/dmitry/IdeaProjects/math-system/dg.txt"
+  path: "/home/dmitry/IdeaProjects/math-system/plugins/"
+  test.path: "/home/dmitry/IdeaProjects/math-system/graph.txt"
 

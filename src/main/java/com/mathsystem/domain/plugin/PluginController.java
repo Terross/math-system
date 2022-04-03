@@ -1,12 +1,9 @@
 package com.mathsystem.domain.plugin;
 
 
-import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.domain.graph.repository.GraphProjection;
-import com.mathsystem.domain.graph.repository.GraphRepository;
 import com.mathsystem.domain.graph.repository.GraphType;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
-import com.mathsystem.domain.plugin.repository.PluginRepository;
 import com.mathsystem.domain.plugin.repository.PluginType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +24,6 @@ public class PluginController {
     @Value("${plugin.path}")
     private String defaultDirForPlugin;
 
-    @Value("${plugin.test.path}")
-    private String testGraphPath;
-
     private final PluginService pluginService;
 
 
@@ -40,7 +34,7 @@ public class PluginController {
 
     @GetMapping("/all/plugin/plugins")
     public ResponseEntity<?> getAllPlugins() {
-        return ResponseEntity.ok(pluginService.getAllPugins());
+        return ResponseEntity.ok(pluginService.getAllPlugins());
     }
 
     @DeleteMapping("/all/plugin/plugin/{id}")
@@ -63,9 +57,8 @@ public class PluginController {
     public ResponseEntity<?> saveExternalPlugin(@RequestParam("description") String description,
                                                 @RequestParam("name") String name,
                                                 @RequestParam("author") String author,
-                                                @RequestParam("pluginType") PluginType pluginType,
                                                 @RequestParam("graphType") GraphType graphType,
                                                 @RequestParam("file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(pluginService.saveExternalPlugin(name, description, author, pluginType, graphType, file));
+        return ResponseEntity.ok(pluginService.saveExternalPlugin(name, description, author, graphType, file));
     }
 }

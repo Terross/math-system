@@ -3,6 +3,7 @@ com/mathsystem/util/StartupInitializer.class
 com/mathsystem/domain/plugin/PluginRunner.class
 com/mathsystem/domain/user/AuthenticationController.class
 com/mathsystem/domain/user/UserController.class
+com/mathsystem/domain/plugin/nativerealization/plugins/NumberOfConnectivityComponents.class
 com/mathsystem/authentication/jwt/JwtUser.class
 com/mathsystem/domain/plugin/ExternalPluginService.class
 com/mathsystem/domain/graph/repository/GraphType.class
@@ -12,8 +13,11 @@ com/mathsystem/domain/graph/repository/Color.class
 com/mathsystem/domain/user/repository/UserRepository.class
 META-INF/spring.components
 com/mathsystem/domain/user/repository/Role.class
+com/mathsystem/api/graph/oldmodel/AbstractEdge.class
 com/mathsystem/api/graph/mapper/GraphMapperImpl.class
 com/mathsystem/domain/task/repository/TaskDecisionStory.class
+com/mathsystem/api/graph/oldmodel/Vertex.class
+com/mathsystem/api/graph/oldmodel/undirected/UndirectedEdge.class
 com/mathsystem/api/graph/model/Vertex$VertexBuilder.class
 com/mathsystem/domain/graph/repository/GraphProjection.class
 com/mathsystem/authentication/configuration/SecurityConfig.class
@@ -21,6 +25,7 @@ com/mathsystem/domain/plugin/plugintype/Plugin.class
 com/mathsystem/exceptions/RestResponseEntityExceptionHandler$ErrorResponseBody.class
 com/mathsystem/api/graph/mapper/GraphMapper.class
 com/mathsystem/domain/plugin/plugintype/GraphProperty.class
+com/mathsystem/api/graph/oldmodel/undirected/UndirectedGraph.class
 com/mathsystem/domain/task/repository/TaskDecision.class
 com/mathsystem/domain/task/PluginResult.class
 com/mathsystem/domain/graph/repository/GraphProjection$GraphProjectionBuilder.class
@@ -31,8 +36,10 @@ com/mathsystem/exceptions/ErrorCode.class
 com/mathsystem/domain/graph/repository/EdgeProjection.class
 com/mathsystem/domain/plugin/repository/PluginRepository.class
 com/mathsystem/web/configuration/WebMvcConfig.class
+com/mathsystem/api/graph/oldmodel/directed/DirectedEdge.class
 com/mathsystem/api/graph/model/Edge$EdgeBuilder.class
 com/mathsystem/domain/plugin/nativerealization/NativePluginService.class
+com/mathsystem/domain/plugin/nativerealization/NativePluginTestController.class
 com/mathsystem/domain/task/TaskController.class
 com/mathsystem/domain/task/repository/TaskRepository.class
 com/mathsystem/util/DataLoader.class
@@ -41,7 +48,6 @@ com/mathsystem/api/graph/model/Vertex.class
 com/mathsystem/domain/task/rest/SolutionRequest.class
 com/mathsystem/domain/plugin/PluginService.class
 com/mathsystem/exceptions/DataException.class
-com/mathsystem/domain/plugin/nativerealization/EdgeAndVertexCount.class
 com/mathsystem/domain/task/DecisionService.class
 com/mathsystem/api/graph/model/Graph.class
 com/mathsystem/domain/task/repository/TaskDecisionRepository.class
@@ -52,8 +58,6 @@ com/mathsystem/api/graph/mapper/VertexMapper.class
 com/mathsystem/authentication/jwt/JwtTokenProvider.class
 com/mathsystem/domain/plugin/PluginFactory.class
 com/mathsystem/domain/user/repository/User.class
-com/mathsystem/domain/plugin/nativerealization/VertexCount.class
-com/mathsystem/domain/plugin/nativerealization/EdgeCount.class
 com/mathsystem/api/graph/model/Graph$GraphBuilder.class
 com/mathsystem/domain/user/AuthService.class
 com/mathsystem/domain/task/repository/Task.class
@@ -70,12 +74,16 @@ com/mathsystem/domain/plugin/repository/PluginProjection.class
 com/mathsystem/api/graph/mapper/EdgeMapper.class
 com/mathsystem/api/graph/mapper/EdgeMapperImpl.class
 com/mathsystem/authentication/jwt/JwtTokenFilter.class
+com/mathsystem/domain/plugin/nativerealization/plugins/EdgeCount.class
 com/mathsystem/exceptions/BusinessException.class
 com/mathsystem/api/graph/GraphFactory.class
 com/mathsystem/api/graph/model/Edge.class
 com/mathsystem/domain/plugin/PluginController.class
+com/mathsystem/api/graph/oldmodel/directed/DirectedGraph.class
+com/mathsystem/api/graph/oldmodel/AbstractGraph.class
 com/mathsystem/authentication/jwt/JwtUserDetailsService.class
 com/mathsystem/domain/plugin/nativerealization/NativePluginConfiguration.class
 com/mathsystem/domain/plugin/repository/PluginValue.class
+com/mathsystem/domain/plugin/nativerealization/plugins/VertexCount.class
 com/mathsystem/domain/task/repository/TaskPermission.class
 com/mathsystem/exceptions/RestResponseEntityExceptionHandler.class

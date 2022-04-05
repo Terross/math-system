@@ -5,7 +5,7 @@ import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.api.graph.model.Vertex;
 import com.mathsystem.domain.graph.repository.Color;
 import com.mathsystem.domain.graph.repository.GraphType;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,6 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
-@Slf4j
 public class GraphFactory {
 
     public static Graph loadGraphFromFile(File fileWithGraph) throws FileNotFoundException {

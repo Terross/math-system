@@ -78,7 +78,6 @@ export default {
         "edgeList": this.graph.edgeList,
         "directType" : this.task.graphDirect ? "DIRECTED" : "UNDIRECTED"
       }
-      console.log(data)
       this.$http
           .post(`/api/v1/all/plugin/chech-plugin/${this.plugin.id}`, data, {
             headers: {
@@ -86,7 +85,7 @@ export default {
             }
           })
           .then(response => {
-            this.result = response.data
+            this.result = response.bodyText
           })
           .catch(e => {
             console.log(e)

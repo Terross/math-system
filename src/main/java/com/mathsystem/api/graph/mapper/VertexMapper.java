@@ -19,6 +19,7 @@ public class VertexMapper {
                 .put(vertexProjection.getId(),
                         Vertex
                                 .builder()
+                                .id(vertexProjection.getId())
                                 .color(vertexProjection.getColor())
                                 .label(vertexProjection.getLabel())
                                 .weight(vertexProjection.getWeight())

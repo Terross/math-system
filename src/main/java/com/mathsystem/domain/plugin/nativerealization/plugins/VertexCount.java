@@ -1,4 +1,4 @@
-package com.mathsystem.domain.plugin.nativerealization;
+package com.mathsystem.domain.plugin.nativerealization.plugins;
 
 import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.domain.plugin.plugintype.GraphCharacteristic;

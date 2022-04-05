@@ -36,7 +36,7 @@ public class GraphFactory {
             String label = scanner.next();
             String xCoordinate = scanner.next();
             String yCoordinate = scanner.next();
-            vertices.put(id, new Vertex(color,
+            vertices.put(id, new Vertex(id, color,
                     weight.equals("null") ? null : parseInt(weight), label,
                     xCoordinate.equals("null") ? null : parseInt(xCoordinate),
                     yCoordinate.equals("null") ? null : parseInt(yCoordinate)));

@@ -3,6 +3,7 @@ package com.mathsystem.domain.task;
 import com.mathsystem.api.graph.mapper.GraphMapper;
 import com.mathsystem.api.graph.model.Graph;
 import com.mathsystem.domain.graph.repository.GraphProjection;
+import com.mathsystem.domain.plugin.ExternalPluginService;
 import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
 import com.mathsystem.domain.task.repository.Task;
@@ -32,6 +33,7 @@ public class DecisionService {
     private final UserRepository userRepository;
     private final GraphMapper graphMapper;
     private final NativePluginService nativePluginService;
+    private final ExternalPluginService externalPluginService;
 
     public SolutionResponse checkSolution(SolutionRequest solutionRequest, UUID id) {
         Task task = taskRepository.findById(id).orElseThrow();
@@ -39,8 +41,10 @@ public class DecisionService {
         SolutionResponse solutionResponse = new SolutionResponse();
         task.getPluginValues().forEach(pluginValue -> {
             PluginProjection plugin = pluginValue.getPlugin();
-            String name = UPPER_CAMEL.to(LOWER_CAMEL, getNameWithoutExtension(plugin.getFileName()));
-            String pluginAnswer = nativePluginService.runPlugin(name, graph);
+            String name = getPluginName(plugin);
+            String pluginAnswer =  plugin.isNativeRealization()
+                    ? nativePluginService.runPlugin(name, graph)
+                    : externalPluginService.runPlugin(name, graph);
 
             if (!pluginAnswer.equals(pluginValue.getValue())) {
                 solutionResponse.setRight(false);
@@ -65,5 +69,11 @@ public class DecisionService {
                 .build();
         taskDecision.getGraphProjection().prepareToSave();
         taskDecisionRepository.save(taskDecision);
+    }
+
+    private String getPluginName(PluginProjection plugin) {
+        return  plugin.isNativeRealization()
+                ? UPPER_CAMEL.to(LOWER_CAMEL, getNameWithoutExtension(plugin.getFileName()))
+                : getNameWithoutExtension(plugin.getFileName());
     }
 }

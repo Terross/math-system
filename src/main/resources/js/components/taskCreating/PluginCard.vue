@@ -18,11 +18,20 @@
     </v-card-text>
     <v-card-actions>
       <v-col>
+        <v-select
+            v-if="plugin.pluginType === 'CHARACTERISTIC'"
+            :items="['равно ', 'меньше ', 'больше ']"
+            v-model="valueType"
+            :rules="[v => !!v || 'Требуется тип графа']"
+            :disabled="selected"
+            required
+        ></v-select>
         <v-text-field v-if="plugin.pluginType === 'CHARACTERISTIC'"
                       v-model="value"
                       label="Требуемое значение"
                       required
         ></v-text-field>
+
         <v-switch v-if="plugin.pluginType !== 'CHARACTERISTIC'"
                   v-model="value"
                   :label="`Требование: ${value? ' выполняется' :  'невыполняется'}`"></v-switch>
@@ -46,13 +55,15 @@ export default {
   data() {
     return {
       value: '',
-      selected: '',
-      result: ''
+      selected: false,
+      result: '',
+      valueType: 'равно '
     }
   },
   watch: {
     value: 'editValue',
-    selected: 'editSelected'
+    selected: 'editSelected',
+    valueType: 'editValue'
   },
   computed: {
     graph() {
@@ -92,29 +103,36 @@ export default {
           })
     },
     editSelected() {
+      const value = this.plugin.pluginType === 'CHARACTERISTIC'
+          ? this.valueType.toString()+this.value.toString()
+          : (this.value ? "верно" : "неверно")
+
       if (this.selected && this.value) {
         this['tasks/addPluginToCurrentTask']({
           plugin: this.plugin,
-          value: this.value
+          value: value
         })
       } else {
         this['tasks/removePluginFormCurrentTask']({
           plugin: this.plugin,
-          value: this.value
+          value: value
         })
       }
     },
     editValue() {
+      const value = this.plugin.pluginType === 'CHARACTERISTIC'
+          ? this.valueType.toString()+this.value.toString()
+          : (this.value ? "верно" : "неверно")
       if (this.selected) {
         this['tasks/addPluginToCurrentTask']({
           plugin: this.plugin,
-          value: this.value
+          value: value
         })
       }
       if (!this.value) {
         this['tasks/removePluginFormCurrentTask']({
           plugin: this.plugin,
-          value: this.value
+          value: value
         })
       }
     }

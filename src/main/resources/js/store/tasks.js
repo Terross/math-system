@@ -31,7 +31,7 @@ const getters = {
                     text = text + plugin.plugin.description + ' ' + plugin.value + '\n'
                     break
                 case 'PROPERTY':
-                    text = text + plugin.plugin.description + ' ' + plugin.value ? 'выполнено' : 'невыполнено' + '\n'
+                    text = text + plugin.plugin.description + ' ' + (plugin.value ? 'выполнено' : 'невыполнено') + '\n'
                     break
                 default:
                     break
@@ -81,6 +81,7 @@ const getters = {
 const mutations = {
     addPluginToCurrentTask(state, plugin) {
         const index = state.currentTask.plugins.findIndex(item => item.plugin.id === plugin.plugin.id)
+        console.log(plugin)
         if (index > -1) {
             state.currentTask.plugins[index] = plugin
         } else {

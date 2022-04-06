@@ -21,24 +21,24 @@
       </v-card-text>
       <v-card-actions>
         <v-col>
-          <!--          <v-alert-->
-          <!--              type="success"-->
-          <!--              v-model="added"-->
-          <!--              class="ma-2"-->
-          <!--              text-->
-          <!--              outlined-->
-          <!--              dismissible>-->
-          <!--            Задача успешно добавлена!-->
-          <!--          </v-alert>-->
-          <!--          <v-alert-->
-          <!--              type="error"-->
-          <!--              v-model="addedError"-->
-          <!--              text-->
-          <!--              class="ma-2"-->
-          <!--              outlined-->
-          <!--              dismissible>-->
-          <!--            Задача с таким именем уже существует!-->
-          <!--          </v-alert>-->
+          <v-alert
+              type="success"
+              v-model="added"
+              class="ma-2"
+              text
+              outlined
+              dismissible>
+            Задача успешно добавлена!
+          </v-alert>
+          <v-alert
+              type="error"
+              v-model="addedError"
+              text
+              class="ma-2"
+              outlined
+              dismissible>
+            {{errorMessage}}
+          </v-alert>
           <v-btn
               color="primary"
               @click="saveTask"
@@ -58,13 +58,15 @@ import TaskDescriptionCard from "./TaskDescriptionCard.vue";
 import {mapActions, mapMutations, mapGetters} from "vuex";
 import TaskDataCard from "./TaskDataCard.vue";
 import TaskPermissionCard from "./TaskPermissionCard.vue";
-import {HTTP} from "../../axios/http-common";
 
 export default {
   name: "MainTaskEditor",
   components: {TaskPermissionCard, TaskDataCard, TaskDescriptionCard},
   data() {
     return {
+      added: false,
+      addedError: false,
+      errorMessage: ''
     }
   },
   computed: {
@@ -111,15 +113,22 @@ export default {
       this.$http
           .post('/api/v1/all/task/task', data, {
             headers: {
-
               'Authorization' : "Bearer " + this.token
             }
           })
           .then(response => {
+
             this['tasks/addTaskMutation'](response.data)
+            this.added = true
           })
           .catch(e => {
-            console.log(e)
+            console.log(e.data)
+            this.addedError = true
+            if (e.data.code === 'TASK_VALIDATION_ERROR') {
+              this.errorMessage = "Название задачи и категория не должны быть пустыми"
+            } else {
+              this.errorMessage = "Задача с таким названием уже создана"
+            }
           })
     }
   }

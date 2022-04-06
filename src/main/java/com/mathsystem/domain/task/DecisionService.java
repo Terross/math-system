@@ -6,6 +6,7 @@ import com.mathsystem.domain.graph.repository.GraphProjection;
 import com.mathsystem.domain.plugin.ExternalPluginService;
 import com.mathsystem.domain.plugin.nativerealization.NativePluginService;
 import com.mathsystem.domain.plugin.repository.PluginProjection;
+import com.mathsystem.domain.plugin.repository.PluginType;
 import com.mathsystem.domain.task.repository.Task;
 import com.mathsystem.domain.task.repository.TaskDecision;
 import com.mathsystem.domain.task.repository.TaskDecisionRepository;
@@ -46,10 +47,39 @@ public class DecisionService {
                     ? nativePluginService.runPlugin(name, graph)
                     : externalPluginService.runPlugin(name, graph);
 
-            if (!pluginAnswer.equals(pluginValue.getValue())) {
-                solutionResponse.setRight(false);
-                solutionResponse.getPluginResultList().add(new PluginResult(plugin, pluginAnswer));
+            if (plugin.getPluginType() == PluginType.CHARACTERISTIC) {
+                String[] subString = pluginValue.getValue().split(" ");
+                String predicate = subString[0];
+                Integer value = Integer.parseInt(subString[1]);
+                switch (predicate) {
+                    case "равно":
+                        if (Integer.parseInt(pluginAnswer) != value) {
+                            solutionResponse.setRight(false);
+                            solutionResponse.getPluginResultList().add(new PluginResult(plugin, pluginAnswer));
+                        }
+                        break;
+                    case "меньше":
+                        if (Integer.parseInt(pluginAnswer) >= value) {
+                            solutionResponse.setRight(false);
+                            solutionResponse.getPluginResultList().add(new PluginResult(plugin, pluginAnswer));
+                        }
+                        break;
+                    case "больше":
+                        if (Integer.parseInt(pluginAnswer) <= value) {
+                            solutionResponse.setRight(false);
+                            solutionResponse.getPluginResultList().add(new PluginResult(plugin, pluginAnswer));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                if (!pluginAnswer.equals(pluginValue.getValue())) {
+                    solutionResponse.setRight(false);
+                    solutionResponse.getPluginResultList().add(new PluginResult(plugin, pluginAnswer));
+                }
             }
+
         });
 
         savePluginDecision(solutionRequest, task, solutionResponse.getRight());

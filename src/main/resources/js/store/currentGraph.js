@@ -55,6 +55,8 @@ const getters = {
 const mutations = {
     changeEdgeData(state, edge) {
         const index = state.edgeList.findIndex(item => item.id === edge.id)
+        console.log(state.edgeList)
+        console.log(edge)
         state.edgeList[index].label = edge.label
         state.edgeList[index].weight = edge.weight
     },

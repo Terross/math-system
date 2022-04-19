@@ -1,6 +1,7 @@
 <template>
   <v-card
       class="mx-auto"
+      min-width="320"
   >
     <v-card-title>{{task.name}}</v-card-title>
     <v-card-subtitle>{{task.category}}</v-card-subtitle>

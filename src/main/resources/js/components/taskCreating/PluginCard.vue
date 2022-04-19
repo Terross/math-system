@@ -1,6 +1,7 @@
 <template>
   <v-card
       class="mx-auto"
+      min-width="320"
   >
     <v-card-title>{{plugin.name}}</v-card-title>
     <v-card-subtitle>{{plugin.description}}</v-card-subtitle>

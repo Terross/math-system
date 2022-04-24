@@ -327,7 +327,7 @@ export default {
             this.selectedElement.label =
                 this["currentGraph/findEdgeById"](target.data().id).label
             this.selectedElement.elementType = "edge"
-            this.selectedElement.name = target.data().id
+            this.selectedElement.id = target.data().id
             this.selectedElement.target = target
             this.dialog = true
           }
@@ -395,6 +395,7 @@ export default {
       }
     },
     saveNewElementData(elementType, id) {
+      console.log(id)
       if (!isNaN(Number(this.selectedElement.weight))) {
         if (elementType === 'edge') {
           this['currentGraph/changeEdgeData']({
@@ -411,7 +412,7 @@ export default {
             })
           }
         }
-        this.selectedElement.elem.data('label', this.selectedElement.weight + '\n' + this.selectedElement.label)
+        this.selectedElement.elem.data('label', this.selectedElement.label.toString() + '\n' + this.selectedElement.weight  )
         this.dialog = false
       }
     },

@@ -1,6 +1,7 @@
 <template>
   <v-card
       class="mx-auto"
+      min-width="320"
   >
     <EditPluginInfo :dialog="dialog"
                     :plugin="plugin"

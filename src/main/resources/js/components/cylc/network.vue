@@ -383,9 +383,7 @@ export default {
           let ver = []
           cy.nodes().map(item => ver.push(item.data()))
           this['currentGraph/removeEdgeMutation']({
-            "name" : target.data().id,
-            "fromV" : ver.find(item => item.id === sourceV).id,
-            "toV" : ver.find(item => item.id === targetV).id
+            "id" : target.data().id
           })
         } else {
           this['currentGraph/removeNodeMutation']({

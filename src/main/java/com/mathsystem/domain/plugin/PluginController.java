@@ -61,4 +61,10 @@ public class PluginController {
                                                 @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(pluginService.saveExternalPlugin(name, description, author, graphType, file));
     }
+
+    @PutMapping("/admin/plugin/status/{id}")
+    public ResponseEntity<?> verifyPlugin(@PathVariable UUID id) {
+        pluginService.verifyPlugin(id);
+        return ResponseEntity.ok("ok");
+    }
 }

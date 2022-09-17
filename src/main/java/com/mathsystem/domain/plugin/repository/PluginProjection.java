@@ -27,4 +27,5 @@ public class PluginProjection {
     private String fileName;
     private boolean nativeRealization;
     private String authorEmail;
+    private boolean verified;
 }

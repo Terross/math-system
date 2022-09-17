@@ -8,10 +8,10 @@
     >
       <template v-slot:item.role="{ item }">
         <span>
-          {{item.role.name === "ROLE_USER" ? "USER" : "ADMIN"}}
+          {{item.role === "ROLE_USER" ? "USER" : "ADMIN"}}
         </span>
         <v-icon
-            v-if="currentRole === 'ADMIN' && item.role.name === 'ROLE_USER'"
+            v-if="currentRole === 'ADMIN' && item.role === 'ROLE_USER'"
             small
             class="mr-2"
             @click="upToAdmin(item)"
@@ -65,6 +65,7 @@ export default {
             }
           })
           .then(response => {
+            console.log(response.data)
             this.users = response.data
           })
           .catch(e => {
@@ -75,7 +76,6 @@ export default {
     upToAdmin (user) {
       console.log(this.token)
 
-      this.users.find(item => user.email === item.email).role.name = '123'
       this.$http
           .put(`/api/v1/admin/user/up/${user.email}`, '',{
             headers: {
@@ -86,7 +86,7 @@ export default {
             this
                 .users
                 .find(item => user.email === item.email)
-                .role.name = response.data.role.name
+                .role = response.data.role
           })
           .catch(e => {
             console.log(e)

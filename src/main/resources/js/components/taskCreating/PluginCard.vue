@@ -3,7 +3,16 @@
       class="mx-auto"
       min-width="320"
   >
-    <v-card-title>{{plugin.name}}</v-card-title>
+    <v-card-title>
+      {{plugin.name}}
+      <v-icon
+          v-if="plugin.verified"
+          small
+          color="green"
+      >
+        verified
+      </v-icon>
+    </v-card-title>
     <v-card-subtitle>{{plugin.description}}</v-card-subtitle>
     <v-card-text v-if="task.graphIsPresent">
       <v-btn
@@ -18,7 +27,8 @@
       Результат плагина для графа: {{result}}
     </v-card-text>
     <v-card-actions>
-      <v-col>
+      <v-col
+        v-if="plugin.verified">
         <v-select
             v-if="plugin.pluginType === 'CHARACTERISTIC'"
             :items="['равно ', 'меньше ', 'больше ']"

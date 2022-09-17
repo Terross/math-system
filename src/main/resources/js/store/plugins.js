@@ -24,6 +24,10 @@ const mutations = {
         const index = state.plugins.findIndex(item => item.id === plugin.id)
         state.plugins[index].name = plugin.name
         state.plugins[index].description = plugin.description
+    },
+    updatePluginMutation(state, id) {
+        const index = state.plugins.findIndex(item => item.id === id)
+        state.plugins[index].verified = true
     }
 }
 export default {

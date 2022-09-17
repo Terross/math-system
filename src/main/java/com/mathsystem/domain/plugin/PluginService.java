@@ -198,4 +198,11 @@ public class PluginService {
             default -> throw new IllegalArgumentException();
         };
     }
+
+    public PluginProjection verifyPlugin(UUID id) {
+        var plugin = pluginRepository.getById(id);
+        plugin.setVerified(true);
+        pluginRepository.save(plugin);
+        return plugin;
+    }
 }

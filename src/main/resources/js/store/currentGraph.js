@@ -55,8 +55,6 @@ const getters = {
 const mutations = {
     changeEdgeData(state, edge) {
         const index = state.edgeList.findIndex(item => item.id === edge.id)
-        console.log(state.edgeList)
-        console.log(edge)
         state.edgeList[index].label = edge.label
         state.edgeList[index].weight = edge.weight
     },
@@ -104,7 +102,6 @@ const mutations = {
             ...state.vertexList.slice(0, index),
             ...state.vertexList.slice(index + 1)
         ]
-        console.log(state.edgeList)
         state.edgeList.forEach(edge => {
             if (edge.fromV === node.id || edge.toV === node.id) {
                 const edgeIndex = state.edgeList.findIndex(item => item.id === edge.id)

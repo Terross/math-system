@@ -195,8 +195,10 @@ export default {
         ele.style('target-arrow-color', color)
         const source = ele.data().source
         const target = ele.data().target
+        const id = ele.data().id
         this['currentGraph/updateEdgeColorMutation'](
             {
+              "id":  id,
               "fromV": source,
               "toV": target,
               "color": color
@@ -393,7 +395,6 @@ export default {
       }
     },
     saveNewElementData(elementType, id) {
-      console.log(id)
       if (!isNaN(Number(this.selectedElement.weight))) {
         if (elementType === 'edge') {
           this['currentGraph/changeEdgeData']({

@@ -48,7 +48,7 @@ public class PluginFactory {
         if (jarPlugin.exists()) {
             log.info(jarPlugin.getAbsolutePath() + " was found");
         } else {
-            log.error(jarPlugin.getAbsolutePath() + " was found");
+            log.error(jarPlugin.getAbsolutePath() + " was not found");
             throw new BusinessException(PLUGIN_JAR_NOT_FOUND, PLUGIN_JAR_NOT_FOUND.name());
         }
 

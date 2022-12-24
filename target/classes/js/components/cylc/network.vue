@@ -195,8 +195,10 @@ export default {
         ele.style('target-arrow-color', color)
         const source = ele.data().source
         const target = ele.data().target
+        const id = ele.data().id
         this['currentGraph/updateEdgeColorMutation'](
             {
+              "id":  id,
               "fromV": source,
               "toV": target,
               "color": color
@@ -383,9 +385,7 @@ export default {
           let ver = []
           cy.nodes().map(item => ver.push(item.data()))
           this['currentGraph/removeEdgeMutation']({
-            "name" : target.data().id,
-            "fromV" : ver.find(item => item.id === sourceV).id,
-            "toV" : ver.find(item => item.id === targetV).id
+            "id" : target.data().id
           })
         } else {
           this['currentGraph/removeNodeMutation']({
@@ -395,7 +395,6 @@ export default {
       }
     },
     saveNewElementData(elementType, id) {
-      console.log(id)
       if (!isNaN(Number(this.selectedElement.weight))) {
         if (elementType === 'edge') {
           this['currentGraph/changeEdgeData']({

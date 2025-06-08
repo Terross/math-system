@@ -21,6 +21,7 @@ const routes = [
     {path: '/auth/login', component: Login},
     {path: '/auth/registration', component: Register},
     {path: '/profile', component: Profile},
+    {path: '/profile/:id', component: Profile},
     {path: '/users', component: Users},
     {path: '*', component: TaskConstructor}
 ]

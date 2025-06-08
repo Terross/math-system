@@ -8,6 +8,13 @@
                     v-on:close-dialog="dialog=false"></EditPluginInfo>
     <v-card-title>
       {{plugin.name}}
+      <v-icon
+          v-if="plugin.verified"
+          small
+          color="green"
+      >
+        verified
+      </v-icon>
     </v-card-title>
     <v-card-subtitle>
       {{'Имя файла: ' + plugin.fileName}}
@@ -32,6 +39,14 @@
             class="ma-4"
             dark>
           Удалить
+        </v-btn>
+        <v-btn
+            v-if="currentRole==='ADMIN' && plugin.verified === false"
+            color="success"
+            @click="verifyPlugin(plugin.id)"
+            class="ma-4"
+            dark>
+          Одобрить
         </v-btn>
       </v-row>
 
@@ -67,6 +82,7 @@ export default {
   },
   methods: {
     ...mapMutations(['plugins/removePluginMutation']),
+    ...mapMutations(['plugins/updatePluginMutation']),
     editPlugin(plugin) {
       this.dialog = true
     },
@@ -80,6 +96,20 @@ export default {
           .then(() => {
             console.log(id)
             this['plugins/removePluginMutation'](id)
+          })
+          .catch(e => console.log(e))
+    },
+    verifyPlugin(id) {
+      console.log(this.token)
+
+      this.$http
+          .put(`/api/v1/admin/plugin/status/${id}`, '',{
+            headers: {
+              'Authorization' : "Bearer " + this.token
+            }
+          })
+          .then(() => {
+            this['plugins/updatePluginMutation'](id)
           })
           .catch(e => console.log(e))
     }

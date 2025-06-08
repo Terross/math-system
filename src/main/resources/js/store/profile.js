@@ -1,4 +1,5 @@
 const state = () => ({
+    profiles: frontendData.users,
     profile: {
         authorization: false,
         firstName: '',

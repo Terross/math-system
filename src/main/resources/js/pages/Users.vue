@@ -19,6 +19,15 @@
           arrow_upward
         </v-icon>
       </template>
+      <template v-slot:item.profile="{ item }">
+        <v-icon
+            small
+            class="mr-2"
+            @click="toUserPorofile(item)"
+        >
+          visibility
+        </v-icon>
+      </template>
     </v-data-table>
   </v-container>
 </template>
@@ -38,6 +47,7 @@ export default {
       { text: 'email', value: 'email' },
       { text: 'Группа', value: 'userGroup' },
       { text: 'Роль', value: 'role', sortable: false },
+      { text: 'Профиль', value: 'profile' }
     ],
     users: []
   }),
@@ -67,6 +77,7 @@ export default {
           .then(response => {
             console.log(response.data)
             this.users = response.data
+            v
           })
           .catch(e => {
             console.log(e)
@@ -91,7 +102,14 @@ export default {
           .catch(e => {
             console.log(e)
           })
-    }
+    },
+    toUserPorofile (user) {
+      this.$router.push({ path: `/profile/${user.id}` })
+
+      console.log(this.token)
+      console.log(user)
+
+    },
   }
 }
 </script>

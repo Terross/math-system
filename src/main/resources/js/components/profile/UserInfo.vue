@@ -59,7 +59,10 @@ export default {
       ...mapState({get: 'profile'})
     },
     profile() {
-      return this.profileVuex.profile
+      console.log(this.profileVuex.profiles)
+      console.log(this.profileVuex.profiles.find(user => user.id === this.$route.params.id))
+
+      return this.profileVuex.profiles.find(user => user.id === this.$route.params.id)
     }
   }
 }

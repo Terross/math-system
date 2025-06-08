@@ -18,6 +18,8 @@
 
 <script>
 import {HTTP} from "../../axios/http-common.js";
+import {mapState, mapGetters, mapMutations} from 'vuex'
+
 export default {
   name: "TaskHistoryCard",
   data() {
@@ -31,6 +33,9 @@ export default {
     }
   },
   computed: {
+    profileVuex: {
+      ...mapState({get: 'profile'})
+    },
     email() {
       return this.$store.state.profile.profile.email
     },
@@ -41,7 +46,7 @@ export default {
   beforeMount() {
     console.log(123)
     this.$http
-        .get(`/api/v1/all/user/task-history/${this.email}`, {
+        .get(`/api/v1/all/user/task-history/${this.profileVuex.profiles.find(user => user.id === this.$route.params.id).email}`, {
           headers: {
             'Authorization' : "Bearer " + this.token
           }
